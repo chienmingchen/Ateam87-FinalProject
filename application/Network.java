@@ -113,9 +113,14 @@ public class Network implements GraphADT {
 	      return;
 
 	    // check if node exists
-	    if (!hasVertex(vertex1) || !hasVertex(vertex2))
-	      return;
-
+	    //if (!hasVertex(vertex1) || !hasVertex(vertex2))
+	      //return;
+	    
+	    // check if node exists
+	    if (!hasVertex(vertex1))
+	    		addVertex(vertex1);
+	    if (!hasVertex(vertex2))
+	    		addVertex(vertex2);
 	    // check if duplicated edge
 	    // vertexADJLists.get(vertex1) means vertex1's adjacent list
 	    if (vertexADJLists.get(vertex1).contains(vertex2))
