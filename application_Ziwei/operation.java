@@ -1,5 +1,6 @@
 package application;
 import java.io.File;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -56,8 +57,29 @@ public class operation {
          Export.setPrefSize(150,30);
          Button RemoveAllUsers = new Button("RemoveAllUsers");
          RemoveAllUsers.setPrefSize(150,30);
+         
+         
          Button ViewFriend = new Button("View Friendships");
          ViewFriend.setPrefSize(150,30);
+//         // action rotate event 
+//         EventHandler<ActionEvent> EventByButton = new EventHandler<ActionEvent>() { 
+//         	String S;
+//             public void handle(ActionEvent e) 
+//             { 
+//                 	try{
+//                 		
+//                 	
+//                 	}
+//                 	 catch (Exception nfe)
+//                     {
+//                 		 nfe.printStackTrace();
+////                 		 result.setText("invalid input");
+//                     }
+//                 } 
+//         }; 
+         
+         
+         
          Button AddUser = new Button("Add Users");
          AddUser.setPrefSize(150,30);
          Button DeleteUser = new Button("Delete Users");
@@ -68,6 +90,8 @@ public class operation {
          title.setFont(Font.font("Verdana",FontPosture.ITALIC,12));
          title.setAlignment(Pos.CENTER);
          
+         //set actions
+//         ViewFriend.setOnAction(EventByButton);
          
          operation.getChildren().add(title);
          operation.getChildren().add(Import);

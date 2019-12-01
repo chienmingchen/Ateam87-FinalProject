@@ -74,7 +74,6 @@ public class Main extends Application {
         
         // Create rotate button for the right panel
         Button rotateButton = new Button("Check");
-//        Button btn = new Button("Check2");
         
         // create a label for showing rotation degree
         Label result = new Label("Friend List : ");

@@ -32,7 +32,6 @@ import javafx.stage.Stage;
 public class FriendList {
 	
 	public static List<String> getFriends(SocialNetworkManager mgr, TextField input) {
-
 		List<String> list = mgr.getPersonalNetwork(input.getText());
 		return list;
 	}
