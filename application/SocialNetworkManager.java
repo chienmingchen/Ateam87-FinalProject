@@ -56,12 +56,12 @@ public class SocialNetworkManager {
      * @throws IOException if the give file cannot be read
      * @throws ParseException if the given json cannot be parsed 
      */
-    public void constructNetwork(String Filepath) throws FileNotFoundException, IOException, Exception {   
+    public void constructNetwork(File file) throws FileNotFoundException, IOException, Exception {   
     	
     	try
         {
         	//Read File
-    		Scanner parserScanner = new Scanner(new File("friends_000.txt"));
+    		Scanner parserScanner = new Scanner(file);
     		while(parserScanner.hasNextLine()) {
     			String currentLine = parserScanner.nextLine();
     			String[] splittedCmd = currentLine.split(" ");
