@@ -1,5 +1,7 @@
 package application;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import javafx.application.Application;
@@ -36,7 +38,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class operation {
-    public static VBox addOperation(Stage stage) {
+	
+    public static VBox addOperation(Stage stage, SocialNetworkManager mgr) {
     	 VBox operation = new VBox();
     	 operation.setSpacing(4);
     	 operation.setAlignment(Pos.CENTER);
@@ -49,7 +52,19 @@ public class operation {
          Import.setOnAction(new EventHandler<ActionEvent>() {
         	    @Override public void handle(ActionEvent e) {
         	    	File selectedFile = fileChooser.showOpenDialog(stage);
-        	    	
+        	    	try{
+        	    		mgr.constructNetwork(selectedFile);
+        	    	}
+        	        catch (FileNotFoundException exception) {
+        	        	 //e.printStackTrace();
+
+        	        } catch (IOException exception) {
+        	            //e.printStackTrace();
+
+    	        	} catch (Exception exception) {
+	    	            //e.printStackTrace();
+
+    	        	}
         	    }
         	});
          

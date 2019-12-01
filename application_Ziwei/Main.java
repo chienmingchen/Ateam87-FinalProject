@@ -60,7 +60,7 @@ public class Main extends Application {
 		args = this.getParameters().getRaw();
 		
 		//Init the social network
-		mgr.constructNetwork("File Path");
+		//mgr.constructNetwork("File Path");
 		
 		// Create a vertical box in center panel for getting friend list 
         // Vbox contains
@@ -170,7 +170,7 @@ public class Main extends Application {
 
 		// Main layout is Border Pane example (top,left,center,right,bottom)
         BorderPane root = new BorderPane();
-        root.setRight(operation.addOperation(primaryStage));
+        root.setRight(operation.addOperation(primaryStage,mgr));
         
         // Set Layout
         root.setTop(vbox);

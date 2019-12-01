@@ -1,5 +1,6 @@
 package application;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
@@ -29,8 +31,6 @@ import java.util.Vector;
  * 
  * Desc: 		
  * 
- * 
- * 
  */
 
 public class SocialNetworkManager {
@@ -38,6 +38,7 @@ public class SocialNetworkManager {
 	// We will base on our designed network methods to  
 	// manage the soical network 
     private Network network;
+    private Person centralPerson = new Person(" ");
     
     /*
      * Package Manager default no-argument constructor.
@@ -55,14 +56,50 @@ public class SocialNetworkManager {
      * @throws IOException if the give file cannot be read
      * @throws ParseException if the given json cannot be parsed 
      */
-    public void constructNetwork(String Filepath) throws FileNotFoundException, IOException {
-        
-        //try
+    public void constructNetwork(File file) throws FileNotFoundException, IOException, Exception {   
+    	
+    	try
         {
         	//Read File
-        	//FileReader reader = new FileReader(Filepath);
+    		Scanner parserScanner = new Scanner(file);
+    		while(parserScanner.hasNextLine()) {
+    			String currentLine = parserScanner.nextLine();
+    			String[] splittedCmd = currentLine.split(" ");
+    			
+    			//if the instruction is only one string then ignore this instruction
+    			if(splittedCmd.length <2)
+    				continue;
+    			
+    			String function = splittedCmd[0];
+    			//System.out.print(splittedCmd[0]);
+    			Person user1 = new Person(splittedCmd[1]);
+    			//System.out.print(splittedCmd[1]);
+    			Person user2 = splittedCmd.length>2?new Person(splittedCmd[2]):null;
+    			
+    			switch(splittedCmd[0]) {
+	    			case "a" :
+						if(user2!=null)
+							this.setFriendship(user1.name, user2.name);
+						else
+	    			break;
+	    			
+	    			case "r" :
+						if(user2!=null)
+							this.setFriendship(user1.name, user2.name);
+						else
+	    			break;
+						
+	    			case "s" :
+	    				this.centralize(user1.name);
+	    			break;
+	    			
+	    			default :
+	    				throw new Exception("Uncompilable commands.");
+	    			}	
+    		}
         			
             //Hard Code here, need to be read from the file
+        	/*
         	network.addVertex("tony");
         	network.addVertex("steve");
         	network.addVertex("Wanda");
@@ -78,18 +115,11 @@ public class SocialNetworkManager {
         	network.addEdge("Wanda","Hulk");
         	network.addEdge("Wanda","Thor");
         	network.addEdge("Hulk","Thor");
-        	
-//        	for(int i = 0; i < 50; i++) {
-//        		String add = "Hulk" +i;
-//        		network.addVertex(add);
-//        		network.addEdge("steve",add);
-//        		network.addEdge(add, "steve");
-//        	}
+        	*/
             	
             //network.printGraph();
            
         } 
-        /*
         catch (FileNotFoundException e) {
         	 //e.printStackTrace();
         	throw new FileNotFoundException();
@@ -97,9 +127,15 @@ public class SocialNetworkManager {
             //e.printStackTrace();
             throw new IOException();
         }
-        */
     }
 
+	public void centralize(String person) {
+		//check if person is null
+	  	if (person == null) 
+	  		return;
+	  	this.centralPerson.name = person;
+	}
+	
 	public void addPerson(String person) {
 		//check if person is null
 	  	if (person == null) 
@@ -112,6 +148,21 @@ public class SocialNetworkManager {
 	  	if (person1 == null && person2 == null) 
 	  		return;
 	  	network.addEdge(person1, person2);
+	  	System.out.println("Add : " + person1 + " " + person2);
+	}
+	
+	public void removePerson(String person) {
+		//check if person is null
+	  	if (person == null) 
+	  		return;
+	  	network.removeVertex(person);
+	}
+	
+	public void removeFriendship(String person1, String person2) {
+		//check if person is null
+	  	if (person1 == null && person2 == null) 
+	  		return;
+	  	network.removeEdge(person1, person2);
 	}
 	
 	public List<String> getPersonalNetwork(String person) {
