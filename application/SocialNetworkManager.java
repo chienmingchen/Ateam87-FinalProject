@@ -136,6 +136,11 @@ public class SocialNetworkManager {
 	  	this.centralPerson.name = person;
 	}
 	
+	public String getcenter() {
+		//check if person is null
+	  	return centralPerson.name;
+	}
+	
 	public void addPerson(String person) {
 		//check if person is null
 	  	if (person == null) 
