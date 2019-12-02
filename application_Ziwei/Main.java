@@ -1,7 +1,7 @@
 /**
  * 
  */
-package application;
+package application_Ziwei;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -187,7 +188,7 @@ public class Main extends Application {
 
 			public void handle(ActionEvent e) {
 				try {
-
+                    
 				} catch (Exception nfe) {
 					nfe.printStackTrace();
 //                		 result.setText("invalid input");
@@ -195,6 +196,38 @@ public class Main extends Application {
 			}
 		});
 
+		RemoveAllUsers.setOnAction(new EventHandler<ActionEvent>() {
+			
+
+			public void handle(ActionEvent e) {
+				try {
+                    Set<String> a = mgr.getAllUsers();
+                    String temp [] = new String[a.size()];
+                    int i=0;
+                    for(String element:a) {
+                    	temp[i]=element;
+                    	i++;
+                    }
+                    
+                    for(int j=0; j<temp.length;j++) {
+                    	
+                    	mgr.removePerson(temp[j]);
+                    }
+                    //test functionality
+//                    List<String> updated = new ArrayList<String>();
+//					Set<String> updatedSet = mgr.getAllUsers();
+//					for (String item : updatedSet) {
+//						updated.add(item);
+//					}
+//					System.out.println(updatedSet);
+					obl.clear();
+					obl.add("All users removed, Empty Friend List");
+				} catch (Exception nfe) {
+					nfe.printStackTrace();
+//                		 result.setText("invalid input");
+				}
+			}
+		});
 
 		// action rotate event
 		ViewFriend.setOnAction(new EventHandler<ActionEvent>() {

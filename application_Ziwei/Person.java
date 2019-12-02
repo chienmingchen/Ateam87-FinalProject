@@ -1,4 +1,4 @@
-package application;
+package application_Ziwei;
 
 public class Person {
 	public String name;
