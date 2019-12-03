@@ -136,9 +136,8 @@ public class SocialNetworkManager {
 	  	this.centralPerson.name = person;
 	}
 	
-	public String getcenter() {
-		//check if person is null
-	  	return centralPerson.name;
+	public String getCentralPerson() {
+		return this.centralPerson.name;
 	}
 	
 	public void addPerson(String person) {
@@ -177,6 +176,9 @@ public class SocialNetworkManager {
 	  	return network.getAdjacentVerticesOf(person);
 	}
 	
+	public Set<String> getAllUsers() {		
+		return network.getAllVertices();
+	}
 }
 
 //Need to check howto throw user-defined exception
