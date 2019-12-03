@@ -7,12 +7,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import com.sun.javafx.logging.Logger;
+import com.sun.javafx.logging.PlatformLogger.Level;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -159,6 +163,7 @@ public class Main extends Application {
 //        Button Import = new Button("Import");
 //        Import.setPrefSize(150, 30);
 		FileChooser fileChooser = new FileChooser();
+		
 		Import.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -198,22 +203,33 @@ public class Main extends Application {
 		});
 
 //        Button Export = new Button("Export");
-//        Export.setPrefSize(150,30);       
+//        Export.setPrefSize(150,30);      
+		
 		Export.setOnAction(new EventHandler<ActionEvent>() {
 			String S;
 
 			public void handle(ActionEvent e) {
-				try {
-                    
-				} catch (Exception nfe) {
-					nfe.printStackTrace();
-//                		 result.setText("invalid input");
-				}
+				
+		        final String sampleText = "Log Test \n";
+		        
+	            FileChooser fileChooser = new FileChooser();
+	            
+	            //Set extension filter for text files
+	            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+	            fileChooser.getExtensionFilters().add(extFilter);
+	 
+	            //Show save file dialog
+	            File file = fileChooser.showSaveDialog(primaryStage);
+	 
+	            if (file != null) {
+	                saveTextToFile(sampleText, file);
+	            }
 			}
 		});
+		
+
 
 		RemoveAllUsers.setOnAction(new EventHandler<ActionEvent>() {
-			
 
 			public void handle(ActionEvent e) {
 				try {
@@ -651,6 +667,19 @@ public class Main extends Application {
 		primaryStage.show();
 
 	}
+	
+
+    private void saveTextToFile(String name, File log){
+        try {
+            PrintWriter writer;
+            writer = new PrintWriter(log);
+            writer.println(name);
+            writer.close();
+        } catch (IOException ex) {
+            
+        }
+    }
+    
 
 	/**
 	 * @param args
