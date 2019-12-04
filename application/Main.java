@@ -170,6 +170,45 @@ public class Main extends Application {
 //        Import.setPrefSize(150, 30);
 		FileChooser fileChooser = new FileChooser();
 		
+		DeleteUser.setOnAction(new EventHandler<ActionEvent>(){
+
+			@Override
+			public void handle(ActionEvent event) {
+				// for test purpose
+				if(lv.getSelectionModel().getSelectedItem() != null) {
+					selectedUser = lv.getSelectionModel().getSelectedItem();
+					String userToDelete = selectedUser;
+					//System.out.println(userToDelete);
+					mgr.removePerson(userToDelete);
+					List<String> updated = new ArrayList<String>();
+					Set<String> updatedSet = mgr.getAllUsers();
+					for (String item : updatedSet) {
+						updated.add(item);
+					}
+					obl.clear();
+
+					if(updated.size()!=0) {
+						result.setText("" + selectedUser + " is deleted.");
+					obl.addAll(updated);
+					}
+					else {
+						result.setText("" + selectedUser + " is deleted. List is Empty");
+						Import.setDisable(false);
+						Export.setDisable(false);
+						AddUser.setDisable(false);
+						DeleteUser.setDisable(true);
+						RemoveAllUsers.setDisable(true);
+					    ViewFriend.setDisable(true);
+					}
+
+
+
+			}}
+
+
+
+		});
+		
 		Import.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
