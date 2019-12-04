@@ -129,7 +129,7 @@ public class Main extends Application {
 
 		RemoveAllUsers.setDisable(true);
 		ViewFriend.setDisable(true);
-		AddUser.setDisable(true);
+		AddUser.setDisable(false);
 		DeleteUser.setDisable(true);
 		
 		// Buttons for friend operations
@@ -253,12 +253,13 @@ public class Main extends Application {
 //					}
 //					System.out.println(updatedSet);
 					obl.clear();
-					obl.add("All users removed, Empty Friend List");
+//					obl.add("All users removed, Empty Friend List");
 					
 					//update button accessibility
 					ViewFriend.setDisable(true);
 					AddUser.setDisable(true);
 					DeleteUser.setDisable(true);
+					RemoveAllUsers.setDisable(true);
 				} catch (Exception nfe) {
 					nfe.printStackTrace();
 //                		 result.setText("invalid input");
@@ -308,7 +309,71 @@ public class Main extends Application {
 			}
 		});
 
+		AddUser.setOnAction(new EventHandler<ActionEvent>() {
 
+			public void handle(ActionEvent e)
+
+			{
+
+				try {
+
+					// create a text input dialog
+
+					TextInputDialog td1 = new TextInputDialog();
+
+					// setHeaderText
+
+					td1.setTitle("Add a user");
+
+					td1.setHeaderText("Please Enter Name");
+
+					td1.setContentText("Name:");
+
+					Optional<String> choice1 = td1.showAndWait();
+
+					if (choice1.isPresent()) {
+
+//	        			if (mgr.getperson().contains(td.getEditor().getText())){
+
+//	                		Alert error = new Alert(Alert.AlertType.ERROR, "ERROR: Duplicate person is not allowed");
+
+//	          			Button err = new Button();
+
+//	                		err.setOnAction((ActionEvent ee)->{error.showAndWait();});
+
+//	        		}
+
+						if ((td1.getEditor().getText()) != null) {
+							mgr.addPerson(td1.getEditor().getText());
+						}
+
+
+							// update friends information
+							List<String> updated = new ArrayList<String>();							
+							Set<String> updatedSet = mgr.getAllUsers();
+							for (String item : updatedSet) {
+									updated.add(item);
+							}
+							obl.clear();
+							obl.addAll(updated);
+							
+//							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
+//									ViewFriend, Back, Menu, Recall);
+						}
+
+						result.setText("Friend Of : " + mgr.getCentralPerson());
+					}
+				catch (Exception nfe) {
+
+					nfe.printStackTrace();
+
+					result.setText("invalid input");
+
+				}
+
+			}
+
+		});
 
 
 
@@ -606,7 +671,6 @@ public class Main extends Application {
 			@Override
 			public void handle(MouseEvent event) {
 				// for test purpose
-//            	mgr.centralize(lv.getSelectionModel().getSelectedItem());
 				if(lv.getSelectionModel().getSelectedItem() != null) {
 					selectedUser = lv.getSelectionModel().getSelectedItem();
 					result.setText("" + selectedUser + " is selected.");
@@ -629,6 +693,33 @@ public class Main extends Application {
 			}
 		};
 
+		// event of clicking a friend in the list
+		EventHandler<MouseEvent> EventByMouse2 = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				
+				if(!obl.isEmpty()) {
+					lv.getSelectionModel().clearSelection();
+					selectedUser = null;
+						//update button accessibility
+						//button in user page
+						ViewFriend.setDisable(true);
+						DeleteUser.setDisable(true);
+						Import.setDisable(false);
+						Export.setDisable(false);
+						RemoveAllUsers.setDisable(false);
+						AddUser.setDisable(false);
+//						//button in friend page
+//						RemoveFriend.setDisable(false);
+//						RemoveAllFriend.setDisable(true);
+//						AddFriend.setDisable(true);
+//					
+				}
+				
+				
+
+			}
+		};
 		// Set the action of the textfield
 		input.setOnAction(EventByEnter);
 		// Set the action of the Click button
@@ -652,6 +743,8 @@ public class Main extends Application {
 		root.setLeft(lv);
 //		root.setBottom(ViewFriend);
 
+		root.setOnMouseClicked(EventByMouse2);
+		
 		// set scroll bar for friend list
 		lv.setItems(obl);
 		pane.prefWidthProperty().bind(lv.widthProperty());
