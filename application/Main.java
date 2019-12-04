@@ -309,7 +309,7 @@ public class Main extends Application {
 					
 					//update button accessibility
 					ViewFriend.setDisable(true);
-					AddUser.setDisable(true);
+					AddUser.setDisable(false);
 					DeleteUser.setDisable(true);
 					RemoveAllUsers.setDisable(true);
 				} catch (Exception nfe) {
