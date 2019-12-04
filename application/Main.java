@@ -42,6 +42,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Background;
@@ -108,6 +109,7 @@ public class Main extends Application {
 		ObservableList<String> obl = FXCollections.observableList(new ArrayList<String>());
 //		obl.add("Empty Friend List");
 		ListView<String> lv = new ListView<String>(obl);
+		lv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		// create a scroll bar for friend list
 		ScrollPane pane = new ScrollPane();
 
@@ -175,11 +177,15 @@ public class Main extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				// for test purpose
-				if(lv.getSelectionModel().getSelectedItem() != null) {
-					selectedUser = lv.getSelectionModel().getSelectedItem();
-					String userToDelete = selectedUser;
+				if(lv.getSelectionModel().getSelectedItems() != null) {
+					List<String> selectedUser = lv.getSelectionModel().getSelectedItems();
+					String a = "";
+					for(int i = selectedUser.size()-1;i>=0;i--) {
+					String userToDelete = selectedUser.get(i);
+					a+=userToDelete+", ";
 					//System.out.println(userToDelete);
 					mgr.removePerson(userToDelete);
+					}
 					List<String> updated = new ArrayList<String>();
 					Set<String> updatedSet = mgr.getAllUsers();
 					for (String item : updatedSet) {
@@ -188,11 +194,11 @@ public class Main extends Application {
 					obl.clear();
 
 					if(updated.size()!=0) {
-						result.setText("" + selectedUser + " is deleted.");
+						result.setText("" + a + "  deleted.");
 					obl.addAll(updated);
 					}
 					else {
-						result.setText("" + selectedUser + " is deleted. List is Empty");
+						result.setText("" + a + "  deleted. List is Empty");
 						Import.setDisable(false);
 						Export.setDisable(false);
 						AddUser.setDisable(false);
@@ -784,7 +790,20 @@ public class Main extends Application {
 			@Override
 			public void handle(MouseEvent event) {
 				// for test purpose
-				if(lv.getSelectionModel().getSelectedItem() != null) {
+				if(lv.getSelectionModel().getSelectedItems() != null) {
+					if(lv.getSelectionModel().getSelectedItems().size()>1) {
+						result.setText("Multiple users selected.");
+						ViewFriend.setDisable(true);
+						Import.setDisable(true);
+						Export.setDisable(true);
+						RemoveAllUsers.setDisable(true);
+						AddUser.setDisable(true);
+						//button in friend page
+						RemoveFriend.setDisable(false);
+						RemoveAllFriend.setDisable(true);
+						AddFriend.setDisable(true);
+					}
+					else {
 					selectedUser = lv.getSelectionModel().getSelectedItem();
 					result.setText("" + selectedUser + " is selected.");
 					System.out.println("clicked on " + lv.getSelectionModel().getSelectedItem());
@@ -802,7 +821,7 @@ public class Main extends Application {
 					RemoveFriend.setDisable(false);
 					RemoveAllFriend.setDisable(true);
 					AddFriend.setDisable(true);
-				}
+				}}
 
 			}
 		};
