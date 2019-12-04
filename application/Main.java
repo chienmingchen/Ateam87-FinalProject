@@ -32,11 +32,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
@@ -46,12 +48,14 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 /**
  * @author james
@@ -116,12 +120,14 @@ public class Main extends Application {
 		// Buttons for user operations
 		Button Import = new Button("Import");
 		Button Export = new Button("Export");
+		Button AddFriendship = new Button("Add Friendship");
 		Button RemoveAllUsers = new Button("RemoveAllUsers");
 		Button ViewFriend = new Button("View Friendships");
 		Button AddUser = new Button("Add Users");
 		Button DeleteUser = new Button("Delete Users");
 		Import.setPrefSize(150, 30);
 		Export.setPrefSize(150, 30);
+		AddFriendship.setPrefSize(150, 30);
 		RemoveAllUsers.setPrefSize(150, 30);
 		ViewFriend.setPrefSize(150, 30);
 		AddUser.setPrefSize(150, 30);
@@ -133,10 +139,10 @@ public class Main extends Application {
 		DeleteUser.setDisable(true);
 		
 		// Buttons for friend operations
-		Button AddFriend = new Button("Add friend");
-		Button RemoveAllFriend = new Button("Remove all friend");
-		Button RemoveFriend = new Button("Remove friend");
-		Button ViewFriendship = new Button("View friendship(Friend Page)");
+		Button AddFriend = new Button("Add Friend");
+		Button RemoveAllFriend = new Button("Remove All Friends");
+		Button RemoveFriend = new Button("Remove Friend");
+		Button ViewFriendship = new Button("View Friendship(Friend Page)");
 		Button Back = new Button("Back");
 		Button Menu = new Button("Menu");
 		Button Recall = new Button("Recall");
@@ -164,44 +170,6 @@ public class Main extends Application {
 //        Import.setPrefSize(150, 30);
 		FileChooser fileChooser = new FileChooser();
 		
-		DeleteUser.setOnAction(new EventHandler<ActionEvent>(){
-
-			@Override
-			public void handle(ActionEvent event) {
-				// for test purpose
-				if(lv.getSelectionModel().getSelectedItem() != null) {
-					selectedUser = lv.getSelectionModel().getSelectedItem();
-					String userToDelete = selectedUser;
-					//System.out.println(userToDelete);
-					mgr.removePerson(userToDelete);
-					List<String> updated = new ArrayList<String>();
-					Set<String> updatedSet = mgr.getAllUsers();
-					for (String item : updatedSet) {
-						updated.add(item);
-					}
-					obl.clear();
-					
-					if(updated.size()!=0) {
-						result.setText("" + selectedUser + " is deleted.");
-					obl.addAll(updated);
-					}
-					else {
-						result.setText("" + selectedUser + " is deleted. List is Empty");
-						Import.setDisable(false);
-						Export.setDisable(false);
-						AddUser.setDisable(false);
-						DeleteUser.setDisable(true);
-						RemoveAllUsers.setDisable(true);
-					    ViewFriend.setDisable(true);
-					}
-					
-					
-				
-			}}
-
-			
-			
-		});
 		Import.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -421,6 +389,7 @@ public class Main extends Application {
 		operation.getChildren().add(title);
 		operation.getChildren().add(Import);
 		operation.getChildren().add(Export);
+		operation.getChildren().add(AddFriendship);
 		operation.getChildren().add(RemoveAllUsers);
 		operation.getChildren().add(ViewFriend);
 		operation.getChildren().add(AddUser);
@@ -428,6 +397,74 @@ public class Main extends Application {
 
 
 		// create a event handler
+
+		AddFriendship.setOnAction(new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent e)
+
+			{
+
+				try {
+
+					// create a  dialog
+
+					Dialog<Pair<String, String>> dialog = new Dialog<>();
+
+					// setHeaderText
+
+					dialog.setTitle("Add new friendship(two users)");
+
+					dialog.setHeaderText("Please Enter Names");
+					 // Set the button types.
+				    ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
+				    dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+				    
+				    GridPane gridPane = new GridPane();
+				    gridPane.setHgap(10);
+				    gridPane.setVgap(10);
+				    //gridPane.setPadding(new Insets(20, 150, 10, 10));
+
+				    TextField name1 = new TextField();
+				    name1.setPromptText("Name 1");
+				    TextField name2 = new TextField();
+				    name2.setPromptText("Name 2");
+				    
+				    gridPane.add(new Label("Name 1"), 0, 0);
+				    gridPane.add(name1, 0, 1);
+				    
+				    gridPane.add(new Label("Name 2"), 1, 0);
+				    gridPane.add(name2, 1, 1);
+
+				    dialog.getDialogPane().setContent(gridPane);
+				    Optional<Pair<String, String>> choice = dialog.showAndWait();
+				    
+				    if (choice.isPresent()) {
+				    	mgr.setFriendship(name1.getText(), name2.getText());
+				    	 List<String> updated = new ArrayList<String>();       
+					       Set<String> updatedSet = mgr.getAllUsers();
+					       for (String item : updatedSet) {
+					         updated.add(item);
+					       }
+					       obl.clear();
+					       obl.addAll(updated);
+//
+						result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+					}
+
+				}
+
+				catch (Exception nfe) {
+
+					nfe.printStackTrace();
+
+					result.setText("invalid input");
+
+				}
+
+			}
+
+		});
+
 
 		AddFriend.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -443,38 +480,33 @@ public class Main extends Application {
 
 					// setHeaderText
 
-					td.setTitle("Add new friend");
+					td.setTitle("Add a friend");
 
 					td.setHeaderText("Please Enter Name");
 
 					td.setContentText("Name:");
 
-					Optional<String> choice = td.showAndWait();
+					Optional<String> choice2 = td.showAndWait();
 
-					// if we choose the button OK
-
-					if (choice.isPresent()) {
+					if (choice2.isPresent()) {
 
 //	        			if (mgr.getperson().contains(td.getEditor().getText())){
 
 //	                		Alert error = new Alert(Alert.AlertType.ERROR, "ERROR: Duplicate person is not allowed");
 
-//	                		Button err = new Button();
+//	          			Button err = new Button();
 
 //	                		err.setOnAction((ActionEvent ee)->{error.showAndWait();});
 
 //	        		}
 
-						// if the user is the friend of the input name or the input name is null, then
-						// disable the OK button
-
-						if (mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(td.getEditor().getText())
+						if (!mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(td.getEditor().getText())
 
 								|| (td.getEditor().getText()) == null)
 
 							td.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 
-						mgr.setFriendship(mgr.getCentralPerson(), td.getEditor().getText()); // add friend ?
+						mgr.setFriendship(mgr.getCentralPerson(), td.getEditor().getText());
 
 						if (mgr.getCentralPerson() != null) {
 							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
@@ -506,9 +538,7 @@ public class Main extends Application {
 			}
 
 		});
-
-
-
+		
 		RemoveFriend.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent e)
@@ -642,6 +672,7 @@ public class Main extends Application {
 					DeleteUser.setDisable(true);
 					Import.setDisable(false);
 					Export.setDisable(false);
+					AddFriendship.setDisable(false);
 					RemoveAllUsers.setDisable(false);
 					AddUser.setDisable(false);
 				} catch (Exception nfe) {
@@ -725,6 +756,7 @@ public class Main extends Application {
 					DeleteUser.setDisable(false);
 					Import.setDisable(true);
 					Export.setDisable(true);
+					AddFriendship.setDisable(true);
 					RemoveAllUsers.setDisable(true);
 					AddUser.setDisable(true);
 					//button in friend page
@@ -750,6 +782,7 @@ public class Main extends Application {
 						DeleteUser.setDisable(true);
 						Import.setDisable(false);
 						Export.setDisable(false);
+						AddFriendship.setDisable(false);
 						RemoveAllUsers.setDisable(false);
 						AddUser.setDisable(false);
 //						//button in friend page
