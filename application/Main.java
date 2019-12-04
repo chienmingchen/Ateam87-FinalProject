@@ -804,6 +804,18 @@ public class Main extends Application {
 						RemoveAllFriend.setDisable(true);
 						AddFriend.setDisable(true);
 					}
+					else if(lv.getSelectionModel().getSelectedItems().size()==0) {
+						ViewFriend.setDisable(true);
+						DeleteUser.setDisable(true);
+						Import.setDisable(false);
+						Export.setDisable(false);
+						RemoveAllUsers.setDisable(true);
+						AddUser.setDisable(false);
+						//button in friend page
+						RemoveFriend.setDisable(false);
+						RemoveAllFriend.setDisable(true);
+						AddFriend.setDisable(true);
+					}
 					else {
 					selectedUser = lv.getSelectionModel().getSelectedItem();
 					result.setText("" + selectedUser + " is selected.");
