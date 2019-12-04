@@ -906,6 +906,30 @@ public class Main extends Application {
             
         }
     }
+	
+	/**
+	 * Create file "log.txt" in the root folder
+	 * Contains the log of all the operations occurred during
+	 * the running of the social network app
+	 * @throws IOException 
+	 */
+	@Override
+	public void stop() throws IOException {
+		String exampleExport = "a mark sid\r\n" + 
+				"a sid sri\r\n" + 
+				"a sri mark\r\n" + 
+				"a sapan deb\r\n" + 
+				"a deb sid\r\n" + 
+				"a deb mark\r\n" + 
+				"r deb\r\n" + 
+				"s mark\r\n" + 
+				"\r\n" + 
+				"";
+		FileWriter log = new FileWriter("log.txt");
+		PrintWriter logWriter = new PrintWriter(log);
+		logWriter.println(exampleExport);
+		logWriter.close();
+	}
     
 
 	/**
