@@ -439,11 +439,15 @@ public class Main extends Application {
 			{
 
 				try {
-
-					for (String s : mgr.getPersonalNetwork(mgr.getCentralPerson()))
-
-						mgr.removeFriendship(mgr.getCentralPerson(), s);
-
+                    String delete = mgr.getCentralPerson();
+                    List<String> deleteList = mgr.getPersonalNetwork(delete);
+                    //System.out.print(deleteList);
+                    for (int i = deleteList.size()-1; i >=0;  i--) {
+                    	mgr.removeFriendship(delete, deleteList.get(i));
+                    }
+                    List<String> deleteList1 = mgr.getPersonalNetwork(delete);
+                    //System.out.print(deleteList1);
+                    obl.clear();
 					result.setText("Friend List : " + mgr.getPersonalNetwork(mgr.getCentralPerson()));
 
 				}
