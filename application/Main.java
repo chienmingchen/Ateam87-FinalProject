@@ -144,6 +144,7 @@ public class Main extends Application {
 		// Buttons for friend operations
 		Button AddFriend = new Button("Add Friend");
 		Button RemoveAllFriend = new Button("Remove All Friends");
+		Button RemoveSelectedFriend = new Button("Remove Selected Friends");
 		Button RemoveFriend = new Button("Remove Friend");
 		Button ViewFriendship = new Button("View Friendship(Friend Page)");
 		Button Back = new Button("Back");
@@ -151,6 +152,7 @@ public class Main extends Application {
 		Button Recall = new Button("Recall");
 		AddFriend.setPrefSize(150, 30);
 		RemoveFriend.setPrefSize(150, 30);
+		RemoveSelectedFriend.setPrefSize(150, 30);
 		RemoveAllFriend.setPrefSize(150, 30);
 		ViewFriendship.setPrefSize(150, 30);
 		Back.setPrefSize(150, 30);
@@ -336,7 +338,7 @@ public class Main extends Application {
 							obl.clear();
 							obl.addAll(updated);
 						}
-						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
+						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 								ViewFriend, Back, Menu, Recall);
 						// set listview
 						result.setText("Friend Of : " + selectedUser + "Central User: " + mgr.getCentralPerson());
@@ -349,7 +351,8 @@ public class Main extends Application {
 //						RemoveAllUsers.setDisable(false);
 //						AddUser.setDisable(false);
 						//button in friend page
-						RemoveFriend.setDisable(true);
+						RemoveFriend.setDisable(false);
+						RemoveSelectedFriend.setDisable(true);
 						RemoveAllFriend.setDisable(false);
 						AddFriend.setDisable(false);
 					}
@@ -564,7 +567,7 @@ public class Main extends Application {
 								obl.clear();
 								obl.addAll(updated);
 							}
-							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
+							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 									ViewFriend, Back, Menu, Recall);
 						}
 
@@ -637,7 +640,7 @@ public class Main extends Application {
 								obl.clear();
 								obl.addAll(updated);
 							}
-							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
+							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 									ViewFriend, Back, Menu, Recall);
 						}
 
@@ -658,7 +661,64 @@ public class Main extends Application {
 
 		});
 
+		RemoveSelectedFriend.setOnAction(new EventHandler<ActionEvent>() {
 
+			public void handle(ActionEvent e)
+
+			{
+
+				try {
+
+					
+
+					
+
+					
+
+//	        			if (mgr.getperson().contains(td.getEditor().getText())){
+
+//	                		Alert error = new Alert(Alert.AlertType.ERROR, "ERROR: Duplicate person is not allowed");
+
+//	          			Button err = new Button();
+
+//	                		err.setOnAction((ActionEvent ee)->{error.showAndWait();});
+
+//	        		}
+
+					
+
+						mgr.removeFriendship(mgr.getCentralPerson(), lv.getSelectionModel().getSelectedItem());
+
+						if (mgr.getCentralPerson() != null) {
+							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
+							// update friends information
+							if (updated == null) {
+								obl.clear();
+								obl.add("Cannot Find: " + mgr.getCentralPerson());
+							} else {
+								obl.clear();
+								obl.addAll(updated);
+							}
+							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
+									ViewFriend, Back, Menu, Recall);
+						
+
+						result.setText("Friend Of : " + mgr.getCentralPerson());
+					}
+
+				}
+
+				catch (Exception nfe) {
+
+					nfe.printStackTrace();
+
+					result.setText("invalid input");
+
+				}
+
+			}
+
+		});
 
 		RemoveAllFriend.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -710,7 +770,7 @@ public class Main extends Application {
 					obl.clear();
 					obl.addAll(updated);
 					result.setText("You Are Now At User Page (Menu)");
-					FriendList.setAsUserOperation(operation, title, Import, Export, RemoveAllUsers, ViewFriend, AddUser,
+					FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
 							DeleteUser);
 
 					//update button accessibility
@@ -801,6 +861,7 @@ public class Main extends Application {
 						AddUser.setDisable(true);
 						//button in friend page
 						RemoveFriend.setDisable(false);
+						RemoveSelectedFriend.setDisable(false);
 						RemoveAllFriend.setDisable(true);
 						AddFriend.setDisable(true);
 					}
@@ -813,6 +874,7 @@ public class Main extends Application {
 						AddUser.setDisable(false);
 						//button in friend page
 						RemoveFriend.setDisable(false);
+						RemoveSelectedFriend.setDisable(false);
 						RemoveAllFriend.setDisable(true);
 						AddFriend.setDisable(true);
 					}
@@ -831,7 +893,8 @@ public class Main extends Application {
 					RemoveAllUsers.setDisable(true);
 					AddUser.setDisable(true);
 					//button in friend page
-					RemoveFriend.setDisable(false);
+					RemoveFriend.setDisable(true);
+					RemoveSelectedFriend.setDisable(false);
 					RemoveAllFriend.setDisable(true);
 					AddFriend.setDisable(true);
 				}}

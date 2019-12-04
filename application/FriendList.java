@@ -47,12 +47,13 @@ public class FriendList {
 //	userOperation[0]=title;
 
     public static VBox setAsUserOperation(VBox operation, Label title, Button importButton, 
-    		Button Export, Button RemoveAllUsers, Button ViewFriend, Button AddUser, 
+    		Button Export, Button AddFriendship, Button RemoveAllUsers, Button ViewFriend, Button AddUser, 
     		Button DeleteUser) {
     	operation.getChildren().clear();
         operation.getChildren().add(title);
         operation.getChildren().add(importButton);
         operation.getChildren().add(Export);
+        operation.getChildren().add(AddFriendship);
         operation.getChildren().add(RemoveAllUsers);
         operation.getChildren().add(ViewFriend);
         operation.getChildren().add(AddUser);
@@ -64,12 +65,13 @@ public class FriendList {
 	
 
     public static VBox setAsFriendOperation(VBox operation, Label title, Button AddFriend, 
-    		Button RemoveFriend, Button RemoveAllFriend, Button ViewFriendship, 
+    		Button RemoveFriend, Button RemoveSelectedFriend, Button RemoveAllFriend, Button ViewFriendship, 
     		 Button Back, Button Menu, Button Recall) {
     	operation.getChildren().clear();
         operation.getChildren().add(title);
         operation.getChildren().add(AddFriend);
         operation.getChildren().add(RemoveFriend);
+        operation.getChildren().add(RemoveSelectedFriend);
         operation.getChildren().add(RemoveAllFriend);
         operation.getChildren().add(ViewFriendship);
         operation.getChildren().add(Back);
