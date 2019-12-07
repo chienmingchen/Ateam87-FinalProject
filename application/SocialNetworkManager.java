@@ -179,6 +179,22 @@ public class SocialNetworkManager {
 	public Set<String> getAllUsers() {		
 		return network.getAllVertices();
 	}
+	
+	public List<String> mutualFriends(String person1, String person2) {		
+		
+		List<String> set1 = network.getAdjacentVerticesOf(person1);
+		List<String> set2 = network.getAdjacentVerticesOf(person2);
+		set1.retainAll(set2);
+		return set1;
+		 
+	}
+	
+	public List<String> shortestPath(String person1, String person2) {		
+	  	if (person1 == null || person2 == null) 
+	  		return null;
+	  	
+		return network.getShortestPathOf(person1, person2);
+	}
 }
 
 //Need to check howto throw user-defined exception

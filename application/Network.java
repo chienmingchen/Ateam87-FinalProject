@@ -2,8 +2,10 @@ package application;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 
@@ -193,6 +195,39 @@ public class Network implements GraphADT {
         return vertexADJLists.keySet().size();
     }
 	
+    public List<String> getShortestPathOf(String source, String end) {
+	    List<String> route = new ArrayList<>();
+	    Map<String, String> path =  BFS(source);
+	    for (String cur = path.get(end) ; cur.equals(source) != true ; cur = path.get(cur)) {
+	    	route.add(cur);
+	    }
+        return route;
+    }
+
+	/*
+	 * Use BFS to find the shortest path
+	 */
+    private Map<String, String> BFS(String sourceVertex){
+        
+    	List<String> visitedVertex = new ArrayList<>();
+    	Map<String, String> path = new HashMap<>();
+    	Queue<String> queue = new LinkedList<>();
+        visitedVertex.add(sourceVertex);
+        queue.add(sourceVertex);
+        while(!queue.isEmpty()){
+            String ver = queue.poll();  
+            List<String> toBeVisitedVertex = vertexADJLists.get(ver);
+            for (String v : toBeVisitedVertex) {      
+                if (!visitedVertex.contains(v)) {    
+                	queue.add(v);                   
+                	visitedVertex.add(v);           
+                    path.put(v, ver);                
+                }
+            }
+        }
+        return path; 
+    }
+
 	
 	public void printGraph() {
 		for ( String vertex : vertexADJLists.keySet() ) {
