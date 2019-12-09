@@ -210,18 +210,17 @@ public class Main extends Application {
 
 					if(updated.size()!=0) {
 						result.setText("" + a + "  deleted.");
-					obl.addAll(updated);
+					obl.addAll(updated);					
 					}
 					else {
 						result.setText("" + a + "  deleted. List is Empty");
 						Import.setDisable(false);
 						Export.setDisable(false);
-						AddUser.setDisable(false);
-						DeleteUser.setDisable(true);
+						AddUser.setDisable(false);						
 						RemoveAllUsers.setDisable(true);
 					    ViewFriend.setDisable(true);
 					}
-
+					DeleteUser.setDisable(true);
 
 
 			}}
