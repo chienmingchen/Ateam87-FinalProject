@@ -49,12 +49,17 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -323,6 +328,7 @@ public class Main extends Application {
 					AddUser.setDisable(false);
 					DeleteUser.setDisable(true);
 					RemoveAllUsers.setDisable(true);
+					centralUserNtwk.getChildren().clear();
 				} catch (Exception nfe) {
 					nfe.printStackTrace();
 //                		 result.setText("invalid input");
@@ -364,6 +370,8 @@ public class Main extends Application {
 						RemoveSelectedFriend.setDisable(true);
 						RemoveAllFriend.setDisable(false);
 						AddFriend.setDisable(false);
+						centralUserNtwk.getChildren().clear();
+						centralUserNtwk.getChildren().add(plotCentralUserNtwk(mgr));
 					}
 
 				} catch (Exception nfe) {
@@ -961,7 +969,7 @@ public class Main extends Application {
 		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 		root.setLeft(lv);
 //		root.setBottom(ViewFriend);
-
+		root.setCenter(centralUserNtwk);
 		root.setOnMouseClicked(EventByMouse2);
 		
 		// set scroll bar for friend list
