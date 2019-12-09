@@ -72,8 +72,8 @@ public class Main extends Application {
 	// GUI needs to interact with SocialNetworkManager
 	private static SocialNetworkManager mgr = new SocialNetworkManager();
 
-	private static final int WINDOW_WIDTH = 550;
-	private static final int WINDOW_HEIGHT = 300;
+	private static final int WINDOW_WIDTH = 1000;
+	private static final int WINDOW_HEIGHT = 800;
 	private static final String APP_TITLE = "SocialNetworkManager";
 	// item that user select
 	private static String selectedUser;
@@ -114,6 +114,11 @@ public class Main extends Application {
 		// create a scroll bar for friend list
 		ScrollPane pane = new ScrollPane();
 
+		// The GridPane for showing central user network
+		GridPane centralUserNtwk = new GridPane();
+		centralUserNtwk.setPrefHeight(0.6*WINDOW_WIDTH);
+	   	centralUserNtwk.setPrefWidth(0.75*WINDOW_HEIGHT);
+		
 		// title for opereation vbox
 		Label title = new Label();
 		title.setText("Operations");
@@ -243,6 +248,10 @@ public class Main extends Application {
 //					ViewFriend.setDisable(false);
 					AddUser.setDisable(false);
 //					DeleteUser.setDisable(false);
+				 	//clear the GridPane first whenever new network is imported
+					centralUserNtwk.getChildren().clear();
+					//then plot the network of the central user
+					centralUserNtwk.getChildren().add(plotCentralUserNtwk(mgr));
 				} catch (FileNotFoundException exception) {
 					// e.printStackTrace();
 
@@ -1006,7 +1015,93 @@ public class Main extends Application {
 		logWriter.println(exampleExport);
 		logWriter.close();
 	}
-    
+	
+	
+	//text circle - represents user nodes
+	public class UserNode extends StackPane{
+	    private final Circle circle;
+	    private final Text text;
+
+	    UserNode(String text, double r)
+	    {            
+	        this.text = new Text(text);
+	        circle = new Circle (r);
+	        circle.setFill(Color.AQUA);
+	        getChildren().addAll(circle, this.text);
+	    }
+	}
+	
+	//create a Gridpane based on a social network manager
+	//GridPane Length is predefined as 600
+	//The radius of the friend network (the distance between the central user to each friend) is predefined as 3
+	//Plots the friend network for central user defined by the SocialNetworkManager mgr
+	//Circle node radius is predefined as 30
+	public GridPane plotCentralUserNtwk(SocialNetworkManager mgr) {
+		//the radius of the friends circle
+		//NOT THE NODE RADIUS
+		int friendCircleR = 3;
+		int GridPaneLength = 600;
+		GridPane centralUserNtwk = new GridPane();
+		String centralUser = mgr.getCentralPerson();
+		List<String> friends = mgr.getPersonalNetwork(centralUser);
+		
+		List<Integer> X = new ArrayList<Integer>();
+		List<Integer> Y = new ArrayList<Integer>();
+		System.out.println(friends);
+		//friend list size
+		int n=0;
+		if(friends==null) {
+			for(int i=0;i<3;i++) {
+				centralUserNtwk.getColumnConstraints().add(new ColumnConstraints(GridPaneLength/3));
+				centralUserNtwk.getRowConstraints().add(new RowConstraints(GridPaneLength/3));
+			}
+			centralUserNtwk.add(new UserNode(centralUser,30), 1, 1);
+			return centralUserNtwk;
+		}
+		if(friends!=null)
+			n=friends.size();
+		
+		
+
+		int centerCoord = GridPaneLength/2;
+		int minX=centerCoord;
+		int maxX=centerCoord;
+		int minY = centerCoord;
+		int maxY = centerCoord;
+		for(int i=0;i<friends.size();i++) {
+			int x = (int) (centerCoord+friendCircleR*Math.cos(2*Math.PI*i/n));
+			minX = x<minX?x:minX;
+			maxX = x>maxX?x:maxX;
+			int y = (int) (centerCoord+friendCircleR*Math.sin(2*Math.PI*i/n));
+			minY = y<minY?y:minY;
+			maxY = y>maxY?y:maxY;
+			X.add(x);
+			Y.add(y);
+		}
+		
+		int cols = maxX-minX+1;
+		int rows = maxY-minY+1;
+		System.out.println(cols);
+		System.out.println(rows);
+		
+		ColumnConstraints cc = new ColumnConstraints(GridPaneLength/(cols));
+		//cc.setPercentWidth(10/cols);
+		RowConstraints rc = new RowConstraints(GridPaneLength/(rows));
+		//rc.setPercentHeight(10/rows);
+		for(int i=0;i<cols;i++)
+			centralUserNtwk.getColumnConstraints().add(cc);
+		for(int i=0;i<rows;i++)
+			centralUserNtwk.getRowConstraints().add(rc);
+		
+		for(int i=0;i<friends.size();i++) {
+			centralUserNtwk.add(new UserNode(friends.get(i),30), X.get(i)-centerCoord+cols/2,Y.get(i)-centerCoord+rows/2);
+			System.out.println(X.get(i)-centerCoord+cols/2);
+			System.out.println(Y.get(i)-centerCoord+rows/2);
+		}
+		//add the central user to the center of the gridpane
+		centralUserNtwk.add(new UserNode(centralUser,30), cols/2, rows/2);
+		return centralUserNtwk;
+	}
 
 	/**
 	 * @param args
