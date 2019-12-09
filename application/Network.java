@@ -85,12 +85,19 @@ public class Network implements GraphADT {
      * 2. vertex is not already in the graph 
      */
 	public void removeVertex(String vertex) {
+		//System.out.println("remove user : %s" + vertex);
 		if(vertex == null || !hasVertex(vertex))
 			return;
 		else {
 			//Based on HashTable feature, we should only remove the vertex by its name which is the key
 			//Then Garbege Collection will help to collect the list
 			vertexADJLists.remove(vertex);
+			for(String key : vertexADJLists.keySet())
+			{
+				//System.out.println("check " + key + " friendlist");
+				if(vertexADJLists.get(key).contains(vertex))
+					vertexADJLists.get(key).remove(vertex);
+			}
 		}
 	}
 
