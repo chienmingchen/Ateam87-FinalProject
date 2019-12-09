@@ -61,6 +61,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -78,7 +80,7 @@ public class Main extends Application {
 	private static SocialNetworkManager mgr = new SocialNetworkManager();
 
 	private static final int WINDOW_WIDTH = 1000;
-	private static final int WINDOW_HEIGHT = 800;
+	private static final int WINDOW_HEIGHT = 700;
 	private static final String APP_TITLE = "SocialNetworkManager";
 	// item that user select
 	private static String selectedUser;
@@ -416,7 +418,22 @@ public class Main extends Application {
 //	        		}
 
 						if ((td1.getEditor().getText()) != null) {
-							mgr.addPerson(td1.getEditor().getText());
+							if(mgr.getAllUsers().contains(td1.getEditor().getText())) {
+								final Stage dialog = new Stage();
+//				                dialog.initModality(Modality.APPLICATION_MODAL);
+				                dialog.initModality(Modality.NONE);
+				                dialog.initOwner(primaryStage);
+				                VBox dialogVbox = new VBox(20);
+				                dialogVbox.getChildren().add(new Text("Alert! User Already Exists."));
+				                dialogVbox.setAlignment(Pos.CENTER);
+				                Scene dialogScene = new Scene(dialogVbox, 300, 200);
+				                dialog.setScene(dialogScene);
+				                dialog.setTitle("Alert Message");
+				                dialog.showAndWait();
+
+							}else {
+								mgr.addPerson(td1.getEditor().getText());
+							}							
 						}
 
 
