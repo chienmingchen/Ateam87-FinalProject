@@ -28,6 +28,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -159,6 +160,8 @@ public class Main extends Application {
 		Button ViewFriend = new Button("View Friendships");
 		Button AddUser = new Button("Add Users");
 		Button DeleteUser = new Button("Delete Users");
+		Button MutualFriends = new Button("Mutual Friends");
+		Button ShortestPath = new Button("Shortest path between two");
 		Button Undo = new Button("Undo");
 		Button Redo = new Button("Redo");
 		
@@ -169,6 +172,8 @@ public class Main extends Application {
 		ViewFriend.setPrefSize(150, 30);
 		AddUser.setPrefSize(150, 30);
 		DeleteUser.setPrefSize(150, 30);
+		MutualFriends.setPrefSize(150, 30);
+		ShortestPath.setPrefSize(150, 30);
 		Undo.setPrefSize(150, 30);
 		Redo.setPrefSize(150, 30);
         Undo.setDisable(true);
@@ -427,11 +432,20 @@ public class Main extends Application {
 					//then plot the network of the central user
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(mgr));
 				} catch (FileNotFoundException exception) {
+					Alert alert1 = new Alert(AlertType.WARNING);
+					alert1.setTitle("Warning Dialog");
+					alert1.setHeaderText("Warning messager");
+					alert1.setContentText("Input file can not be found!");
+					alert1.showAndWait();
 					// e.printStackTrace();
 
 				} catch (IOException exception) {
 					// e.printStackTrace();
-
+					Alert alert2 = new Alert(AlertType.WARNING);
+					alert2.setTitle("Warning Dialog");
+					alert2.setHeaderText("Warning messager");
+					alert2.setContentText("Input file can not be red!");
+					alert2.showAndWait();
 				} catch (Exception exception) {
 					// e.printStackTrace();
 
@@ -670,6 +684,8 @@ public class Main extends Application {
 		operation.getChildren().add(ViewFriend);
 		operation.getChildren().add(AddUser);
 		operation.getChildren().add(DeleteUser);
+		operation.getChildren().add(MutualFriends);
+		operation.getChildren().add(ShortestPath);
         operation.getChildren().add(Undo);
         operation.getChildren().add(Redo);
 
@@ -683,40 +699,60 @@ public class Main extends Application {
 
 				try {
 
-					// create a  dialog
+					 //Create the custom dialog.
+			        Dialog<Pair<String, String>> dialog = new Dialog<>();
+			        dialog.setTitle("Add new friendship(two users)");
+			        dialog.setHeaderText("Please Enter Names");
+			        
+					ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
+					dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
-					Dialog<Pair<String, String>> dialog = new Dialog<>();
+					// Create the name1 and name2 labels and fields.
+					GridPane grid = new GridPane();
+					grid.setHgap(10);
+					grid.setVgap(10);
+					grid.setPadding(new Insets(20, 150, 10, 10));
 
-					// setHeaderText
+					TextField name1 = new TextField();
+					name1.setPromptText("Name1");
+					TextField name2 = new TextField();
+					name2.setPromptText("Name2");
 
-					dialog.setTitle("Add new friendship(two users)");
+					grid.add(new Label("Name1:"), 0, 0);
+					grid.add(name1, 1, 0);
+					grid.add(new Label("Name2:"), 0, 1);
+					grid.add(name2, 1, 1);
 
-					dialog.setHeaderText("Please Enter Names");
-					 // Set the button types.
-				    ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
-				    dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
-				    
-				    GridPane gridPane = new GridPane();
-				    gridPane.setHgap(10);
-				    gridPane.setVgap(10);
-				    //gridPane.setPadding(new Insets(20, 150, 10, 10));
+					// Enable/Disable login button depending on whether a name1 was entered.
+					Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+					loginButton.setDisable(true);
 
-				    TextField name1 = new TextField();
-				    name1.setPromptText("Name 1");
-				    TextField name2 = new TextField();
-				    name2.setPromptText("Name 2");
-				    
-				    gridPane.add(new Label("Name 1"), 0, 0);
-				    gridPane.add(name1, 0, 1);
-				    
-				    gridPane.add(new Label("Name 2"), 1, 0);
-				    gridPane.add(name2, 1, 1);
+					// Do some validation (using the Java 8 lambda syntax).
+					name1.textProperty().addListener((observable, oldValue, newValue) -> {
+					    loginButton.setDisable(newValue.trim().isEmpty());
+					});
+					
+					name2.textProperty().addListener((observable, oldValue, newValue) -> {
+					    loginButton.setDisable(newValue.trim().isEmpty());
+					});
 
-				    dialog.getDialogPane().setContent(gridPane);
-				    Optional<Pair<String, String>> choice = dialog.showAndWait();
-				    
-				    if (choice.isPresent()) {
-				    	mgr.setFriendship(name1.getText(), name2.getText());
+					dialog.getDialogPane().setContent(grid);
+
+					// Request focus on the name1 field by default.
+					//Platform.runLater(() -> name1.requestFocus());
+
+					// Convert the result to a name1-name2-pair when the login button is clicked.
+					dialog.setResultConverter(dialogButton -> {
+					    if (dialogButton == loginButtonType) {
+					        return new Pair<>(name1.getText(), name2.getText());
+					    }
+					    return null;
+					});
+
+					Optional<Pair<String, String>> choice = dialog.showAndWait();
+
+					choice.ifPresent(name1name2 -> {
+						mgr.setFriendship(name1.getText(), name2.getText());
 				    	 List<String> updated = new ArrayList<String>();       
 					       Set<String> updatedSet = mgr.getAllUsers();
 					       for (String item : updatedSet) {
@@ -724,9 +760,9 @@ public class Main extends Application {
 					       }
 					       obl.clear();
 					       obl.addAll(updated);
-//
 						result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
-					}
+					});
+//
 
 				}
 
@@ -742,7 +778,179 @@ public class Main extends Application {
 
 		});
 
+		MutualFriends.setOnAction(new EventHandler<ActionEvent>() {
 
+			public void handle(ActionEvent e)
+
+			{
+
+				try {
+
+					 //Create the custom dialog.
+					Dialog<Pair<String, String>> dialog = new Dialog<>();
+					dialog.setTitle("Mutual friends");
+					dialog.setHeaderText("Please Enter Names");
+
+					// Set the icon (must be included in the project).
+					//dialog.setGraphic(new ImageView(this.getClass().getResource("login.png").toString()));
+
+					// Set the button types.
+					ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
+					dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+					// Create the name1 and name2 labels and fields.
+					GridPane grid = new GridPane();
+					grid.setHgap(10);
+					grid.setVgap(10);
+					grid.setPadding(new Insets(20, 150, 10, 10));
+
+					TextField name1 = new TextField();
+					name1.setPromptText("Name1");
+					TextField name2 = new TextField();
+					name2.setPromptText("Name2");
+
+					grid.add(new Label("Name1:"), 0, 0);
+					grid.add(name1, 1, 0);
+					grid.add(new Label("Name2:"), 0, 1);
+					grid.add(name2, 1, 1);
+
+					// Enable/Disable login button depending on whether a name1 was entered.
+					Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+					loginButton.setDisable(true);
+
+					// Do some validation (using the Java 8 lambda syntax).
+					name1.textProperty().addListener((observable, oldValue, newValue) -> {
+					    loginButton.setDisable(newValue.trim().isEmpty());
+					});
+
+					dialog.getDialogPane().setContent(grid);
+
+					// Request focus on the name1 field by default.
+					//Platform.runLater(() -> name1.requestFocus());
+
+					// Convert the result to a name1-name2-pair when the login button is clicked.
+					dialog.setResultConverter(dialogButton -> {
+					    if (dialogButton == loginButtonType) {
+					        return new Pair<>(name1.getText(), name2.getText());
+					    }
+					    return null;
+					});
+
+					Optional<Pair<String, String>> choice = dialog.showAndWait();
+
+					choice.ifPresent(name1name2 -> {
+						List<String> updated = mgr.mutualFriends(name1.getText(), name2.getText());
+//				    	 List<String> updated = new ArrayList<String>();       
+//					       Set<String> updatedSet = mgr.getAllUsers();
+//					       for (String item : updatedSet) {
+//					         updated.add(item);
+//					       }
+					       obl.clear();
+					       obl.addAll(updated);
+						result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+					});
+//
+						//result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+					}
+
+				
+
+				catch (Exception nfe) {
+
+					nfe.printStackTrace();
+
+					result.setText("invalid input");
+
+				}
+
+			}
+
+		});
+		
+		ShortestPath.setOnAction(new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent e)
+
+			{
+
+				try {
+
+					 //Create the custom dialog.
+			        Dialog<Pair<String, String>> dialog = new Dialog<>();
+			        dialog.setTitle("Shortest friendship path");
+			        dialog.setHeaderText("Please Enter Names");
+			        
+					ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
+					dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+					// Create the name1 and name2 labels and fields.
+					GridPane grid = new GridPane();
+					grid.setHgap(10);
+					grid.setVgap(10);
+					grid.setPadding(new Insets(20, 150, 10, 10));
+
+					TextField name1 = new TextField();
+					name1.setPromptText("Name1");
+					TextField name2 = new TextField();
+					name2.setPromptText("Name2");
+
+					grid.add(new Label("Name1:"), 0, 0);
+					grid.add(name1, 1, 0);
+					grid.add(new Label("Name2:"), 0, 1);
+					grid.add(name2, 1, 1);
+
+					// Enable/Disable login button depending on whether a name1 was entered.
+					Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+					loginButton.setDisable(true);
+
+					// Do some validation (using the Java 8 lambda syntax).
+					name1.textProperty().addListener((observable, oldValue, newValue) -> {
+					    loginButton.setDisable(newValue.trim().isEmpty());
+					});
+
+					dialog.getDialogPane().setContent(grid);
+
+					// Request focus on the name1 field by default.
+					//Platform.runLater(() -> name1.requestFocus());
+
+					// Convert the result to a name1-name2-pair when the login button is clicked.
+					dialog.setResultConverter(dialogButton -> {
+					    if (dialogButton == loginButtonType) {
+					        return new Pair<>(name1.getText(), name2.getText());
+					    }
+					    return null;
+					});
+
+					Optional<Pair<String, String>> choice = dialog.showAndWait();
+
+					choice.ifPresent(name1name2 -> {
+			        	List<String> updated = mgr.shortestPath(name1.getText(), name2.getText());
+//				    	 List<String> updated = new ArrayList<String>();       
+//					       Set<String> updatedSet = mgr.getAllUsers();
+//					       for (String item : updatedSet) {
+//					         updated.add(item);
+//					       }
+					       obl.clear();
+					       obl.addAll(updated);
+//
+						//result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+					});
+
+				}
+
+				catch (Exception nfe) {
+
+					nfe.printStackTrace();
+
+					result.setText("invalid input");
+
+				}
+
+			}
+
+		});
+		
+		
 		AddFriend.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent e)
@@ -762,6 +970,11 @@ public class Main extends Application {
 					td.setHeaderText("Please Enter Name");
 
 					td.setContentText("Name:");
+					td.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+					td.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+						td.getDialogPane().lookupButton(ButtonType.OK).setDisable
+						(newValue.trim().isEmpty()||mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
+			        });
 
 					Optional<String> choice2 = td.showAndWait();
 
@@ -777,11 +990,6 @@ public class Main extends Application {
 
 //	        		}
 
-						if (!mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(td.getEditor().getText())
-
-								|| (td.getEditor().getText()) == null)
-
-							td.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 
 						mgr.setFriendship(mgr.getCentralPerson(), td.getEditor().getText());
 
