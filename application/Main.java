@@ -53,7 +53,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -62,7 +61,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
@@ -87,11 +85,7 @@ public class Main extends Application {
 	private static final String APP_TITLE = "SocialNetworkManager";
 	// item that user select
 	private static String selectedUser;
-	
-	private Stack<ArrayList<String>> undoActions = new Stack<ArrayList<String>>();
-	
-	private Stack<ArrayList<String>> redoActions = new Stack<ArrayList<String>>();
-	
+
 	public static SocialNetworkManager getSocialNetworkManager() {
 		return mgr;
 	}
@@ -100,7 +94,25 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// save args example
 		args = this.getParameters().getRaw();
-
+		
+		class history{
+			boolean delete;
+			boolean vertexOperation;
+			String name1;
+			String name2;
+			List<String> friends;
+			public history(boolean delete, boolean vertexOperation, String name1,String name2, List<String> friends){
+				this.delete = delete;
+				this.vertexOperation = vertexOperation;
+				this.name1=name1;
+				this.name2=name2;
+				this.friends = friends;
+			}
+		}
+		Stack<List<String>> users = new Stack<List<String>>();
+		Stack<List<String>> reUsers = new Stack<List<String>>();
+		Stack<List<history>> undoHistory = new Stack<List<history>>();
+		Stack<List<history>> redoHistory = new Stack<List<history>>();
 		// Init the social network
 		// mgr.constructNetwork("File Path");
 
@@ -147,6 +159,9 @@ public class Main extends Application {
 		Button ViewFriend = new Button("View Friendships");
 		Button AddUser = new Button("Add Users");
 		Button DeleteUser = new Button("Delete Users");
+		Button Undo = new Button("Undo");
+		Button Redo = new Button("Redo");
+		
 		Import.setPrefSize(150, 30);
 		Export.setPrefSize(150, 30);
 		AddFriendship.setPrefSize(150, 30);
@@ -154,7 +169,10 @@ public class Main extends Application {
 		ViewFriend.setPrefSize(150, 30);
 		AddUser.setPrefSize(150, 30);
 		DeleteUser.setPrefSize(150, 30);
-
+		Undo.setPrefSize(150, 30);
+		Redo.setPrefSize(150, 30);
+        Undo.setDisable(true);
+        Redo.setDisable(true);
 		RemoveAllUsers.setDisable(true);
 		ViewFriend.setDisable(true);
 		AddUser.setDisable(false);
@@ -182,9 +200,6 @@ public class Main extends Application {
 		Back.setDisable(true);
 		Recall.setDisable(true);
 		
-		Button Undo = new Button("Undo");
-		Undo.setPrefSize(150, 30);
-		Undo.setDisable(true);
 
 		// create a vbox for operations
 		VBox operation = new VBox();
@@ -192,7 +207,6 @@ public class Main extends Application {
 		operation.setAlignment(Pos.CENTER);
 		operation.setPadding(new Insets(15));
 
-		
 		// operation.setAlignment();
 //        Button Import = new Button("Import");
 //        Import.setPrefSize(150, 30);
@@ -204,21 +218,31 @@ public class Main extends Application {
 			public void handle(ActionEvent event) {
 				// for test purpose
 				if(lv.getSelectionModel().getSelectedItems() != null) {
+					List<String> historyList = new ArrayList<String>();
+					Set<String> historySet = mgr.getAllUsers();
+					for (String item : historySet) {
+						historyList.add(item);
+					}
+					users.add(historyList);
 					List<String> selectedUser = lv.getSelectionModel().getSelectedItems();
 					String a = "";
+					
+					List<history> thisHistory = new ArrayList<history>();
 					for(int i = selectedUser.size()-1;i>=0;i--) {
 					String userToDelete = selectedUser.get(i);
 					a+=userToDelete+", ";
+					List<String> friends = mgr.getPersonalNetwork(userToDelete);
 					//System.out.println(userToDelete);
+					
+					history newHistory = new history(true,true,userToDelete,null,friends);
+					
+					thisHistory.add(newHistory);
 					mgr.removePerson(userToDelete);
-					ArrayList<String> act = new ArrayList<String>();
-					act.add("AddUser");act.add(userToDelete);
-					if(undoActions.size() != 0) {
-						undoActions.pop();//currently only allow one undo
+					
 					}
-					undoActions.add(act);
+					undoHistory.add(thisHistory);
+					
 					Undo.setDisable(false);
-					}
 					List<String> updated = new ArrayList<String>();
 					Set<String> updatedSet = mgr.getAllUsers();
 					for (String item : updatedSet) {
@@ -246,7 +270,133 @@ public class Main extends Application {
 
 
 		});
-		
+		Undo.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent e) {
+				List<String> historyList = new ArrayList<String>();
+				Set<String> historySet = mgr.getAllUsers();
+				for (String item : historySet) {
+					historyList.add(item);
+				}
+				reUsers.add(historyList);
+				List<history> lastAction = new ArrayList<history>();
+				lastAction = undoHistory.pop();
+				for(int i = 0; i < lastAction.size();i++) {
+					history eachAction = lastAction.get(i);
+					
+					if(eachAction.delete==true) {
+						//delete vertex
+						if(eachAction.vertexOperation==true) {
+							mgr.addPerson(eachAction.name1);
+							if(eachAction.friends!=null) {
+							for(String friend:eachAction.friends) {
+								mgr.setFriendship(eachAction.name1,friend);
+							}}
+						}
+						//delete edge
+						else {
+							mgr.setFriendship(eachAction.name1, eachAction.name2);
+						}
+					}
+					else {
+						//delete vertex
+						if(eachAction.vertexOperation==true) {
+							mgr.removePerson(eachAction.name1);
+						}
+						//delete edge
+						else {
+							mgr.removeFriendship(eachAction.name1, eachAction.name2);
+						}
+					}
+				}
+				List<String> updated = users.pop();
+				obl.clear();
+                
+				if(updated.size()!=0) {
+					result.setText("Undo Action");
+				obl.addAll(updated);					
+				}
+				else {
+					result.setText("Undo Action, empty");
+					Import.setDisable(false);
+					Export.setDisable(false);
+					AddUser.setDisable(false);						
+					RemoveAllUsers.setDisable(true);
+				    ViewFriend.setDisable(true);
+				}
+				DeleteUser.setDisable(true);
+
+				redoHistory.add(lastAction);
+				Redo.setDisable(false);
+				if(undoHistory.empty()==true) {
+					Undo.setDisable(true);
+				}
+			}
+		});
+		Redo.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent e) {
+				List<String> historyList = new ArrayList<String>();
+				Set<String> historySet = mgr.getAllUsers();
+				for (String item : historySet) {
+					historyList.add(item);
+				}
+				users.add(historyList);
+				List<history> lastAction = new ArrayList<history>();
+				lastAction = redoHistory.pop();
+				for(int i = 0; i < lastAction.size();i++) {
+					history eachAction = lastAction.get(i);
+					
+					if(eachAction.delete==true) {
+						//delete vertex
+						if(eachAction.vertexOperation==true) {
+							mgr.removePerson(eachAction.name1);
+						}
+						//delete edge
+						else {
+							mgr.removeFriendship(eachAction.name1, eachAction.name2);
+						}
+					}
+					else {
+						//delete vertex
+						if(eachAction.vertexOperation==true) {
+							mgr.addPerson(eachAction.name1);
+							if(eachAction.friends!=null) {
+							for(String friend:eachAction.friends) {
+								mgr.setFriendship(eachAction.name1,friend);
+							}
+							}
+						}
+						//delete edge
+						else {
+							mgr.setFriendship(eachAction.name1, eachAction.name2);
+						}
+					}
+				}
+				List<String> updated = reUsers.pop();
+				obl.clear();
+                
+				if(updated.size()!=0) {
+					result.setText("Undo Action");
+				obl.addAll(updated);					
+				}
+				else {
+					result.setText("Undo Action, empty");
+					Import.setDisable(false);
+					Export.setDisable(false);
+					AddUser.setDisable(false);						
+					RemoveAllUsers.setDisable(true);
+				    ViewFriend.setDisable(true);
+				}
+				DeleteUser.setDisable(true);
+
+				undoHistory.add(lastAction);
+				Undo.setDisable(false);
+				if(redoHistory.empty()==true) {
+					Redo.setDisable(true);
+				}
+			}
+		});
 		Import.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -320,6 +470,12 @@ public class Main extends Application {
 
 			public void handle(ActionEvent e) {
 				try {
+					List<String> historyList = new ArrayList<String>();
+					Set<String> historySet = mgr.getAllUsers();
+					for (String item : historySet) {
+						historyList.add(item);
+					}
+					users.add(historyList);
                     Set<String> a = mgr.getAllUsers();
                     String temp [] = new String[a.size()];
                     int i=0;
@@ -327,11 +483,17 @@ public class Main extends Application {
                     	temp[i]=element;
                     	i++;
                     }
-                    
+                    List<history> thisHistory = new ArrayList<history>();
                     for(int j=0; j<temp.length;j++) {
-                    	
+                    	List<String> friends = mgr.getPersonalNetwork(temp[j]);
+    					//System.out.println(userToDelete);
+    					
+    					history newHistory = new history(true,true,temp[j],null,friends);
+    					thisHistory.add(newHistory);
                     	mgr.removePerson(temp[j]);
                     }
+                    undoHistory.add(thisHistory);
+					Undo.setDisable(false);
                     //test functionality
 //                    List<String> updated = new ArrayList<String>();
 //					Set<String> updatedSet = mgr.getAllUsers();
@@ -372,8 +534,12 @@ public class Main extends Application {
 							obl.clear();
 							obl.addAll(updated);
 						}
+						undoHistory.clear();
+						redoHistory.clear();
+						Undo.setDisable(true);
+						Redo.setDisable(true);
 						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-								ViewFriend, Back, Menu, Undo);
+								ViewFriend, Back, Menu, Recall,Undo,Redo);
 						// set listview
 						result.setText("Friend Of : " + selectedUser + "Central User: " + mgr.getCentralPerson());
 					
@@ -436,11 +602,8 @@ public class Main extends Application {
 
 						if ((td1.getEditor().getText()) != null) {
 							if(mgr.getAllUsers().contains(td1.getEditor().getText())) {
-								
 								final Stage dialog = new Stage();
 //				                dialog.initModality(Modality.APPLICATION_MODAL);
-		                		Alert error = new Alert(Alert.AlertType.ERROR, "ERROR: Duplicate person is not allowed");
-
 				                dialog.initModality(Modality.NONE);
 				                dialog.initOwner(primaryStage);
 				                VBox dialogVbox = new VBox(20);
@@ -452,18 +615,21 @@ public class Main extends Application {
 				                dialog.showAndWait();
 
 							}else {
+								List<String> historyList = new ArrayList<String>();
+								Set<String> historySet = mgr.getAllUsers();
+								for (String item : historySet) {
+									historyList.add(item);
+								}
+								users.add(historyList);
+								List<history> thisHistory = new ArrayList<history>();
+								history newHistory = new history(false,true,td1.getEditor().getText(),null,null);
+								thisHistory.add(newHistory);
+								undoHistory.add(thisHistory);
 								mgr.addPerson(td1.getEditor().getText());
-								ArrayList<String> act = new ArrayList<String>();
-								act.add("AddUser");act.add(td1.getEditor().getText());
-								if(undoActions.size() != 0) {
-									undoActions.pop();//currently only allow one undo
-								}								
-								undoActions.add(act);
-								Undo.setDisable(false);
 							}							
 						}
 
-
+                            Undo.setDisable(false);
 							// update friends information
 							List<String> updated = new ArrayList<String>();							
 							Set<String> updatedSet = mgr.getAllUsers();
@@ -478,19 +644,6 @@ public class Main extends Application {
 						}
 
 						result.setText("Friend Of : " + mgr.getCentralPerson());
-					}catch (IllegalArgumentException nfe1) {
-						System.out.println("Promblem Caught");
-						final Stage dialog = new Stage();
-		                dialog.initModality(Modality.NONE);
-		                dialog.initOwner(primaryStage);
-		                VBox dialogVbox = new VBox(20);
-		                dialogVbox.getChildren().add(new Text("Alert! Illegal Character."));
-		                dialogVbox.setAlignment(Pos.CENTER);
-		                Scene dialogScene = new Scene(dialogVbox, 300, 200);
-		                dialog.setScene(dialogScene);
-		                dialog.setTitle("Alert Message");
-		                dialog.showAndWait();
-
 					}
 				catch (Exception nfe) {
 
@@ -517,8 +670,8 @@ public class Main extends Application {
 		operation.getChildren().add(ViewFriend);
 		operation.getChildren().add(AddUser);
 		operation.getChildren().add(DeleteUser);
-		operation.getChildren().add(Undo);
-
+        operation.getChildren().add(Undo);
+        operation.getChildren().add(Redo);
 
 		// create a event handler
 
@@ -631,15 +784,7 @@ public class Main extends Application {
 							td.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 
 						mgr.setFriendship(mgr.getCentralPerson(), td.getEditor().getText());
-						ArrayList<String> act = new ArrayList<String>();
-						act.add("AddFriend");
-						act.add(mgr.getCentralPerson());
-						act.add(td.getEditor().getText());
-						if(undoActions.size() != 0) {
-							undoActions.pop();//currently only allow one undo
-						}								
-						undoActions.add(act);
-						Undo.setDisable(false);
+
 						if (mgr.getCentralPerson() != null) {
 							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
 							// update friends information
@@ -651,7 +796,7 @@ public class Main extends Application {
 								obl.addAll(updated);
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-									ViewFriend, Back, Menu, Undo);
+									ViewFriend, Back, Menu, Recall,Undo,Redo);
 						}
 
 						result.setText("Friend Of : " + mgr.getCentralPerson());
@@ -705,22 +850,13 @@ public class Main extends Application {
 
 //	        		}
 
-						if((td1.getEditor().getText()) != null 
-								&& (mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(td1.getEditor().getText()))) {
-//							td1.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+						if (!mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(td1.getEditor().getText())
+
+								|| (td1.getEditor().getText()) == null)
+
+							td1.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 
 						mgr.removeFriendship(mgr.getCentralPerson(), td1.getEditor().getText());
-						ArrayList<String> act = new ArrayList<String>();
-						act.add("RemoveFriend");
-						act.add(mgr.getCentralPerson());
-						act.add(td1.getEditor().getText());
-						if(undoActions.size() != 0) {
-							undoActions.pop();//currently only allow one undo
-						}								
-						undoActions.add(act);
-						Undo.setDisable(false);
-						}
-
 
 						if (mgr.getCentralPerson() != null) {
 							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
@@ -733,7 +869,7 @@ public class Main extends Application {
 								obl.addAll(updated);
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-									ViewFriend, Back, Menu, Undo);
+									ViewFriend, Back, Menu, Recall,Undo,Redo);
 						}
 
 						result.setText("Friend Of : " + mgr.getCentralPerson());
@@ -780,15 +916,7 @@ public class Main extends Application {
 					
 
 						mgr.removeFriendship(mgr.getCentralPerson(), lv.getSelectionModel().getSelectedItem());
-						ArrayList<String> act = new ArrayList<String>();
-						act.add("RemoveFriend");
-						act.add(mgr.getCentralPerson());
-						act.add(lv.getSelectionModel().getSelectedItem());
-						if(undoActions.size() != 0) {
-							undoActions.pop();//currently only allow one undo
-						}								
-						undoActions.add(act);
-						Undo.setDisable(false);
+
 						if (mgr.getCentralPerson() != null) {
 							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
 							// update friends information
@@ -800,7 +928,7 @@ public class Main extends Application {
 								obl.addAll(updated);
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-									ViewFriend, Back, Menu, Undo);
+									ViewFriend, Back, Menu, Recall,Undo,Redo);
 						
 
 						result.setText("Friend Of : " + mgr.getCentralPerson());
@@ -830,22 +958,10 @@ public class Main extends Application {
 
 					 String delete = mgr.getCentralPerson();
 	                    List<String> deleteList = mgr.getPersonalNetwork(delete);
-	                    ArrayList<String> act = new ArrayList<String>();
-							act.add("RemoveAllFriend");
-							act.add(delete);
-							for(String item : deleteList) {
-								act.add(item);
-							}
 	                    //System.out.print(deleteList);
 	                    for (int i = deleteList.size()-1; i >=0;  i--) {
 	                    	mgr.removeFriendship(delete, deleteList.get(i));
 	                    }
-	
-						if(undoActions.size() != 0) {
-							undoActions.pop();//currently only allow one undo
-						}								
-						undoActions.add(act);
-						Undo.setDisable(false);
 	                    List<String> deleteList1 = mgr.getPersonalNetwork(delete);
 	                    //System.out.print(deleteList1);
 	                    obl.clear();
@@ -877,12 +993,16 @@ public class Main extends Application {
 					for (String item : updatedSet) {
 						updated.add(item);
 					}
+					undoHistory.clear();
+					redoHistory.clear();
+					Undo.setDisable(true);
+					Redo.setDisable(true);
 					// update users information
 					obl.clear();
 					obl.addAll(updated);
 					result.setText("You Are Now At User Page (Menu)");
 					FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
-							DeleteUser, Undo);
+							DeleteUser,Undo,Redo);
 
 					//update button accessibility
 					ViewFriend.setDisable(true);
@@ -899,99 +1019,6 @@ public class Main extends Application {
 			}
 		});
 
-		
-		
-		// action rotate event
-				Undo.setOnAction(new EventHandler<ActionEvent>() {
-					String S;
-
-					public void handle(ActionEvent e) {
-						try {
-							ArrayList<String> top = undoActions.pop();
-							switch(top.get(0))
-							{
-							   // case statements
-							   // do reverse action of the expression in top.get(0)
-							   case "AddUser" :
-							      mgr.removePerson(top.get(1));
-							      List<String> updated = new ArrayList<String>();
-									Set<String> updatedSet = mgr.getAllUsers();
-									for (String item : updatedSet) {
-										updated.add(item);
-									}
-									// update users information
-									obl.clear();
-									obl.addAll(updated);
-							      break; // break is optional
-							   
-							   case "DeleteUser" :
-							      mgr.addPerson(top.get(1));
-							      updated = new ArrayList<String>();
-									updatedSet = mgr.getAllUsers();
-									for (String item : updatedSet) {
-										updated.add(item);
-									}
-									// update users information
-									obl.clear();
-									obl.addAll(updated);
-							      break; // break is optional
-							   
-							   case "RemoveFriend" :
-								   mgr.setFriendship(top.get(1),top.get(2));
-								   updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
-									// update friends information
-									if (updated == null) {
-										obl.clear();
-										obl.add("Cannot Find: " + mgr.getCentralPerson());
-									} else {
-										obl.clear();
-										obl.addAll(updated);
-									}
-								   break;
-								   
-							   case "RemoveAllFriend" :
-								   for(int i = 2; i < top.size(); i++) {
-									   mgr.setFriendship(top.get(1),top.get(i));
-								   }						   
-								   updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
-									// update friends information
-									if (updated == null) {
-										obl.clear();
-										obl.add("Cannot Find: " + mgr.getCentralPerson());
-									} else {
-										obl.clear();
-										obl.addAll(updated);
-									}
-								   break;
-								   
-							   case "AddFriend" :
-								   mgr.removeFriendship(top.get(1),top.get(2));
-								   updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
-									// update friends information
-									if (updated == null) {
-										obl.clear();
-										obl.add("Cannot Find: " + mgr.getCentralPerson());
-									} else {
-										obl.clear();
-										obl.addAll(updated);
-									}
-								   break;
-
-							   default : 
-							      // Statements
-							}
-							
-							if(undoActions.size() == 0) {
-								Undo.setDisable(true);
-							}
-						} catch (Exception nfe) {
-							nfe.printStackTrace();
-
-						}
-					}
-				});
-		
-		
 		// check action rotate event
 		EventHandler<ActionEvent> EventByButton = new EventHandler<ActionEvent>() {
 			String S;
@@ -1124,10 +1151,9 @@ public class Main extends Application {
 						RemoveAllUsers.setDisable(false);
 						AddUser.setDisable(false);
 //						//button in friend page
-						RemoveSelectedFriend.setDisable(false);
-						RemoveFriend.setDisable(false);
-						RemoveAllFriend.setDisable(false);
-						AddFriend.setDisable(false);
+//						RemoveFriend.setDisable(false);
+//						RemoveAllFriend.setDisable(true);
+//						AddFriend.setDisable(true);
 //					
 				}
 				
@@ -1156,11 +1182,9 @@ public class Main extends Application {
 		root.setTop(vbox);
 		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 		root.setLeft(lv);
-//		root.setBottom(Undo);
+//		root.setBottom(ViewFriend);
 		root.setCenter(centralUserNtwk);
 		root.setOnMouseClicked(EventByMouse2);
-		
-		
 		
 		// set scroll bar for friend list
 		lv.setItems(obl);
