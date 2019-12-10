@@ -1,4 +1,4 @@
-package application_Ziwei;
+package application;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -47,34 +47,39 @@ public class FriendList {
 //	userOperation[0]=title;
 
     public static VBox setAsUserOperation(VBox operation, Label title, Button importButton, 
-    		Button Export, Button RemoveAllUsers, Button ViewFriend, Button AddUser, 
-    		Button DeleteUser) {
+    		Button Export, Button AddFriendship, Button RemoveAllUsers, Button ViewFriend, Button AddUser, 
+    		Button DeleteUser, Button Undo, Button Redo) {
     	operation.getChildren().clear();
         operation.getChildren().add(title);
         operation.getChildren().add(importButton);
         operation.getChildren().add(Export);
+        operation.getChildren().add(AddFriendship);
         operation.getChildren().add(RemoveAllUsers);
         operation.getChildren().add(ViewFriend);
         operation.getChildren().add(AddUser);
         operation.getChildren().add(DeleteUser);
-
+        operation.getChildren().add(Undo);
+        operation.getChildren().add(Redo);
     			
     	return operation;
     }
 	
 
     public static VBox setAsFriendOperation(VBox operation, Label title, Button AddFriend, 
-    		Button RemoveFriend, Button RemoveAllFriend, Button ViewFriendship, 
-    		 Button Back, Button Menu, Button Recall) {
+    		Button RemoveFriend, Button RemoveSelectedFriend, Button RemoveAllFriend, Button ViewFriendship, 
+    		 Button Back, Button Menu, Button Recall,Button Undo, Button Redo) {
     	operation.getChildren().clear();
         operation.getChildren().add(title);
         operation.getChildren().add(AddFriend);
         operation.getChildren().add(RemoveFriend);
+        operation.getChildren().add(RemoveSelectedFriend);
         operation.getChildren().add(RemoveAllFriend);
         operation.getChildren().add(ViewFriendship);
         operation.getChildren().add(Back);
         operation.getChildren().add(Menu);
         operation.getChildren().add(Recall);
+        operation.getChildren().add(Undo);
+        operation.getChildren().add(Redo);
     	return operation;
     }
 	}
