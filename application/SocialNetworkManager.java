@@ -81,13 +81,10 @@ public class SocialNetworkManager {
     			
     			switch(splittedCmd[0]) {
 	    			case "a" :
-						if(user2!=null) {
-							if(!user1.name.equals(user2.name)) {
-								this.setFriendship(user1.name, user2.name);	
-							}							
-						}else {
+						if(user2!=null)
+							this.setFriendship(user1.name, user2.name);
+						else
 							this.addPerson(user1.name);
-						}							
 	    			break;
 	    			
 	    			case "r" :
@@ -154,7 +151,9 @@ public class SocialNetworkManager {
 	public void setFriendship(String person1, String person2) {
 		try {
 			//check if person is null
-		  	if (person1 == null && person2 == null) 
+		  	if (person1 == null || person2 == null) 
+		  		return;
+		  	if (person1 == person2) 
 		  		return;
 		  	if(!this.getAllUsers().contains(person1)) {
 		  		this.addPerson(person1);
@@ -181,7 +180,9 @@ public class SocialNetworkManager {
 	
 	public void removeFriendship(String person1, String person2) {
 		//check if person is null
-	  	if (person1 == null && person2 == null) 
+	  	if (person1 == null || person2 == null) 
+	  		return;
+	  	if (person1 == person2) 
 	  		return;
 	  	network.removeEdge(person1, person2);
 	  	this.logBuff.add("r " + person1 + " " + person2);
@@ -199,7 +200,10 @@ public class SocialNetworkManager {
 	}
 	
 	public List<String> mutualFriends(String person1, String person2) {		
-		
+		if (person1 == null || person2 == null) 
+	  		return null;
+	  	if (person1 == person2) 
+	  		return null;
 		List<String> set1 = network.getAdjacentVerticesOf(person1);
 		List<String> set2 = network.getAdjacentVerticesOf(person2);
 		set1.retainAll(set2);
@@ -210,7 +214,8 @@ public class SocialNetworkManager {
 	public List<String> shortestPath(String person1, String person2) {		
 	  	if (person1 == null || person2 == null) 
 	  		return null;
-	  	
+	  	if (person1 == person2) 
+	  		return null;
 		return network.getShortestPathOf(person1, person2);
 	}
 	
