@@ -305,6 +305,7 @@ public class Main extends Application {
 						AddUser.setDisable(false);						
 						RemoveAllUsers.setDisable(true);
 					    ViewFriend.setDisable(true);
+					    AddFriendship.setDisable(false);
 					}
 					DeleteUser.setDisable(true);
 
@@ -582,6 +583,7 @@ public class Main extends Application {
 					//update button accessibility
 					ViewFriend.setDisable(true);
 					AddUser.setDisable(false);
+					//AddFriendship.setDisable(false);
 					DeleteUser.setDisable(true);
 					RemoveAllUsers.setDisable(true);
 					centralUserNtwk.getChildren().clear();
@@ -664,10 +666,20 @@ public class Main extends Application {
 
 					td1.setContentText("Name:");
 					td1.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+					
+					if(mgr.getPersonalNetwork(mgr.getCentralPerson())!=null) {
 					td1.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
 						td1.getDialogPane().lookupButton(ButtonType.OK).setDisable
 						(newValue.trim().isEmpty()||mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
 			        });
+					}
+					else {
+						td1.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+							td1.getDialogPane().lookupButton(ButtonType.OK).setDisable
+							(newValue.trim().isEmpty());
+				        });
+					}
+					
 
 					Optional<String> choice1 = td1.showAndWait();
 
@@ -698,15 +710,15 @@ public class Main extends Application {
 				                dialog.showAndWait();
 
 							}else {
-								List<String> historyList = new ArrayList<String>();
-								Set<String> historySet = mgr.getAllUsers();
-								for (String item : historySet) {
-									historyList.add(item);
-								}
+//								List<String> historyList = new ArrayList<String>();
+//								Set<String> historySet = mgr.getAllUsers();
+//								for (String item : historySet) {
+//									historyList.add(item);
+//								}
 							//	users.add(historyList);
-								List<history> thisHistory = new ArrayList<history>();
-								history newHistory = new history(false,true,td1.getEditor().getText(),null,null);
-								thisHistory.add(newHistory);
+//								List<history> thisHistory = new ArrayList<history>();
+//								history newHistory = new history(false,true,td1.getEditor().getText(),null,null);
+//								thisHistory.add(newHistory);
 							//	undoHistory.add(thisHistory);
 								mgr.addPerson(td1.getEditor().getText());
 							}							
@@ -736,7 +748,7 @@ public class Main extends Application {
 
 					nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText("invalid input, exception catched");
 
 				}
 
@@ -824,6 +836,8 @@ public class Main extends Application {
 					    }
 					    return null;
 					});
+					
+					
 
 					Optional<Pair<String, String>> choice = dialog.showAndWait();
 

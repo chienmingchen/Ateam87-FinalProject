@@ -152,6 +152,22 @@ public class SocialNetworkManager {
 		//check if person is null
 	  	if (person1 == null && person2 == null) 
 	  		return;
+	  	for(int i = 0; i < person1.length(); i++) {
+	  		if( !Character.isDigit(person1.charAt(i)) && !Character.isLetter(person1.charAt(i)) 
+	  				&& person1.charAt(i) != ' ' && person1.charAt(i) != '\''  
+	  				&& person1.charAt(i) != '_'
+	  		   ) {
+	  			throw new IllegalArgumentException();
+	  		}
+	  	}
+	  	for(int i = 0; i < person2.length(); i++) {
+	  		if( !Character.isDigit(person2.charAt(i)) && !Character.isLetter(person2.charAt(i)) 
+	  				&& person2.charAt(i) != ' ' && person2.charAt(i) != '\''  
+	  				&& person2.charAt(i) != '_'
+	  		   ) {
+	  			throw new IllegalArgumentException();
+	  		}
+	  	}
 	  	network.addEdge(person1, person2);
 	  	System.out.println("Add : " + person1 + " " + person2);
                 this.logBuff.add("a " + person1 + " " + person2);
