@@ -139,6 +139,11 @@ public class Main extends Application {
 
 		// create a label for showing rotation degree
 		Label result = new Label("Friend List : ");
+		
+		Label order = new Label();
+		Label size = new Label();
+		Label connectedComponents = new Label();
+		Label friendsofcent = new Label();
 
 		// create a list for viewing friends
 		ObservableList<String> obl = FXCollections.observableList(new ArrayList<String>());
@@ -234,6 +239,9 @@ public class Main extends Application {
 //        Import.setPrefSize(150, 30);
 		FileChooser fileChooser = new FileChooser();
 		
+	   
+		
+		
 		DeleteUser.setOnAction(new EventHandler<ActionEvent>(){
 
 			@Override
@@ -273,11 +281,17 @@ public class Main extends Application {
 					obl.clear();
 
 					if(updated.size()!=0) {
-						result.setText("" + a + "  deleted.");
+						result.setText("" + a + "is deleted.");
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					obl.addAll(updated);					
 					}
 					else {
-						result.setText("" + a + "  deleted. List is Empty");
+						result.setText("" + a + "is deleted. List is Empty");
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 						Import.setDisable(false);
 						Export.setDisable(false);
 						AddUser.setDisable(false);						
@@ -445,7 +459,10 @@ public class Main extends Application {
 					obl.addAll(updated);
 
 					// set listview
-					result.setText("File Import Success");
+					result.setText("File import successfully.");
+					order.setText(Integer.toString(mgr.order()));
+					size.setText((Integer.toString(mgr.size())));
+					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					
 					//update button accessibility
 					RemoveAllUsers.setDisable(false);
@@ -548,7 +565,10 @@ public class Main extends Application {
 //					System.out.println(updatedSet);
 					obl.clear();
 //					obl.add("All users removed, Empty Friend List");
-					
+					result.setText("All users removed.");
+					order.setText(Integer.toString(mgr.order()));
+					size.setText((Integer.toString(mgr.size())));
+					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					//update button accessibility
 					ViewFriend.setDisable(true);
 					AddUser.setDisable(false);
@@ -586,7 +606,11 @@ public class Main extends Application {
 						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 								ViewFriend, Back, Menu, Recall,Undo,Redo);
 						// set listview
-						result.setText("Friend Of : " + selectedUser + "Central User: " + mgr.getCentralPerson());
+						result.setText("Friends of" + selectedUser + " are shown in follow viewer.");
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						friendsofcent.setText(Integer.toString(updated.size()));
 					
 						//update button accessibility
 						ViewFriend.setDisable(true);
@@ -630,6 +654,11 @@ public class Main extends Application {
 					td1.setHeaderText("Please Enter Name");
 
 					td1.setContentText("Name:");
+					td1.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+					td1.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+						td1.getDialogPane().lookupButton(ButtonType.OK).setDisable
+						(newValue.trim().isEmpty()||mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
+			        });
 
 					Optional<String> choice1 = td1.showAndWait();
 
@@ -688,7 +717,11 @@ public class Main extends Application {
 //									ViewFriend, Back, Menu, Recall);
 						}
 
-						result.setText("Friend Of : " + mgr.getCentralPerson());
+						result.setText( td1.getEditor().getText() + " is added.");
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						
 					}
 				catch (Exception nfe) {
 
@@ -721,7 +754,10 @@ public class Main extends Application {
         operation.getChildren().add(Redo);
 
 		// create a event handler
+        
+		
 
+		//AddFriendship.setOnAction(new EventHandler<ActionEvent>() {
 		AddFriendship.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent e)
@@ -792,6 +828,10 @@ public class Main extends Application {
 					       obl.clear();
 					       obl.addAll(updated);
 						result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						
 					});
 //
 
@@ -878,7 +918,10 @@ public class Main extends Application {
 //					       }
 					       obl.clear();
 					       obl.addAll(updated);
-						result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+						result.setText("The mutual friends of" + name1.getText()+ " and " +name2.getText()+" are shown on left.");
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					});
 //
 						//result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
@@ -964,7 +1007,10 @@ public class Main extends Application {
 					       obl.clear();
 					       obl.addAll(updated);
 //
-						//result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+						result.setText("The shortest path between " + name1.getText()+ " and " +name2.getText()+" are shown on left.");
+					       order.setText(Integer.toString(mgr.order()));
+							size.setText((Integer.toString(mgr.size())));
+							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					});
 
 				}
@@ -1036,9 +1082,14 @@ public class Main extends Application {
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 									ViewFriend, Back, Menu, Recall,Undo,Redo);
+							result.setText(td.getEditor().getText() + " becomes a new friend of " + mgr.getCentralPerson() +" .");
+							order.setText(Integer.toString(mgr.order()));
+							size.setText((Integer.toString(mgr.size())));
+							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+							friendsofcent.setText(Integer.toString(updated.size()));
 						}
 
-						result.setText("Friend Of : " + mgr.getCentralPerson());
+						
 					}
 
 				}
@@ -1065,19 +1116,24 @@ public class Main extends Application {
 
 					// create a text input dialog
 
-					TextInputDialog td1 = new TextInputDialog();
+					TextInputDialog td = new TextInputDialog();
 
 					// setHeaderText
 
-					td1.setTitle("Remove a friend");
+					td.setTitle("Remove a friend");
 
-					td1.setHeaderText("Please Enter Name");
+					td.setHeaderText("Please Enter Name");
 
-					td1.setContentText("Name:");
+					td.setContentText("Name:");
+					td.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+					td.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+						td.getDialogPane().lookupButton(ButtonType.OK).setDisable
+						(newValue.trim().isEmpty()||mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
+			        });
 
-					Optional<String> choice1 = td1.showAndWait();
+					Optional<String> choice = td.showAndWait();
 
-					if (choice1.isPresent()) {
+					if (choice.isPresent()) {
 
 //	        			if (mgr.getperson().contains(td.getEditor().getText())){
 
@@ -1089,13 +1145,9 @@ public class Main extends Application {
 
 //	        		}
 
-						if (!mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(td1.getEditor().getText())
+						
 
-								|| (td1.getEditor().getText()) == null)
-
-							td1.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-
-						mgr.removeFriendship(mgr.getCentralPerson(), td1.getEditor().getText());
+						mgr.removeFriendship(mgr.getCentralPerson(), td.getEditor().getText());
 
 						if (mgr.getCentralPerson() != null) {
 							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
@@ -1109,9 +1161,14 @@ public class Main extends Application {
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 									ViewFriend, Back, Menu, Recall,Undo,Redo);
+							result.setText("Friendship between " + td.getEditor().getText() + "and " + mgr.getCentralPerson() +"is deleted.");
+							order.setText(Integer.toString(mgr.order()));
+							size.setText((Integer.toString(mgr.size())));
+							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+							friendsofcent.setText(Integer.toString(updated.size()));
 						}
 
-						result.setText("Friend Of : " + mgr.getCentralPerson());
+						
 					}
 
 				}
@@ -1170,7 +1227,11 @@ public class Main extends Application {
 									ViewFriend, Back, Menu, Recall,Undo,Redo);
 						
 
-						result.setText("Friend Of : " + mgr.getCentralPerson());
+							result.setText("Friendship between " +  lv.getSelectionModel().getSelectedItem() + "and " + mgr.getCentralPerson() +"is deleted.");
+							order.setText(Integer.toString(mgr.order()));
+							size.setText((Integer.toString(mgr.size())));
+							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+							friendsofcent.setText(Integer.toString(updated.size()));
 					}
 
 				}
@@ -1204,7 +1265,11 @@ public class Main extends Application {
 	                    List<String> deleteList1 = mgr.getPersonalNetwork(delete);
 	                    //System.out.print(deleteList1);
 	                    obl.clear();
-						result.setText("Friend List : " + mgr.getPersonalNetwork(mgr.getCentralPerson()));
+	                    result.setText("All friendships of " + mgr.getCentralPerson() + " are deleted.");
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						friendsofcent.setText(Integer.toString(0));
 
 				}
 
@@ -1239,7 +1304,16 @@ public class Main extends Application {
 					// update users information
 					obl.clear();
 					obl.addAll(updated);
-					result.setText("You Are Now At User Page (Menu)");
+					result.setText("You are now at user page (Menu)");
+					order.setText(Integer.toString(mgr.order()));
+					size.setText((Integer.toString(mgr.size())));
+					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+					
+					
+					order.setText(Integer.toString(mgr.order()));
+					size.setText((Integer.toString(mgr.size())));
+					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+					
 					FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
 							DeleteUser,Undo,Redo);
 
@@ -1276,6 +1350,10 @@ public class Main extends Application {
 						obl.addAll(updated);
 						mgr.centralize(input.getText());
 						result.setText("Friend List : " + mgr.getPersonalNetwork(input.getText()));
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						
 					}
 					
 				} catch (Exception nfe) {
@@ -1306,6 +1384,9 @@ public class Main extends Application {
 						mgr.centralize(input.getText());
 						// set listview
 						result.setText("Friend List : " + mgr.getPersonalNetwork(input.getText()));
+						order.setText(Integer.toString(mgr.order()));
+						size.setText((Integer.toString(mgr.size())));
+						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					}
 
 					
@@ -1351,6 +1432,10 @@ public class Main extends Application {
 					else {
 					selectedUser = lv.getSelectionModel().getSelectedItem();
 					result.setText("" + selectedUser + " is selected.");
+					order.setText(Integer.toString(mgr.order()));
+					size.setText((Integer.toString(mgr.size())));
+					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+				
 					System.out.println("clicked on " + lv.getSelectionModel().getSelectedItem());
 					
 					//update button accessibility
@@ -1413,7 +1498,21 @@ public class Main extends Application {
 		vbox.getChildren().add(input);
 		vbox.getChildren().add(rotateButton);
 		vbox.getChildren().add(result);
-
+		
+		VBox middle = new VBox();
+		 GridPane numbers = new GridPane();
+		    numbers.setHgap(10);
+		    numbers.setVgap(10);
+		    numbers.setPadding(new Insets(20, 150, 10, 10));
+		    numbers.add(new Label("Number of users:"), 0, 0);
+		    numbers.add(new Label("Number of friendships:"), 0, 1);
+		    numbers.add(new Label("Number of connected components: "), 0, 2);
+		    numbers.add(new Label("Number of friends of central user: "), 0, 3);
+			numbers.add(order, 1, 0);
+			numbers.add(size, 1, 1);
+			numbers.add(connectedComponents, 1, 2);
+			numbers.add(friendsofcent, 1, 3);
+		middle.getChildren().addAll(result, numbers, centralUserNtwk);
 		// Main layout is Border Pane example (top,left,center,right,bottom)
 		BorderPane root = new BorderPane();
 		root.setRight(operation);
@@ -1421,8 +1520,10 @@ public class Main extends Application {
 		// Set Layout
 		root.setTop(vbox);
 		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+		//mainScene.getstylesheets().add(getclass().getresource( application.css ).toexternalform());
+		//mainScene.getStylesheets().add("style.css");
 		root.setLeft(lv);
-		root.setCenter(centralUserNtwk);
+		root.setCenter(middle);
 		root.setOnMouseClicked(EventByMouse2);
 		
 		// set scroll bar for friend list
@@ -1653,6 +1754,26 @@ public class Main extends Application {
 		//We DON'T need an event handler for the central user
 		return centralUserNtwk;
 	}
+	
+//	public VBox createpane (String str1, String str2, String str3, Label result, GridPane centralUserNtwk) {
+//		VBox middle = new VBox();
+//	    GridPane numbers = new GridPane();
+//	    numbers.setHgap(10);
+//	    numbers.setVgap(10);
+//	    numbers.setPadding(new Insets(20, 150, 10, 10));
+//	    numbers.add(new Label("Number of users"), 0, 0);
+//		//numbers.add(new Label(Integer.toString(mgr.order())), 1, 0);
+//	    numbers.add(new Label(str1), 1, 0);
+//		numbers.add(new Label("Number of friendships"), 0, 1);
+//		//numbers.add(new Label(Integer.toString(mgr.size())), 1, 1);
+//		numbers.add(new Label(str2), 1, 1);
+//		numbers.add(new Label("Number of connected components "), 0, 2);
+//		//numbers.add(new Label(Integer.toString(mgr.connectedComponents())), 1, 2);
+//		numbers.add(new Label(str3), 1, 2);
+//		
+//		//middle.getChildren().addAll(result, numbers, centralUserNtwk);
+//		return middle;
+//	}
 
 	/**
 	 * @param args
