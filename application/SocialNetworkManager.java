@@ -3,7 +3,9 @@ package application;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ public class SocialNetworkManager {
 	// manage the soical network 
     private Network network;
     private Person centralPerson = new Person(" ");
+    private List<String> logBuff = new ArrayList<String>();
     
     /*
      * Package Manager default no-argument constructor.
@@ -86,8 +89,9 @@ public class SocialNetworkManager {
 	    			
 	    			case "r" :
 						if(user2!=null)
-							this.setFriendship(user1.name, user2.name);
+							this.removeFriendship(user1.name, user2.name);
 						else
+							this.removePerson(user1.name);
 	    			break;
 						
 	    			case "s" :
@@ -98,27 +102,7 @@ public class SocialNetworkManager {
 	    				throw new IOException("Uncompilable commands.");
 	    			}	
     		}
-        			
-            //Hard Code here, need to be read from the file
-        	/*
-        	network.addVertex("tony");
-        	network.addVertex("steve");
-        	network.addVertex("Wanda");
-        	network.addVertex("Hulk");
-        	network.addVertex("Thor");
-        	network.addEdge("tony","steve");
-        	network.addEdge("tony","Wanda");
-        	network.addEdge("tony","Hulk");
-        	network.addEdge("tony","Thor");
-        	network.addEdge("steve","Wanda");
-        	network.addEdge("steve","Hulk");
-        	network.addEdge("steve","Thor");
-        	network.addEdge("Wanda","Hulk");
-        	network.addEdge("Wanda","Thor");
-        	network.addEdge("Hulk","Thor");
-        	*/
-            	
-            //
+    		parserScanner.close();	
 //    		network.printGraph();
            
         } 
@@ -138,6 +122,7 @@ public class SocialNetworkManager {
 	  	if (person == null) 
 	  		return;
 	  	this.centralPerson.name = person;
+	  	this.logBuff.add("s "+person);
 	}
 	
 	public String getCentralPerson() {
@@ -153,13 +138,14 @@ public class SocialNetworkManager {
 	  	}
 	  	for(int i = 0; i < person.length(); i++) {
 	  		if( !Character.isDigit(person.charAt(i)) && !Character.isLetter(person.charAt(i)) 
-	  				&& person.charAt(i) != ' ' && person.charAt(i) != '\'' 
+	  				&& person.charAt(i) != ' ' && person.charAt(i) != ''' 
 	  				&& person.charAt(i) != '_'
 	  		   ) {
 	  			throw new IllegalArgumentException();
 	  		}
 	  	}
 	  	network.addVertex(person);
+                this.logBuff.add("a "+person);
 	}
 	
 	public void setFriendship(String person1, String person2) {
@@ -168,6 +154,7 @@ public class SocialNetworkManager {
 	  		return;
 	  	network.addEdge(person1, person2);
 	  	System.out.println("Add : " + person1 + " " + person2);
+                this.logBuff.add("a " + person1 + " " + person2);
 	}
 	
 	public void removePerson(String person) {
@@ -175,6 +162,7 @@ public class SocialNetworkManager {
 	  	if (person == null) 
 	  		return;
 	  	network.removeVertex(person);
+	  	this.logBuff.add("r " + person);
 	}
 	
 	public void removeFriendship(String person1, String person2) {
@@ -182,6 +170,7 @@ public class SocialNetworkManager {
 	  	if (person1 == null && person2 == null) 
 	  		return;
 	  	network.removeEdge(person1, person2);
+	  	this.logBuff.add("r " + person1 + " " + person2);
 	}
 	
 	public List<String> getPersonalNetwork(String person) {
@@ -204,73 +193,28 @@ public class SocialNetworkManager {
 		 
 	}
 	
-	
 	public List<String> shortestPath(String person1, String person2) {		
 	  	if (person1 == null || person2 == null) 
 	  		return null;
 	  	
 		return network.getShortestPathOf(person1, person2);
 	}
-	
-	//returns the number of vertices in this network
-	public int size() {
-        return network.size();
-    }
 
-	//returns the number of vertices in this network
-	public int order() {
-        return network.order();
-    }
-	
-	// using DFS to find a connected subgraph
-	private void DFSUtil(String person, HashMap<String, Integer> visited) { 
-       
-		// mark the current vertex as visited 
-		visited.put(person, 1);
-		
-        // recur for all the vertices adjacent to this vertex 
-        for (String key: network.getAdjacentVerticesOf(person)) { 
-            if(visited.get(key) == 0) 
-            	DFSUtil(key, visited); 
-        } 
-  
-    } 
-	
-	// return the number of connected components 
-    public int connectedComponents() { 
-        // mark all the vertices as not visited 
-    	HashMap<String, Integer> visited = new HashMap<>();
-    	//HashMap<Integer, ArrayList<String>> component = new HashMap<>();
-        for(String key : network.getAllVertices()) {
-    		visited.put(key, 0); 
-        }
-        int num = 0;
-        
-        //recur for all the vertices
-		for(String s : network.getAllVertices())  { 
-			//ArrayList<String> comp = new ArrayList<>();
-			if(visited.get(s) == 0) { 
-	            DFSUtil(s,visited); 
-	            //record the number of connected components 
-	            num++;
-                
+    public void saveLog(File file)throws IOException{
+        try {
+             // creates a FileWriter Object
+            PrintWriter writer;
+            writer = new PrintWriter(file);
+            //System.out.println("write log");
+            for(int i=0; i < logBuff.size(); i++)
+            { 
+            	writer.println(logBuff.get(i));
+            	//System.out.println(logBuff.get(i));
             } 
-        }
-		return num;
-    } 
-   
-	
+            writer.close();
+        } catch (IOException ex) {
+        	throw new IOException();
+        } 
+    }
 }
 
-
-//Need to check howto throw user-defined exception
-/*
-class PersonNotFoundException extends Exception 
-{ 
- public PersonNotFoundException(String s) 
- { 
-     // Call constructor of parent Exception 
-     super(s); 
- } 
-} 
-*/
