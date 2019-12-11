@@ -95,6 +95,12 @@ public class FriendList {
         operation.getChildren().add(Recall);
 //        operation.getChildren().add(Undo);
 //        operation.getChildren().add(Redo);
+        AddFriend.setDisable(false);
+		RemoveFriend.setDisable(false);
+		RemoveSelectedFriend.setDisable(true);
+		RemoveAllFriend.setDisable(false);
+		ViewFriendship.setDisable(true);
+		Menu.setDisable(false);
     	return operation;
     }
 	}
