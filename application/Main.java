@@ -843,6 +843,19 @@ public class Main extends Application {
 					Optional<Pair<String, String>> choice = dialog.showAndWait();
 
 					choice.ifPresent(name1name2 -> {
+						if(name1.getText() == null || name1.getText().equals("")) {
+							Alert alert1 = new Alert(AlertType.WARNING);
+							alert1.setTitle("Warning Dialog");
+							alert1.setHeaderText("Warning messager");
+							alert1.setContentText("Name 1 cannot be empty!");
+							alert1.showAndWait();
+						}else if(name2.getText() == null || name2.getText().equals("")) {
+							Alert alert2 = new Alert(AlertType.WARNING);
+							alert2.setTitle("Warning Dialog");
+							alert2.setHeaderText("Warning messager");
+							alert2.setContentText("Name 2 cannot be empty!");
+							alert2.showAndWait();
+						}else {
 						mgr.setFriendship(name1.getText(), name2.getText());
 				    	 List<String> updated = new ArrayList<String>();       
 					       Set<String> updatedSet = mgr.getAllUsers();
@@ -855,7 +868,7 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						
+						}
 					});
 //
 
