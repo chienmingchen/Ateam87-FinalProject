@@ -20,6 +20,7 @@ import java.util.Stack;
 import com.sun.javafx.logging.Logger;
 import com.sun.javafx.logging.PlatformLogger.Level;
 
+import application.Main.UserNode;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,6 +67,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Pair;
 
 /**
@@ -82,7 +84,7 @@ public class Main extends Application {
 	private static SocialNetworkManager mgr = new SocialNetworkManager();
 
 	private static final int WINDOW_WIDTH = 1000;
-	private static final int WINDOW_HEIGHT = 700;
+	private static final int WINDOW_HEIGHT = 600;
 	private static final String APP_TITLE = "SocialNetworkManager";
 	// item that user select
 	private static String selectedUser;
@@ -91,8 +93,13 @@ public class Main extends Application {
 		return mgr;
 	}
 
+//	private Stage mainStage;
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+//		this.mainStage = primaryStage;		
+//		 primaryStage.setOnCloseRequest(confirmCloseEventHandler);
+		 
 		// save args example
 		args = this.getParameters().getRaw();
 		
@@ -143,8 +150,18 @@ public class Main extends Application {
 
 		// The GridPane for showing central user network
 		GridPane centralUserNtwk = new GridPane();
-		centralUserNtwk.setPrefHeight(0.6*WINDOW_WIDTH);
+		centralUserNtwk.setPrefHeight(0.5*WINDOW_WIDTH);
 	   	centralUserNtwk.setPrefWidth(0.75*WINDOW_HEIGHT);
+	   	//Specify the gridpane's size and number of rows and columns
+	   	int cols = 11;
+	   	int rows = 11;
+	   	double gpWidth = 0.5*WINDOW_WIDTH;
+	   	double gpHeight = 0.6*WINDOW_HEIGHT;
+		for(int i=0;i<cols;i++) {
+			//hard code
+			centralUserNtwk.getColumnConstraints().add(new ColumnConstraints(gpWidth/cols));
+			centralUserNtwk.getRowConstraints().add(new RowConstraints(gpHeight/rows));
+		}
 		
 		// title for opereation vbox
 		Label title = new Label();
@@ -336,6 +353,10 @@ public class Main extends Application {
 				if(undoHistory.empty()==true) {
 					Undo.setDisable(true);
 				}
+			 	//clear the GridPane first whenever new network is imported
+				centralUserNtwk.getChildren().clear();
+				//then plot the network of the central user
+				centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 			}
 		});
 		Redo.setOnAction(new EventHandler<ActionEvent>(){
@@ -400,6 +421,10 @@ public class Main extends Application {
 				if(redoHistory.empty()==true) {
 					Redo.setDisable(true);
 				}
+			 	//clear the GridPane first whenever new network is imported
+				centralUserNtwk.getChildren().clear();
+				//then plot the network of the central user
+				centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 			}
 		});
 		Import.setOnAction(new EventHandler<ActionEvent>() {
@@ -430,7 +455,8 @@ public class Main extends Application {
 				 	//clear the GridPane first whenever new network is imported
 					centralUserNtwk.getChildren().clear();
 					//then plot the network of the central user
-					centralUserNtwk.getChildren().add(plotCentralUserNtwk(mgr));
+					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
+					
 				} catch (FileNotFoundException exception) {
 					Alert alert1 = new Alert(AlertType.WARNING);
 					alert1.setTitle("Warning Dialog");
@@ -439,12 +465,12 @@ public class Main extends Application {
 					alert1.showAndWait();
 					// e.printStackTrace();
 
-				} catch (IOException exception) {
+				}catch (IOException exception) {
 					// e.printStackTrace();
 					Alert alert2 = new Alert(AlertType.WARNING);
 					alert2.setTitle("Warning Dialog");
 					alert2.setHeaderText("Warning messager");
-					alert2.setContentText("Input file can not be red!");
+					alert2.setContentText("Input file can not be read!");
 					alert2.showAndWait();
 				} catch (Exception exception) {
 					// e.printStackTrace();
@@ -570,7 +596,7 @@ public class Main extends Application {
 						RemoveAllFriend.setDisable(false);
 						AddFriend.setDisable(false);
 						centralUserNtwk.getChildren().clear();
-						centralUserNtwk.getChildren().add(plotCentralUserNtwk(mgr));
+						centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					}
 
 				} catch (Exception nfe) {
@@ -1369,6 +1395,7 @@ public class Main extends Application {
 
 			}
 		};
+		
 		// Set the action of the textfield
 		input.setOnAction(EventByEnter);
 		// Set the action of the Click button
@@ -1390,7 +1417,6 @@ public class Main extends Application {
 		root.setTop(vbox);
 		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 		root.setLeft(lv);
-//		root.setBottom(ViewFriend);
 		root.setCenter(centralUserNtwk);
 		root.setOnMouseClicked(EventByMouse2);
 		
@@ -1407,9 +1433,94 @@ public class Main extends Application {
 		primaryStage.setTitle(APP_TITLE);
 		primaryStage.setScene(mainScene);
 		primaryStage.show();
+		primaryStage.setMinWidth(700);
+		primaryStage.setMinHeight(700);
+	        primaryStage.show();
+
+
+	        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	            @Override
+	            public void handle(WindowEvent event) {
+	                Alert closeConfirmation = new Alert(
+	                        Alert.AlertType.CONFIRMATION,
+	                        "Are you sure you want to exit?"
+	                );
+	                Button exitButton = (Button) closeConfirmation.getDialogPane().lookupButton(
+	                        ButtonType.OK
+	                );
+	                exitButton.setText("Exit Without Saving");
+	                closeConfirmation.setHeaderText("Confirm Exit");
+	                closeConfirmation.initModality(Modality.APPLICATION_MODAL);
+	                
+	                Button exitSaveButton = (Button) closeConfirmation.getDialogPane().lookupButton(
+	                        ButtonType.CANCEL
+	                );
+	                exitSaveButton.setText("Save and Exit");
+	                exitSaveButton.setOnAction(new EventHandler<ActionEvent>() {
+	        			String S;
+
+	        			public void handle(ActionEvent e) {
+	        				
+	        		        final String sampleText = "Log Test \n"; //TODO change as actual log
+	        		        
+	        	            FileChooser fileChooser = new FileChooser();
+	        	            
+	        	            //Set extension filter for text files
+	        	            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+	        	            fileChooser.getExtensionFilters().add(extFilter);
+	        	 
+	        	            //Show save file dialog
+	        	            File file = fileChooser.showSaveDialog(primaryStage);
+	        	 
+	        	            if (file != null) {
+	        	                saveTextToFile(sampleText, file);
+	        	            }
+	        			}
+	        		}
+	                
+	        );
+
+
+	                Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
+	                if (ButtonType.OK.equals(closeResponse.get()) || ButtonType.CANCEL.equals(closeResponse.get())) {
+	                }
+	                else {
+	                    event.consume();
+	                }
+
+	                 
+	            }
+	        });
+
+		
 
 	}
 	
+//private EventHandler<WindowEvent> confirmCloseEventHandler = event -> {
+//	System.out.println("CALLED");
+//    Alert closeConfirmation = new Alert(
+//            Alert.AlertType.CONFIRMATION,
+//            "Are you sure you want to exit?"
+//    );
+//    Button exitButton = (Button) closeConfirmation.getDialogPane().lookupButton(
+//            ButtonType.OK
+//    );
+//    exitButton.setText("Exit");
+//    closeConfirmation.setHeaderText("Confirm Exit");
+//    closeConfirmation.initModality(Modality.APPLICATION_MODAL);
+//    closeConfirmation.initOwner(mainStage);
+//
+//    // normally, you would just use the default alert positioning,
+//    // but for this simple sample the main stage is small,
+//    // so explicitly position the alert so that the main window can still be seen.
+//    closeConfirmation.setX(mainStage.getX());
+//    closeConfirmation.setY(mainStage.getY() + mainStage.getHeight());
+//
+//    Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
+//    if (!ButtonType.OK.equals(closeResponse.get())) {
+//        event.consume();
+//    }
+//};
 
     private void saveTextToFile(String name, File log){
         try {
@@ -1456,80 +1567,97 @@ public class Main extends Application {
 	    {            
 	        this.text = new Text(text);
 	        circle = new Circle (r);
-	        circle.setFill(Color.AQUA);
+	        if(r == 70.0) {
+	        	circle.setFill(Color.ORANGE);
+	        }else {
+	        	circle.setFill(Color.AQUA);
+	        }
+	        
 	        getChildren().addAll(circle, this.text);
 	    }
 	}
 	
-	//create a Gridpane based on a social network manager
-	//GridPane Length is predefined as 600
-	//The radius of the friend network (the distance between the central user to each friend) is predefined as 3
+	//modify the Gridpane passed in based on a social network manager
+	//The radius of the friend network (the distance between the central user to each friend) is predefined as 4
 	//Plots the friend network for central user defined by the SocialNetworkManager mgr
 	//Circle node radius is predefined as 30
-	public GridPane plotCentralUserNtwk(SocialNetworkManager mgr) {
+	public GridPane plotCentralUserNtwk(GridPane centralUserNtwk,SocialNetworkManager mgr) {
 		//the radius of the friends circle
 		//NOT THE NODE RADIUS
-		int friendCircleR = 3;
-		int GridPaneLength = 600;
-		GridPane centralUserNtwk = new GridPane();
+		int friendCircleR = 4;
+		int nodeSize = 30;
+		int cols = 11;
+		int rows = 11;
+		//stores a list of friend nodes of the central user
+		List<UserNode> friendNodes = new ArrayList<UserNode>();
+		//stores the central user specified by the manager
 		String centralUser = mgr.getCentralPerson();
+		//get the central user's friends
 		List<String> friends = mgr.getPersonalNetwork(centralUser);
 		
+		//stores the coordinates of each friend on the GridPane
 		List<Integer> X = new ArrayList<Integer>();
 		List<Integer> Y = new ArrayList<Integer>();
-		System.out.println(friends);
-		//friend list size
-		int n=0;
-		if(friends==null) {
-			for(int i=0;i<3;i++) {
-				centralUserNtwk.getColumnConstraints().add(new ColumnConstraints(GridPaneLength/3));
-				centralUserNtwk.getRowConstraints().add(new RowConstraints(GridPaneLength/3));
-			}
-			centralUserNtwk.add(new UserNode(centralUser,30), 1, 1);
-			return centralUserNtwk;
-		}
-		if(friends!=null)
-			n=friends.size();
-		
 		
 
-		int centerCoord = GridPaneLength/2;
-		int minX=centerCoord;
-		int maxX=centerCoord;
-		int minY = centerCoord;
-		int maxY = centerCoord;
+		//friend list size
+		int n=0;
+		//If the central user has no friends
+		if(friends==null) {
+			//If there is a central users
+			if(centralUser!=null && !centralUser.equals(" ")) //TODO
+				centralUserNtwk.add(new UserNode(centralUser,50), cols/2, rows/2);
+			return centralUserNtwk;
+		}
+		
+		//Otherwise there are friends
+		n=friends.size();
+		//the X and Y coordiantes of the central user
+		//half of the number of the columns
+		//which is the same with half of the number of rows
+		//since there are same number of rows and columns
+		int centerCoord = cols/2;
+
+		
+		//Calculate the coordiantes of each friends based on the rules:
+		//each friend will lies on a circle whose radius is friendCircleR
+		//and all friends will be spaced evenly
 		for(int i=0;i<friends.size();i++) {
 			int x = (int) (centerCoord+friendCircleR*Math.cos(2*Math.PI*i/n));
-			minX = x<minX?x:minX;
-			maxX = x>maxX?x:maxX;
 			int y = (int) (centerCoord+friendCircleR*Math.sin(2*Math.PI*i/n));
-			minY = y<minY?y:minY;
-			maxY = y>maxY?y:maxY;
 			X.add(x);
 			Y.add(y);
 		}
 		
-		int cols = maxX-minX+1;
-		int rows = maxY-minY+1;
-		System.out.println(cols);
-		System.out.println(rows);
 		
-		ColumnConstraints cc = new ColumnConstraints(GridPaneLength/(cols));
-		//cc.setPercentWidth(10/cols);
-		RowConstraints rc = new RowConstraints(GridPaneLength/(rows));
-		//rc.setPercentHeight(10/rows);
-		for(int i=0;i<cols;i++)
-			centralUserNtwk.getColumnConstraints().add(cc);
-		for(int i=0;i<rows;i++)
-			centralUserNtwk.getRowConstraints().add(rc);
-		
+		//for each friend
 		for(int i=0;i<friends.size();i++) {
-			centralUserNtwk.add(new UserNode(friends.get(i),30), X.get(i)-centerCoord+cols/2,Y.get(i)-centerCoord+rows/2);
-			System.out.println(X.get(i)-centerCoord+cols/2);
-			System.out.println(Y.get(i)-centerCoord+rows/2);
+			//create a texted node representing this friend
+			friendNodes.add(new UserNode(friends.get(i),30));
+			//stores a reference to the newly created node
+			UserNode thisUser = friendNodes.get(i); //TODO
+			//Give each friend node an eventhandler
+			//so when the mouse clicks on one friend
+			//that friend becomes the new central user
+			thisUser.addEventHandler(MouseEvent.MOUSE_CLICKED, e->{
+				
+				thisUser.circle.setFill(Color.AZURE);
+				String newCentralUser = thisUser.text.getText();
+				mgr.centralize(newCentralUser);
+				System.out.println("The new central user is "+mgr.getCentralPerson());
+				centralUserNtwk.getChildren().clear();
+				try {
+					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
+				}catch (Exception ex){
+					//intentionally blank
+				}
+			});
+			//add that friend to the appropriate position of the network
+			centralUserNtwk.add(thisUser, X.get(i),Y.get(i));
 		}
 		//add the central user to the center of the gridpane
-		centralUserNtwk.add(new UserNode(centralUser,30), cols/2, rows/2);
+		centralUserNtwk.add(new UserNode(centralUser, 70), cols/2, rows/2);
+		//We DON'T need an event handler for the central user
 		return centralUserNtwk;
 	}
 

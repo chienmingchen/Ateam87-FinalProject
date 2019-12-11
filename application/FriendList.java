@@ -60,6 +60,15 @@ public class FriendList {
         operation.getChildren().add(DeleteUser);
         operation.getChildren().add(Undo);
         operation.getChildren().add(Redo);
+        importButton.setDisable(false);
+        Export.setDisable(false);
+        AddFriendship.setDisable(false);
+        Undo.setDisable(true);
+        Redo.setDisable(true);
+		RemoveAllUsers.setDisable(false);
+		ViewFriend.setDisable(true);
+		AddUser.setDisable(false);
+		DeleteUser.setDisable(true);
     			
     	return operation;
     }
