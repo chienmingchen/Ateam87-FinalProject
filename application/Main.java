@@ -499,7 +499,6 @@ public class Main extends Application {
 	            File file = fileChooser.showSaveDialog(primaryStage);
 	 
 	            if (file != null) {
-	                //saveTextToFile(sampleText, file);
 	            	try {
 	            		mgr.saveLog(file);
 	            	}
@@ -1528,13 +1527,7 @@ public class Main extends Application {
 //    }
 //};
 
-    private void saveTextToFile(String name, File log){
-        try {
-        	mgr.saveLog("log.txt");
-        } catch (IOException ex) {
-            
-        }
-    }
+
 	
 	/**
 	 * Create file "log.txt" in the root folder
