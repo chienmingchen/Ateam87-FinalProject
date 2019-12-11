@@ -159,10 +159,6 @@ public class SocialNetworkManager {
 		  	if(!this.getAllUsers().contains(person2)) {
 		  		this.addPerson(person2);
 		  	}
-
-	  	        if(person1 == person2)
-	  		throw new IllegalArgumentException();
-	  	
 		  	network.addEdge(person1, person2);
 		  	System.out.println("Add : " + person1 + " " + person2);
 	                this.logBuff.add("a " + person1 + " " + person2);

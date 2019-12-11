@@ -698,17 +698,11 @@ public class Main extends Application {
 
 						if ((td1.getEditor().getText()) != null) {
 							if(mgr.getAllUsers().contains(td1.getEditor().getText())) {
-								final Stage dialog = new Stage();
-//				                dialog.initModality(Modality.APPLICATION_MODAL);
-				                dialog.initModality(Modality.NONE);
-				                dialog.initOwner(primaryStage);
-				                VBox dialogVbox = new VBox(20);
-				                dialogVbox.getChildren().add(new Text("Alert! User Already Exists."));
-				                dialogVbox.setAlignment(Pos.CENTER);
-				                Scene dialogScene = new Scene(dialogVbox, 300, 200);
-				                dialog.setScene(dialogScene);
-				                dialog.setTitle("Alert Message");
-				                dialog.showAndWait();
+								Alert alert1 = new Alert(AlertType.WARNING);
+								alert1.setTitle("Warning Dialog");
+								alert1.setHeaderText("Warning messager");
+								alert1.setContentText("User Already Exists!");
+								alert1.showAndWait();
 
 							}else {
 //								List<String> historyList = new ArrayList<String>();
@@ -865,6 +859,12 @@ public class Main extends Application {
 					});
 //
 
+				}catch (IllegalArgumentException nfe1) {
+					Alert alert1 = new Alert(AlertType.WARNING);
+					alert1.setTitle("Warning Dialog");
+					alert1.setHeaderText("Warning messager");
+					alert1.setContentText("Illegal Charater Entered!");
+					alert1.showAndWait();
 				}
 
 				catch (Exception nfe) {
@@ -1122,6 +1122,12 @@ public class Main extends Application {
 						
 					}
 
+				}catch (IllegalArgumentException nfe1) {
+					Alert alert1 = new Alert(AlertType.WARNING);
+					alert1.setTitle("Warning Dialog");
+					alert1.setHeaderText("Warning messager");
+					alert1.setContentText("Illegal Charater Entered!");
+					alert1.showAndWait();
 				}
 
 				catch (Exception nfe) {
