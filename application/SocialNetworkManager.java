@@ -81,10 +81,13 @@ public class SocialNetworkManager {
     			
     			switch(splittedCmd[0]) {
 	    			case "a" :
-						if(user2!=null)
-							this.setFriendship(user1.name, user2.name);
-						else
+						if(user2!=null) {
+							if(!user1.name.equals(user2.name)) {
+								this.setFriendship(user1.name, user2.name);	
+							}							
+						}else {
 							this.addPerson(user1.name);
+						}							
 	    			break;
 	    			
 	    			case "r" :
