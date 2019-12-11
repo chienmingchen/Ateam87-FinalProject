@@ -153,7 +153,7 @@ public class SocialNetworkManager {
 			//check if person is null
 		  	if (person1 == null || person2 == null) 
 		  		return;
-		  	if (person1 == person2) 
+		  	if (person1.equals(person2))  
 		  		return;
 		  	if(!this.getAllUsers().contains(person1)) {
 		  		this.addPerson(person1);
@@ -182,7 +182,7 @@ public class SocialNetworkManager {
 		//check if person is null
 	  	if (person1 == null || person2 == null) 
 	  		return;
-	  	if (person1 == person2) 
+	  	if (person1.equals(person2)) 
 	  		return;
 	  	network.removeEdge(person1, person2);
 	  	this.logBuff.add("r " + person1 + " " + person2);
@@ -202,7 +202,7 @@ public class SocialNetworkManager {
 	public List<String> mutualFriends(String person1, String person2) {		
 		if (person1 == null || person2 == null) 
 	  		return null;
-	  	if (person1 == person2) 
+	  	if (person1.equals(person2)) 
 	  		return null;
 		List<String> set1 = network.getAdjacentVerticesOf(person1);
 		List<String> set2 = network.getAdjacentVerticesOf(person2);
@@ -214,7 +214,7 @@ public class SocialNetworkManager {
 	public List<String> shortestPath(String person1, String person2) {		
 	  	if (person1 == null || person2 == null) 
 	  		return null;
-	  	if (person1 == person2) 
+	  	if (person1.equals(person2))  
 	  		return null;
 		return network.getShortestPathOf(person1, person2);
 	}
