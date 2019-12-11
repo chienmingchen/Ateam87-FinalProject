@@ -204,13 +204,64 @@ public class SocialNetworkManager {
 		 
 	}
 	
+	
 	public List<String> shortestPath(String person1, String person2) {		
 	  	if (person1 == null || person2 == null) 
 	  		return null;
 	  	
 		return network.getShortestPathOf(person1, person2);
 	}
+	
+	//returns the number of vertices in this network
+	public int size() {
+        return network.size();
+    }
+
+	//returns the number of vertices in this network
+	public int order() {
+        return network.order();
+    }
+	
+	// using DFS to find a connected subgraph
+	private void DFSUtil(String person, HashMap<String, Integer> visited) { 
+       
+		// mark the current vertex as visited 
+		visited.put(person, 1);
+		
+        // recur for all the vertices adjacent to this vertex 
+        for (String key: network.getAdjacentVerticesOf(person)) { 
+            if(visited.get(key) == 0) 
+            	DFSUtil(key, visited); 
+        } 
+  
+    } 
+	
+	// return the number of connected components 
+    public int connectedComponents() { 
+        // mark all the vertices as not visited 
+    	HashMap<String, Integer> visited = new HashMap<>();
+    	//HashMap<Integer, ArrayList<String>> component = new HashMap<>();
+        for(String key : network.getAllVertices()) {
+    		visited.put(key, 0); 
+        }
+        int num = 0;
+        
+        //recur for all the vertices
+		for(String s : network.getAllVertices())  { 
+			//ArrayList<String> comp = new ArrayList<>();
+			if(visited.get(s) == 0) { 
+	            DFSUtil(s,visited); 
+	            //record the number of connected components 
+	            num++;
+                
+            } 
+        }
+		return num;
+    } 
+   
+	
 }
+
 
 //Need to check howto throw user-defined exception
 /*
