@@ -439,7 +439,7 @@ public class Main extends Application {
 						updated.add(item);
 					}
 
-					System.out.println(updated);
+					System.out.println("Update" + updated);
 					// update users information
 					obl.clear();
 					obl.addAll(updated);
@@ -499,7 +499,13 @@ public class Main extends Application {
 	            File file = fileChooser.showSaveDialog(primaryStage);
 	 
 	            if (file != null) {
-	                saveTextToFile(sampleText, file);
+	                //saveTextToFile(sampleText, file);
+	            	try {
+	            		mgr.saveLog(file);
+	            	}
+	            	catch (IOException io) {
+						io.printStackTrace();
+	            	}
 	            }
 			}
 		});
@@ -1289,7 +1295,7 @@ public class Main extends Application {
 					// for(int i=0; i<mgr.getPersonalNetwork(input.getText()).size(); i++)
 					// S += mgr.getPersonalNetwork(input.getText());
 					List<String> updated = FriendList.getFriends(mgr, input);
-					System.out.println(updated);
+					System.out.println("update" + updated);
 					// update friends information
 					if (updated == null) {
 						obl.clear();
@@ -1524,10 +1530,7 @@ public class Main extends Application {
 
     private void saveTextToFile(String name, File log){
         try {
-            PrintWriter writer;
-            writer = new PrintWriter(log);
-            writer.println(name);
-            writer.close();
+        	mgr.saveLog("log.txt");
         } catch (IOException ex) {
             
         }
@@ -1541,20 +1544,13 @@ public class Main extends Application {
 	 */
 	@Override
 	public void stop() throws IOException {
-		String exampleExport = "a mark sid\r\n" + 
-				"a sid sri\r\n" + 
-				"a sri mark\r\n" + 
-				"a sapan deb\r\n" + 
-				"a deb sid\r\n" + 
-				"a deb mark\r\n" + 
-				"r deb\r\n" + 
-				"s mark\r\n" + 
-				"\r\n" + 
-				"";
-		FileWriter log = new FileWriter("log.txt");
-		PrintWriter logWriter = new PrintWriter(log);
-		logWriter.println(exampleExport);
-		logWriter.close();
+   	 	File file = new File("log.txt");
+   	 	file.createNewFile();
+		try {	
+	    	mgr.saveLog(file);
+	    } catch (IOException ex) {
+	    	System.out.println("write log IOException");
+	    }
 	}
 	
 	
