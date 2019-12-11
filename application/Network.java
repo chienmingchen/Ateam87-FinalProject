@@ -120,7 +120,10 @@ public class Network implements GraphADT {
 	  	// check nulls
 	    if (vertex1 == null || vertex2 == null)
 	      return;
-
+	    
+	    if(vertex1 == vertex2)
+	      return;
+	    
 	    // check if node exists
 	    //if (!hasVertex(vertex1) || !hasVertex(vertex2))
 	      //return;
@@ -203,11 +206,31 @@ public class Network implements GraphADT {
     }
 	
     public List<String> getShortestPathOf(String source, String end) {
+
+    	//System.out.println("get short path");
+    	
 	    List<String> route = new ArrayList<>();
 	    Map<String, String> path =  BFS(source);
-	    for (String cur = path.get(end) ; cur.equals(source) != true ; cur = path.get(cur)) {
-	    	route.add(cur);
+	    String cur;
+	    
+	    if(path.containsKey(end)) {
+	    	cur = path.get(end) ;
+	    	route.add(end);
 	    }
+	    else
+	    {
+	    	return null;
+	    }
+
+	    for (cur = path.get(end); cur.equals(source) != true ; cur = path.get(cur)) {
+	    	route.add(cur);
+	    	//System.out.println("," + cur);
+	    }
+	    
+	    route.add(source);
+	    
+	    //System.out.println(route);
+	    
         return route;
     }
 
