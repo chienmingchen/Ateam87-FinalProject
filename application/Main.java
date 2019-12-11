@@ -509,7 +509,7 @@ public class Main extends Application {
 					alert1.setHeaderText("Warning messager");
 					alert1.setContentText("Input file can not be found!");
 					alert1.showAndWait();
-
+					result.setText(" [Prompt] : File fail to import.");
 				}
 			}
 		});
