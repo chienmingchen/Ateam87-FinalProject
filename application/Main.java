@@ -485,23 +485,30 @@ public class Main extends Application {
 					//then plot the network of the central user
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					
-				} catch (FileNotFoundException exception) {
+				} 
+//				catch (FileNotFoundException exception) {
+//					Alert alert1 = new Alert(AlertType.WARNING);
+//					alert1.setTitle("Warning Dialog");
+//					alert1.setHeaderText("Warning messager");
+//					alert1.setContentText("Input file can not be found!");
+//					alert1.showAndWait();
+//					// e.printStackTrace();
+//
+//				}catch (IOException exception) {
+//					// e.printStackTrace();
+//					Alert alert2 = new Alert(AlertType.WARNING);
+//					alert2.setTitle("Warning Dialog");
+//					alert2.setHeaderText("Warning messager");
+//					alert2.setContentText("Input file can not be read!");
+//					alert2.showAndWait();
+//				} 
+				catch (Exception exception) {
+					// e.printStackTrace();
 					Alert alert1 = new Alert(AlertType.WARNING);
 					alert1.setTitle("Warning Dialog");
 					alert1.setHeaderText("Warning messager");
 					alert1.setContentText("Input file can not be found!");
 					alert1.showAndWait();
-					// e.printStackTrace();
-
-				}catch (IOException exception) {
-					// e.printStackTrace();
-					Alert alert2 = new Alert(AlertType.WARNING);
-					alert2.setTitle("Warning Dialog");
-					alert2.setHeaderText("Warning messager");
-					alert2.setContentText("Input file can not be read!");
-					alert2.showAndWait();
-				} catch (Exception exception) {
-					// e.printStackTrace();
 
 				}
 			}
