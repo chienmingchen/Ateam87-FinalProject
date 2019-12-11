@@ -289,14 +289,14 @@ public class Main extends Application {
 					obl.clear();
 
 					if(updated.size()!=0) {
-						result.setText("" + a + "is deleted.");
+						result.setText(" [Prompt] : " + a + "is deleted.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					obl.addAll(updated);					
 					}
 					else {
-						result.setText("" + a + "is deleted. List is Empty");
+						result.setText(" [Prompt] : " + a + "is deleted. List is Empty");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -305,6 +305,7 @@ public class Main extends Application {
 						AddUser.setDisable(false);						
 						RemoveAllUsers.setDisable(true);
 					    ViewFriend.setDisable(true);
+					    AddFriendship.setDisable(false);
 					}
 					DeleteUser.setDisable(true);
 
@@ -357,11 +358,11 @@ public class Main extends Application {
 //				obl.clear();
 //                
 //				if(updated.size()!=0) {
-//					result.setText("Undo Action");
+//					result.setText(" [Prompt] : Undo Action");
 //				obl.addAll(updated);					
 //				}
 //				else {
-//					result.setText("Undo Action, empty");
+//					result.setText(" [Prompt] : Undo Action, empty");
 //					Import.setDisable(false);
 //					Export.setDisable(false);
 //					AddUser.setDisable(false);						
@@ -427,11 +428,11 @@ public class Main extends Application {
 //				obl.clear();
 //                
 //				if(updated.size()!=0) {
-//					result.setText("Undo Action");
+//					result.setText(" [Prompt] : Undo Action");
 //				obl.addAll(updated);					
 //				}
 //				else {
-//					result.setText("Undo Action, empty");
+//					result.setText(" [Prompt] : Undo Action, empty");
 //					Import.setDisable(false);
 //					Export.setDisable(false);
 //					AddUser.setDisable(false);						
@@ -469,7 +470,7 @@ public class Main extends Application {
 					obl.addAll(updated);
 
 					// set listview
-					result.setText("File import successfully.");
+					result.setText(" [Prompt] : File import successfully.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -531,7 +532,7 @@ public class Main extends Application {
 	            	}
 	            	catch (IOException io) {
 						//io.printStackTrace();
-	            		result.setText("Export IO Exception");
+	            		result.setText(" [Prompt] : Export IO Exception");
 	            	}
 	            }
 			}
@@ -576,19 +577,20 @@ public class Main extends Application {
 //					System.out.println(updatedSet);
 					obl.clear();
 //					obl.add("All users removed, Empty Friend List");
-					result.setText("All users removed.");
+					result.setText(" [Prompt] : All users removed.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					//update button accessibility
 					ViewFriend.setDisable(true);
 					AddUser.setDisable(false);
+					//AddFriendship.setDisable(false);
 					DeleteUser.setDisable(true);
 					RemoveAllUsers.setDisable(true);
 					centralUserNtwk.getChildren().clear();
 				} catch (Exception nfe) {
 					//nfe.printStackTrace();
-               		// result.setText("invalid input");
+               		// result.setText(" [Prompt] : invalid input");
 				}
 			}
 		});
@@ -616,7 +618,7 @@ public class Main extends Application {
 						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 								ViewFriend, Back, Menu, Recall);
 						// set listview
-						result.setText("Friends of " + selectedUser + " are shown in follow viewer.");
+						result.setText(" [Prompt] : Friends of " + selectedUser + " are shown in follow viewer.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -640,7 +642,7 @@ public class Main extends Application {
 
 				} catch (Exception nfe) {
 					//nfe.printStackTrace();
-//                		 result.setText("invalid input");
+//                		 result.setText(" [Prompt] : invalid input");
 				}
 			}
 		});
@@ -665,10 +667,20 @@ public class Main extends Application {
 
 					td1.setContentText("Name:");
 					td1.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+					
+					if(mgr.getPersonalNetwork(mgr.getCentralPerson())!=null) {
 					td1.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
 						td1.getDialogPane().lookupButton(ButtonType.OK).setDisable
 						(newValue.trim().isEmpty()||mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
 			        });
+					}
+					else {
+						td1.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+							td1.getDialogPane().lookupButton(ButtonType.OK).setDisable
+							(newValue.trim().isEmpty());
+				        });
+					}
+					
 
 					Optional<String> choice1 = td1.showAndWait();
 
@@ -699,15 +711,15 @@ public class Main extends Application {
 				                dialog.showAndWait();
 
 							}else {
-								List<String> historyList = new ArrayList<String>();
-								Set<String> historySet = mgr.getAllUsers();
-								for (String item : historySet) {
-									historyList.add(item);
-								}
+//								List<String> historyList = new ArrayList<String>();
+//								Set<String> historySet = mgr.getAllUsers();
+//								for (String item : historySet) {
+//									historyList.add(item);
+//								}
 							//	users.add(historyList);
-								List<history> thisHistory = new ArrayList<history>();
-								history newHistory = new history(false,true,td1.getEditor().getText(),null,null);
-								thisHistory.add(newHistory);
+//								List<history> thisHistory = new ArrayList<history>();
+//								history newHistory = new history(false,true,td1.getEditor().getText(),null,null);
+//								thisHistory.add(newHistory);
 							//	undoHistory.add(thisHistory);
 								mgr.addPerson(td1.getEditor().getText());
 							}							
@@ -737,7 +749,7 @@ public class Main extends Application {
 
 					//nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 
 				}
 
@@ -825,6 +837,8 @@ public class Main extends Application {
 					    }
 					    return null;
 					});
+					
+					
 
 					Optional<Pair<String, String>> choice = dialog.showAndWait();
 
@@ -837,7 +851,7 @@ public class Main extends Application {
 					       }
 					       obl.clear();
 					       obl.addAll(updated);
-						result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+						result.setText(" [Prompt] : Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -851,7 +865,7 @@ public class Main extends Application {
 
 					//nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 
 				}
 
@@ -928,13 +942,13 @@ public class Main extends Application {
 //					       }
 					       obl.clear();
 					       obl.addAll(updated);
-						result.setText("The mutual friends of" + name1.getText()+ " and " +name2.getText()+" are shown on left.");
+						result.setText(" [Prompt] : The mutual friends of" + name1.getText()+ " and " +name2.getText()+" are shown on left.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					});
 //
-						//result.setText("Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+						//result.setText(" [Prompt] : Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
 					}
 
 				
@@ -943,7 +957,7 @@ public class Main extends Application {
 
 					//nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 
 				}
 
@@ -1017,7 +1031,7 @@ public class Main extends Application {
 					       obl.clear();
 					       obl.addAll(updated);
 //
-						result.setText("The shortest path between " + name1.getText()+ " and " +name2.getText()+" are shown on left.");
+						result.setText(" [Prompt] : The shortest path between " + name1.getText()+ " and " +name2.getText()+" are shown on left.");
 					       order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1029,7 +1043,7 @@ public class Main extends Application {
 
 					//nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 
 				}
 
@@ -1108,7 +1122,7 @@ public class Main extends Application {
 
 					//nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 
 				}
 
@@ -1138,7 +1152,7 @@ public class Main extends Application {
 					td.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 					td.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
 						td.getDialogPane().lookupButton(ButtonType.OK).setDisable
-						(newValue.trim().isEmpty()||mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
+						(newValue.trim().isEmpty()||!mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
 			        });
 
 					Optional<String> choice = td.showAndWait();
@@ -1171,7 +1185,7 @@ public class Main extends Application {
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 									ViewFriend, Back, Menu, Recall);
-							result.setText("Friendship between " + td.getEditor().getText() + "and " + mgr.getCentralPerson() +"is deleted.");
+							result.setText(" [Prompt] : Friendship between " + td.getEditor().getText() + "and " + mgr.getCentralPerson() +"is deleted.");
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1187,7 +1201,7 @@ public class Main extends Application {
 
 					//nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 
 				}
 
@@ -1237,7 +1251,7 @@ public class Main extends Application {
 									ViewFriend, Back, Menu, Recall);
 						
 
-							result.setText("Friendship between " +  lv.getSelectionModel().getSelectedItem() + "and " + mgr.getCentralPerson() +"is deleted.");
+							result.setText(" [Prompt] : Friendship between " +  lv.getSelectionModel().getSelectedItem() + "and " + mgr.getCentralPerson() +"is deleted.");
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1250,7 +1264,7 @@ public class Main extends Application {
 
 					//nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 
 				}
 
@@ -1275,7 +1289,7 @@ public class Main extends Application {
 	                    List<String> deleteList1 = mgr.getPersonalNetwork(delete);
 	                    //System.out.print(deleteList1);
 	                    obl.clear();
-	                    result.setText("All friendships of " + mgr.getCentralPerson() + " are deleted.");
+	                    result.setText(" [Prompt] : All friendships of " + mgr.getCentralPerson() + " are deleted.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1287,7 +1301,7 @@ public class Main extends Application {
 
 					//nfe.printStackTrace();
 
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 
 				}
 
@@ -1314,7 +1328,7 @@ public class Main extends Application {
 					// update users information
 					obl.clear();
 					obl.addAll(updated);
-					result.setText("You are now at user page (Menu)");
+					result.setText(" [Prompt] : You are now at user page (Menu)");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1337,7 +1351,7 @@ public class Main extends Application {
 					AddUser.setDisable(false);
 				} catch (Exception nfe) {
 					//nfe.printStackTrace();
-//                		 result.setText("invalid input");
+//                		 result.setText(" [Prompt] : invalid input");
 				}
 			}
 		});
@@ -1354,12 +1368,12 @@ public class Main extends Application {
 					if (updated == null) {
 						obl.clear();
 						// set listview
-						result.setText("Cannot Find: " + input.getText());
+						result.setText(" [Prompt] : Cannot Find: " + input.getText());
 					} else {
 						obl.clear();
 						obl.addAll(updated);
 						mgr.centralize(input.getText());
-						result.setText("Friend List : " + mgr.getPersonalNetwork(input.getText()));
+						result.setText(" [Prompt] : Friend List : " + mgr.getPersonalNetwork(input.getText()));
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1368,7 +1382,7 @@ public class Main extends Application {
 					
 				} catch (Exception nfe) {
 					//nfe.printStackTrace();
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 				}
 			}
 		};
@@ -1387,13 +1401,13 @@ public class Main extends Application {
 					if (updated == null) {
 						obl.clear();
 						// set listview
-						result.setText("Cannot Find: " + input.getText());
+						result.setText(" [Prompt] : Cannot Find: " + input.getText());
 					} else {
 						obl.clear();
 						obl.addAll(updated);
 						mgr.centralize(input.getText());
 						// set listview
-						result.setText("Friend List : " + mgr.getPersonalNetwork(input.getText()));
+						result.setText(" [Prompt] : Friend List : " + mgr.getPersonalNetwork(input.getText()));
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1402,7 +1416,7 @@ public class Main extends Application {
 					
 				} catch (Exception nfe) {
 					//nfe.printStackTrace();
-					result.setText("invalid input");
+					result.setText(" [Prompt] : invalid input");
 				}
 			}
 		};
@@ -1414,7 +1428,7 @@ public class Main extends Application {
 				// for test purpose
 				if(lv.getSelectionModel().getSelectedItems() != null) {
 					if(lv.getSelectionModel().getSelectedItems().size()>1) {
-						result.setText("Multiple users selected.");
+						result.setText(" [Prompt] : Multiple users selected.");
 						//FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 							//	ViewFriend, Back, Menu, Recall,Undo,Redo);
 						ViewFriend.setDisable(true);
@@ -1448,7 +1462,7 @@ public class Main extends Application {
 						//FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 						//		ViewFriend, Back, Menu, Recall,Undo,Redo);
 					selectedUser = lv.getSelectionModel().getSelectedItem();
-					result.setText("" + selectedUser + " is selected.");
+					result.setText(" [Prompt] : " + selectedUser + " is selected.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1521,9 +1535,9 @@ public class Main extends Application {
 		    numbers.setHgap(10);
 		    numbers.setVgap(10);
 		    numbers.setPadding(new Insets(20, 150, 10, 10));
-		    numbers.add(new Label("Number of users:"), 0, 0);
-		    numbers.add(new Label("Number of friendships:"), 0, 1);
-		    numbers.add(new Label("Number of connected components: "), 0, 2);
+		    numbers.add(new Label("Number of users in the Network:"), 0, 0);
+		    numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
+		    numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
 		    numbers.add(new Label("Number of friends of central user: "), 0, 3);
 			numbers.add(order, 1, 0);
 			numbers.add(size, 1, 1);
@@ -1738,7 +1752,7 @@ public class Main extends Application {
 						obl.clear();
 						obl.addAll(updated);
 					}
-					result.setText("Friends of " + selectedUser + " are shown in follow viewer.");
+					result.setText(" [Prompt] : Friends of " + selectedUser + " are shown in follow viewer.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
