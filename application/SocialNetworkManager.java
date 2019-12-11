@@ -149,28 +149,23 @@ public class SocialNetworkManager {
 	}
 	
 	public void setFriendship(String person1, String person2) {
-		//check if person is null
-	  	if (person1 == null && person2 == null) 
-	  		return;
-	  	for(int i = 0; i < person1.length(); i++) {
-	  		if( !Character.isDigit(person1.charAt(i)) && !Character.isLetter(person1.charAt(i)) 
-	  				&& person1.charAt(i) != ' ' && person1.charAt(i) != '\''  
-	  				&& person1.charAt(i) != '_'
-	  		   ) {
-	  			throw new IllegalArgumentException();
-	  		}
-	  	}
-	  	for(int i = 0; i < person2.length(); i++) {
-	  		if( !Character.isDigit(person2.charAt(i)) && !Character.isLetter(person2.charAt(i)) 
-	  				&& person2.charAt(i) != ' ' && person2.charAt(i) != '\''  
-	  				&& person2.charAt(i) != '_'
-	  		   ) {
-	  			throw new IllegalArgumentException();
-	  		}
-	  	}
-	  	network.addEdge(person1, person2);
-	  	System.out.println("Add : " + person1 + " " + person2);
-                this.logBuff.add("a " + person1 + " " + person2);
+		try {
+			//check if person is null
+		  	if (person1 == null && person2 == null) 
+		  		return;
+		  	if(!this.getAllUsers().contains(person1)) {
+		  		this.addPerson(person1);
+		  	}
+		  	if(!this.getAllUsers().contains(person2)) {
+		  		this.addPerson(person2);
+		  	}
+		  	network.addEdge(person1, person2);
+		  	System.out.println("Add : " + person1 + " " + person2);
+	                this.logBuff.add("a " + person1 + " " + person2);
+		}catch(IllegalArgumentException e1) {
+			throw new IllegalArgumentException();
+		}
+
 	}
 	
 	public void removePerson(String person) {
@@ -280,4 +275,3 @@ public class SocialNetworkManager {
         } 
     }
 }
-
