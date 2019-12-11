@@ -48,7 +48,7 @@ public class FriendList {
 
     public static VBox setAsUserOperation(VBox operation, Label title, Button importButton, 
     		Button Export, Button AddFriendship, Button RemoveAllUsers, Button ViewFriend, Button AddUser, 
-    		Button DeleteUser, Button MutualFriends, Button ShortestPath, Button Undo, Button Redo) {
+    		Button DeleteUser, Button MutualFriends, Button ShortestPath) {
     	operation.getChildren().clear();
         operation.getChildren().add(title);
         operation.getChildren().add(importButton);
@@ -60,21 +60,21 @@ public class FriendList {
         operation.getChildren().add(DeleteUser);
         operation.getChildren().add(MutualFriends);
         operation.getChildren().add(ShortestPath);
-        operation.getChildren().add(Undo);
-        operation.getChildren().add(Redo);
+//        operation.getChildren().add(Undo);
+//        operation.getChildren().add(Redo);
         importButton.setDisable(false);
         Export.setDisable(false);
         AddFriendship.setDisable(false);
-        Undo.setDisable(true);
-        Redo.setDisable(true);
+//        Undo.setDisable(true);
+//        Redo.setDisable(true);
 		RemoveAllUsers.setDisable(false);
 		ViewFriend.setDisable(true);
 		AddUser.setDisable(false);
 		DeleteUser.setDisable(true);
 		MutualFriends.setDisable(false);
 		ShortestPath.setDisable(false);
-		Undo.setDisable(true);
-		Redo.setDisable(true);
+//		Undo.setDisable(true);
+//		Redo.setDisable(true);
 		
     	return operation;
     }
@@ -82,7 +82,7 @@ public class FriendList {
 
     public static VBox setAsFriendOperation(VBox operation, Label title, Button AddFriend, 
     		Button RemoveFriend, Button RemoveSelectedFriend, Button RemoveAllFriend, Button ViewFriendship, 
-    		 Button Back, Button Menu, Button Recall,Button Undo, Button Redo) {
+    		 Button Back, Button Menu, Button Recall) {
     	operation.getChildren().clear();
         operation.getChildren().add(title);
         operation.getChildren().add(AddFriend);
@@ -93,8 +93,8 @@ public class FriendList {
         operation.getChildren().add(Back);
         operation.getChildren().add(Menu);
         operation.getChildren().add(Recall);
-        operation.getChildren().add(Undo);
-        operation.getChildren().add(Redo);
+//        operation.getChildren().add(Undo);
+//        operation.getChildren().add(Redo);
     	return operation;
     }
 	}
