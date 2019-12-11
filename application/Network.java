@@ -1,6 +1,7 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -229,6 +230,7 @@ public class Network implements GraphADT {
 	    
 	    route.add(source);
 	    
+	    Collections.reverse(route);
 	    //System.out.println(route);
 	    
         return route;
