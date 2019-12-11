@@ -1478,7 +1478,11 @@ public class Main extends Application {
 	        	            File file = fileChooser.showSaveDialog(primaryStage);
 	        	 
 	        	            if (file != null) {
-	        	                saveTextToFile(sampleText, file);
+	        	        		try {	
+	        	        	    	mgr.saveLog(file);
+	        	        	    } catch (IOException ex) {
+	        	        	    	System.out.println("write log IOException");
+	        	        	    }
 	        	            }
 	        			}
 	        		}
