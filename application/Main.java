@@ -457,6 +457,10 @@ public class Main extends Application {
 			public void handle(ActionEvent e) {
 				File selectedFile = fileChooser.showOpenDialog(primaryStage);
 				try {
+					if(!selectedFile.getName().contains(".txt")) {
+						throw new IOException();
+					}
+					
 					mgr.constructNetwork(selectedFile);
 					List<String> updated = new ArrayList<String>();
 					Set<String> updatedSet = mgr.getAllUsers();
@@ -485,12 +489,14 @@ public class Main extends Application {
 					//then plot the network of the central user
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					
-				} catch (FileNotFoundException exception) {
+				} 
+				catch (FileNotFoundException exception) {
 					Alert alert1 = new Alert(AlertType.WARNING);
 					alert1.setTitle("Warning Dialog");
 					alert1.setHeaderText("Warning messager");
 					alert1.setContentText("Input file can not be found!");
 					alert1.showAndWait();
+					result.setText(" [Prompt] : File fail to import.");
 					// e.printStackTrace();
 
 				}catch (IOException exception) {
@@ -500,22 +506,19 @@ public class Main extends Application {
 					alert2.setHeaderText("Warning messager");
 					alert2.setContentText("Input file can not be read!");
 					alert2.showAndWait();
-				} catch (Exception exception) {
+					result.setText(" [Prompt] : File fail to import.");
+				} 
+				catch (Exception exception) {
 					// e.printStackTrace();
-
 				}
 			}
 		});
-
-//        Button Export = new Button("Export");
-//        Export.setPrefSize(150,30);      
+    
 		
 		Export.setOnAction(new EventHandler<ActionEvent>() {
 			String S;
 
 			public void handle(ActionEvent e) {
-				
-		        final String sampleText = "Log Test \n";
 		        
 	            FileChooser fileChooser = new FileChooser();
 	            
@@ -698,17 +701,11 @@ public class Main extends Application {
 
 						if ((td1.getEditor().getText()) != null) {
 							if(mgr.getAllUsers().contains(td1.getEditor().getText())) {
-								final Stage dialog = new Stage();
-//				                dialog.initModality(Modality.APPLICATION_MODAL);
-				                dialog.initModality(Modality.NONE);
-				                dialog.initOwner(primaryStage);
-				                VBox dialogVbox = new VBox(20);
-				                dialogVbox.getChildren().add(new Text("Alert! User Already Exists."));
-				                dialogVbox.setAlignment(Pos.CENTER);
-				                Scene dialogScene = new Scene(dialogVbox, 300, 200);
-				                dialog.setScene(dialogScene);
-				                dialog.setTitle("Alert Message");
-				                dialog.showAndWait();
+								Alert alert1 = new Alert(AlertType.WARNING);
+								alert1.setTitle("Warning Dialog");
+								alert1.setHeaderText("Warning messager");
+								alert1.setContentText("User Already Exists!");
+								alert1.showAndWait();
 
 							}else {
 //								List<String> historyList = new ArrayList<String>();
@@ -849,6 +846,19 @@ public class Main extends Application {
 					Optional<Pair<String, String>> choice = dialog.showAndWait();
 
 					choice.ifPresent(name1name2 -> {
+						if(name1.getText() == null || name1.getText().equals("")) {
+							Alert alert1 = new Alert(AlertType.WARNING);
+							alert1.setTitle("Warning Dialog");
+							alert1.setHeaderText("Warning messager");
+							alert1.setContentText("Name 1 cannot be empty!");
+							alert1.showAndWait();
+						}else if(name2.getText() == null || name2.getText().equals("")) {
+							Alert alert2 = new Alert(AlertType.WARNING);
+							alert2.setTitle("Warning Dialog");
+							alert2.setHeaderText("Warning messager");
+							alert2.setContentText("Name 2 cannot be empty!");
+							alert2.showAndWait();
+						}else {
 						mgr.setFriendship(name1.getText(), name2.getText());
 				    	 List<String> updated = new ArrayList<String>();       
 					       Set<String> updatedSet = mgr.getAllUsers();
@@ -861,10 +871,16 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						
+						}
 					});
 //
 
+				}catch (IllegalArgumentException nfe1) {
+					Alert alert1 = new Alert(AlertType.WARNING);
+					alert1.setTitle("Warning Dialog");
+					alert1.setHeaderText("Warning messager");
+					alert1.setContentText("Illegal Charater Entered!");
+					alert1.showAndWait();
 				}
 
 				catch (Exception nfe) {
@@ -946,8 +962,12 @@ public class Main extends Application {
 //					       for (String item : updatedSet) {
 //					         updated.add(item);
 //					       }
-					       obl.clear();
-					       obl.addAll(updated);
+						Alert alert = new Alert(AlertType.INFORMATION);
+					      alert.setTitle("Mutual Friends");
+					      alert.setHeaderText("Mutual Friends");
+					      String output = String.join(" ", updated);
+					      alert.setContentText(output);
+					      alert.showAndWait();
 						result.setText(" [Prompt] : The mutual friends of" + name1.getText()+ " and " +name2.getText()+" are shown on left.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
@@ -1122,6 +1142,12 @@ public class Main extends Application {
 						
 					}
 
+				}catch (IllegalArgumentException nfe1) {
+					Alert alert1 = new Alert(AlertType.WARNING);
+					alert1.setTitle("Warning Dialog");
+					alert1.setHeaderText("Warning messager");
+					alert1.setContentText("Illegal Charater Entered!");
+					alert1.showAndWait();
 				}
 
 				catch (Exception nfe) {
@@ -1538,17 +1564,19 @@ public class Main extends Application {
 		
 		VBox middle = new VBox();
 		 GridPane numbers = new GridPane();
-		    numbers.setHgap(10);
-		    numbers.setVgap(10);
-		    numbers.setPadding(new Insets(20, 150, 10, 10));
-		    numbers.add(new Label("Number of users in the Network:"), 0, 0);
-		    numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
-		    numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
-		    numbers.add(new Label("Number of friends of central user: "), 0, 3);
-			numbers.add(order, 1, 0);
-			numbers.add(size, 1, 1);
-			numbers.add(connectedComponents, 1, 2);
-			numbers.add(friendsofcent, 1, 3);
+		 numbers.setHgap(10);
+	      numbers.setVgap(10);
+	      numbers.setPadding(new Insets(20, 150, 10, 10));
+	      numbers.add(new Label("Number of users in the Network:"), 0, 0);
+	      numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
+	      numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
+	      numbers.add(new Label("    "), 0, 3);
+	      numbers.add(new Label("Number of friends of central user: "), 0, 4);
+	   numbers.add(order, 1, 0);
+	   numbers.add(size, 1, 1);
+	   numbers.add(connectedComponents, 1, 2);
+	   numbers.add(new Label("    "), 1, 3);
+	   numbers.add(friendsofcent, 1, 4);
 		middle.getChildren().addAll(result, numbers, centralUserNtwk);
 		// Main layout is Border Pane example (top,left,center,right,bottom)
 		BorderPane root = new BorderPane();
