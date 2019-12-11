@@ -138,7 +138,7 @@ public class SocialNetworkManager {
 	  	}
 	  	for(int i = 0; i < person.length(); i++) {
 	  		if( !Character.isDigit(person.charAt(i)) && !Character.isLetter(person.charAt(i)) 
-	  				&& person.charAt(i) != ' ' && person.charAt(i) != ''' 
+	  				&& person.charAt(i) != ' ' && person.charAt(i) != '\''  
 	  				&& person.charAt(i) != '_'
 	  		   ) {
 	  			throw new IllegalArgumentException();
