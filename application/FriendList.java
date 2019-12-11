@@ -43,12 +43,12 @@ public class FriendList {
 		return list;
 	}
 
-//	, String title, Button importButton, Button Export, Button RemoveAllUsers, Button ViewFriend, Button AddUser, Button DeleteUser
-//	userOperation[0]=title;
+//	Button MutualFriends = new Button("Mutual Friends");
+//	Button ShortestPath = new Button("Shortest path between two");
 
     public static VBox setAsUserOperation(VBox operation, Label title, Button importButton, 
     		Button Export, Button AddFriendship, Button RemoveAllUsers, Button ViewFriend, Button AddUser, 
-    		Button DeleteUser, Button Undo, Button Redo) {
+    		Button DeleteUser, Button MutualFriends, Button ShortestPath, Button Undo, Button Redo) {
     	operation.getChildren().clear();
         operation.getChildren().add(title);
         operation.getChildren().add(importButton);
@@ -58,6 +58,8 @@ public class FriendList {
         operation.getChildren().add(ViewFriend);
         operation.getChildren().add(AddUser);
         operation.getChildren().add(DeleteUser);
+        operation.getChildren().add(MutualFriends);
+        operation.getChildren().add(ShortestPath);
         operation.getChildren().add(Undo);
         operation.getChildren().add(Redo);
         importButton.setDisable(false);
@@ -69,7 +71,11 @@ public class FriendList {
 		ViewFriend.setDisable(true);
 		AddUser.setDisable(false);
 		DeleteUser.setDisable(true);
-    			
+		MutualFriends.setDisable(false);
+		ShortestPath.setDisable(false);
+		Undo.setDisable(true);
+		Redo.setDisable(true);
+		
     	return operation;
     }
 	

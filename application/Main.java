@@ -89,6 +89,14 @@ public class Main extends Application {
 	// item that user select
 	private static String selectedUser;
 
+	//TODO if appropriate to declare label out of the start method
+	private ObservableList<String> obl;
+	private Label order;
+	private Label size;
+	private Label connectedComponents;
+	private Label friendsofcent;
+	private Label result;
+	
 	public static SocialNetworkManager getSocialNetworkManager() {
 		return mgr;
 	}
@@ -138,15 +146,15 @@ public class Main extends Application {
 		Button rotateButton = new Button("Check");
 
 		// create a label for showing rotation degree
-		Label result = new Label("Friend List : ");
+		result = new Label("Friend List : ");
 		
-		Label order = new Label();
-		Label size = new Label();
-		Label connectedComponents = new Label();
-		Label friendsofcent = new Label();
+		order = new Label();
+		size = new Label();
+		connectedComponents = new Label();
+		friendsofcent = new Label();
 
 		// create a list for viewing friends
-		ObservableList<String> obl = FXCollections.observableList(new ArrayList<String>());
+		obl = FXCollections.observableList(new ArrayList<String>());
 //		obl.add("Empty Friend List");
 		ListView<String> lv = new ListView<String>(obl);
 		lv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -594,7 +602,6 @@ public class Main extends Application {
 						// update friends information
 						if (updated == null) {
 							obl.clear();
-							obl.add("Cannot Find: " + input.getText());
 						} else {
 							obl.clear();
 							obl.addAll(updated);
@@ -606,7 +613,7 @@ public class Main extends Application {
 						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 								ViewFriend, Back, Menu, Recall,Undo,Redo);
 						// set listview
-						result.setText("Friends of" + selectedUser + " are shown in follow viewer.");
+						result.setText("Friends of " + selectedUser + " are shown in follow viewer.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1315,7 +1322,7 @@ public class Main extends Application {
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					
 					FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
-							DeleteUser,Undo,Redo);
+							DeleteUser,MutualFriends, ShortestPath, Undo,Redo);
 
 					//update button accessibility
 					ViewFriend.setDisable(true);
@@ -1405,6 +1412,8 @@ public class Main extends Application {
 				if(lv.getSelectionModel().getSelectedItems() != null) {
 					if(lv.getSelectionModel().getSelectedItems().size()>1) {
 						result.setText("Multiple users selected.");
+						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
+								ViewFriend, Back, Menu, Recall,Undo,Redo);
 						ViewFriend.setDisable(true);
 						Import.setDisable(true);
 						Export.setDisable(true);
@@ -1415,8 +1424,11 @@ public class Main extends Application {
 						RemoveSelectedFriend.setDisable(false);
 						RemoveAllFriend.setDisable(true);
 						AddFriend.setDisable(true);
+						
 					}
 					else if(lv.getSelectionModel().getSelectedItems().size()==0) {
+						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
+								ViewFriend, Back, Menu, Recall,Undo,Redo);
 						ViewFriend.setDisable(true);
 						DeleteUser.setDisable(true);
 						Import.setDisable(false);
@@ -1430,6 +1442,8 @@ public class Main extends Application {
 						AddFriend.setDisable(true);
 					}
 					else {
+						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
+								ViewFriend, Back, Menu, Recall,Undo,Redo);
 					selectedUser = lv.getSelectionModel().getSelectedItem();
 					result.setText("" + selectedUser + " is selected.");
 					order.setText(Integer.toString(mgr.order()));
@@ -1565,9 +1579,7 @@ public class Main extends Application {
 	                exitSaveButton.setOnAction(new EventHandler<ActionEvent>() {
 	        			String S;
 
-	        			public void handle(ActionEvent e) {
-	        				
-	        		        final String sampleText = "Log Test \n"; //TODO change as actual log
+	        			public void handle(ActionEvent e) {	        				
 	        		        
 	        	            FileChooser fileChooser = new FileChooser();
 	        	            
@@ -1606,33 +1618,6 @@ public class Main extends Application {
 
 	}
 	
-//private EventHandler<WindowEvent> confirmCloseEventHandler = event -> {
-//	System.out.println("CALLED");
-//    Alert closeConfirmation = new Alert(
-//            Alert.AlertType.CONFIRMATION,
-//            "Are you sure you want to exit?"
-//    );
-//    Button exitButton = (Button) closeConfirmation.getDialogPane().lookupButton(
-//            ButtonType.OK
-//    );
-//    exitButton.setText("Exit");
-//    closeConfirmation.setHeaderText("Confirm Exit");
-//    closeConfirmation.initModality(Modality.APPLICATION_MODAL);
-//    closeConfirmation.initOwner(mainStage);
-//
-//    // normally, you would just use the default alert positioning,
-//    // but for this simple sample the main stage is small,
-//    // so explicitly position the alert so that the main window can still be seen.
-//    closeConfirmation.setX(mainStage.getX());
-//    closeConfirmation.setY(mainStage.getY() + mainStage.getHeight());
-//
-//    Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
-//    if (!ButtonType.OK.equals(closeResponse.get())) {
-//        event.consume();
-//    }
-//};
-
-
 	
 	/**
 	 * Create file "log.txt" in the root folder
@@ -1741,7 +1726,25 @@ public class Main extends Application {
 				System.out.println("The new central user is "+mgr.getCentralPerson());
 				centralUserNtwk.getChildren().clear();
 				try {
+					List<String> updated = FriendList.getFriends(mgr, newCentralUser);
+					System.out.println("aa: " + updated);
+					// update friends information
+					if (updated == null) {
+						obl.clear();
+					} else {
+						obl.clear();
+						obl.addAll(updated);
+					}
+					result.setText("Friends of " + selectedUser + " are shown in follow viewer.");
+					order.setText(Integer.toString(mgr.order()));
+					size.setText((Integer.toString(mgr.size())));
+					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+					friendsofcent.setText(Integer.toString(updated.size()));
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
+					
+					
+//					undoHistory.clear();
+//					redoHistory.clear();
 				}catch (Exception ex){
 					//intentionally blank
 				}
