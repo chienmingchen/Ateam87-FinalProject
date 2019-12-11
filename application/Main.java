@@ -744,6 +744,12 @@ public class Main extends Application {
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 						
+					} catch (IllegalArgumentException nfe1) {
+						Alert alert1 = new Alert(AlertType.WARNING);
+						alert1.setTitle("Warning Dialog");
+						alert1.setHeaderText("Warning messager");
+						alert1.setContentText("Illegal Charater Entered!");
+						alert1.showAndWait();
 					}
 				catch (Exception nfe) {
 
@@ -1804,3 +1810,4 @@ public class Main extends Application {
 	}
 
 }
+
