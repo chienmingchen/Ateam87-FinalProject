@@ -17,9 +17,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 
-import com.sun.javafx.logging.Logger;
-import com.sun.javafx.logging.PlatformLogger.Level;
-
 import application.Main.UserNode;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -96,6 +93,29 @@ public class Main extends Application {
 	private Label connectedComponents;
 	private Label friendsofcent;
 	private Label result;
+	
+	//Buttons
+	//for user page
+	Button Import;
+	Button Export;
+	Button AddFriendship;
+	Button RemoveAllUsers;
+	Button ViewFriend;
+	Button AddUser;
+	Button DeleteUser;
+	Button MutualFriends;
+	Button ShortestPath;
+	//for friends page
+	Button AddFriend;
+	Button RemoveAllFriend;
+	Button RemoveSelectedFriend;
+	Button RemoveFriend;
+	Button ViewFriendship;
+	Button Menu;
+	
+	//vbox for operation
+	VBox operation;
+	Label title; //title for operation
 	
 	public static SocialNetworkManager getSocialNetworkManager() {
 		return mgr;
@@ -177,21 +197,21 @@ public class Main extends Application {
 		}
 		
 		// title for opereation vbox
-		Label title = new Label();
+		title = new Label();
 		title.setText("Operations");
 		title.setFont(Font.font("Verdana", FontPosture.ITALIC, 12));
 		title.setAlignment(Pos.CENTER);
 
 		// Buttons for user operations
-		Button Import = new Button("Import");
-		Button Export = new Button("Export");
-		Button AddFriendship = new Button("Add Friendship");
-		Button RemoveAllUsers = new Button("RemoveAllUsers");
-		Button ViewFriend = new Button("View Friendships");
-		Button AddUser = new Button("Add Users");
-		Button DeleteUser = new Button("Delete Users");
-		Button MutualFriends = new Button("Mutual Friends");
-		Button ShortestPath = new Button("Shortest path between two");
+		Import = new Button("Import");
+		Export = new Button("Export");
+		AddFriendship = new Button("Add Friendship");
+		RemoveAllUsers = new Button("RemoveAllUsers");
+		ViewFriend = new Button("View Friendships");
+		AddUser = new Button("Add Users");
+		DeleteUser = new Button("Delete Users");
+		MutualFriends = new Button("Mutual Friends");
+		ShortestPath = new Button("Shortest path between two");
 //		Button Undo = new Button("Undo");
 //		Button Redo = new Button("Redo");
 		
@@ -214,13 +234,12 @@ public class Main extends Application {
 		DeleteUser.setDisable(true);
 		
 		// Buttons for friend operations
-		Button AddFriend = new Button("Add Friend");
-		Button RemoveAllFriend = new Button("Remove All Friends");
-		Button RemoveSelectedFriend = new Button("Remove Selected Friends");
-		Button RemoveFriend = new Button("Remove Friend");
-		Button ViewFriendship = new Button("View Friendship(Friend Page)");
-		
-		Button Menu = new Button("Menu");
+		AddFriend = new Button("Add Friend");
+		RemoveAllFriend = new Button("Remove All Friends");
+		RemoveSelectedFriend = new Button("Remove Selected Friends");
+		RemoveFriend = new Button("Remove Friend");
+		ViewFriendship = new Button("View Friendship(Friend Page)");
+		Menu = new Button("Menu");
 		
 		AddFriend.setPrefSize(150, 30);
 		RemoveFriend.setPrefSize(150, 30);
@@ -236,7 +255,7 @@ public class Main extends Application {
 		
 
 		// create a vbox for operations
-		VBox operation = new VBox();
+		operation = new VBox();
 		operation.setSpacing(4);
 		operation.setAlignment(Pos.CENTER);
 		operation.setPadding(new Insets(15));
@@ -1869,6 +1888,8 @@ public class Main extends Application {
 						obl.clear();
 						obl.addAll(updated);
 					}
+					FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
+							ViewFriend, Menu);
 					result.setText(" [Prompt] : Friends of " + selectedUser + " are shown in follow viewer.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
@@ -1892,25 +1913,6 @@ public class Main extends Application {
 		return centralUserNtwk;
 	}
 	
-//	public VBox createpane (String str1, String str2, String str3, Label result, GridPane centralUserNtwk) {
-//		VBox middle = new VBox();
-//	    GridPane numbers = new GridPane();
-//	    numbers.setHgap(10);
-//	    numbers.setVgap(10);
-//	    numbers.setPadding(new Insets(20, 150, 10, 10));
-//	    numbers.add(new Label("Number of users"), 0, 0);
-//		//numbers.add(new Label(Integer.toString(mgr.order())), 1, 0);
-//	    numbers.add(new Label(str1), 1, 0);
-//		numbers.add(new Label("Number of friendships"), 0, 1);
-//		//numbers.add(new Label(Integer.toString(mgr.size())), 1, 1);
-//		numbers.add(new Label(str2), 1, 1);
-//		numbers.add(new Label("Number of connected components "), 0, 2);
-//		//numbers.add(new Label(Integer.toString(mgr.connectedComponents())), 1, 2);
-//		numbers.add(new Label(str3), 1, 2);
-//		
-//		//middle.getChildren().addAll(result, numbers, centralUserNtwk);
-//		return middle;
-//	}
 
 	/**
 	 * @param args
@@ -1921,4 +1923,3 @@ public class Main extends Application {
 	}
 
 }
-
