@@ -741,7 +741,7 @@ public class Main extends Application {
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 						
-					} catch (IllegalArgumentException nfe1) {
+					} catch (IllegalCharacterException nfe1) {
 						Alert alert1 = new Alert(AlertType.WARNING);
 						alert1.setTitle("Warning Dialog");
 						alert1.setHeaderText("Warning messager");
@@ -846,43 +846,52 @@ public class Main extends Application {
 					Optional<Pair<String, String>> choice = dialog.showAndWait();
 
 					choice.ifPresent(name1name2 -> {
-						if(name1.getText() == null || name1.getText().equals("")) {
+						try {
+							if(name1.getText() == null || name1.getText().equals("")) {
+								Alert alert1 = new Alert(AlertType.WARNING);
+								alert1.setTitle("Warning Dialog");
+								alert1.setHeaderText("Warning messager");
+								alert1.setContentText("Name 1 cannot be empty!");
+								alert1.showAndWait();
+							}else if(name2.getText() == null || name2.getText().equals("")) {
+								Alert alert2 = new Alert(AlertType.WARNING);
+								alert2.setTitle("Warning Dialog");
+								alert2.setHeaderText("Warning messager");
+								alert2.setContentText("Name 2 cannot be empty!");
+								alert2.showAndWait();
+							}else if(name1.getText().equals(name2.getText())) {
+								Alert alert2 = new Alert(AlertType.WARNING);
+								alert2.setTitle("Warning Dialog");
+								alert2.setHeaderText("Warning messager");
+								alert2.setContentText("Two names cannot be the same");
+								alert2.showAndWait();
+							}else {
+								mgr.setFriendship(name1.getText(), name2.getText());
+					    	 List<String> updated = new ArrayList<String>();       
+						       Set<String> updatedSet = mgr.getAllUsers();
+						       for (String item : updatedSet) {
+						         updated.add(item);
+						       }
+						       obl.clear();
+						       obl.addAll(updated);
+							result.setText(" [Prompt] : Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+							order.setText(Integer.toString(mgr.order()));
+							size.setText((Integer.toString(mgr.size())));
+							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+							}
+						}catch(IllegalCharacterException e1) {
 							Alert alert1 = new Alert(AlertType.WARNING);
 							alert1.setTitle("Warning Dialog");
 							alert1.setHeaderText("Warning messager");
-							alert1.setContentText("Name 1 cannot be empty!");
+							alert1.setContentText("Illegal Charater Entered!");
 							alert1.showAndWait();
-						}else if(name2.getText() == null || name2.getText().equals("")) {
-							Alert alert2 = new Alert(AlertType.WARNING);
-							alert2.setTitle("Warning Dialog");
-							alert2.setHeaderText("Warning messager");
-							alert2.setContentText("Name 2 cannot be empty!");
-							alert2.showAndWait();
-						}else {
-						mgr.setFriendship(name1.getText(), name2.getText());
-				    	 List<String> updated = new ArrayList<String>();       
-					       Set<String> updatedSet = mgr.getAllUsers();
-					       for (String item : updatedSet) {
-					         updated.add(item);
-					       }
-					       obl.clear();
-					       obl.addAll(updated);
-						result.setText(" [Prompt] : Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
-						order.setText(Integer.toString(mgr.order()));
-						size.setText((Integer.toString(mgr.size())));
-						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 						}
+						
+						
 					});
 //
 
-				}catch (IllegalArgumentException nfe1) {
-					Alert alert1 = new Alert(AlertType.WARNING);
-					alert1.setTitle("Warning Dialog");
-					alert1.setHeaderText("Warning messager");
-					alert1.setContentText("Illegal Charater Entered!");
-					alert1.showAndWait();
 				}
-
 				catch (Exception nfe) {
 
 					//nfe.printStackTrace();
@@ -956,22 +965,51 @@ public class Main extends Application {
 					Optional<Pair<String, String>> choice = dialog.showAndWait();
 
 					choice.ifPresent(name1name2 -> {
-						List<String> updated = mgr.mutualFriends(name1.getText(), name2.getText());
-//				    	 List<String> updated = new ArrayList<String>();       
-//					       Set<String> updatedSet = mgr.getAllUsers();
-//					       for (String item : updatedSet) {
-//					         updated.add(item);
-//					       }
-						Alert alert = new Alert(AlertType.INFORMATION);
-					      alert.setTitle("Mutual Friends");
-					      alert.setHeaderText("Mutual Friends");
-					      String output = String.join(" ", updated);
-					      alert.setContentText(output);
-					      alert.showAndWait();
-						result.setText(" [Prompt] : The mutual friends of" + name1.getText()+ " and " +name2.getText()+" are shown on left.");
-						order.setText(Integer.toString(mgr.order()));
-						size.setText((Integer.toString(mgr.size())));
-						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						 try {
+								if(name1.getText() == null || name1.getText().equals("")) {
+									Alert alert1 = new Alert(AlertType.WARNING);
+									alert1.setTitle("Warning Dialog");
+									alert1.setHeaderText("Warning messager");
+									alert1.setContentText("Name 1 cannot be empty!");
+									alert1.showAndWait();
+								}else if(name2.getText() == null || name2.getText().equals("")) {
+									Alert alert2 = new Alert(AlertType.WARNING);
+									alert2.setTitle("Warning Dialog");
+									alert2.setHeaderText("Warning messager");
+									alert2.setContentText("Name 2 cannot be empty!");
+									alert2.showAndWait();
+								}else if(name1.getText().equals(name2.getText())) {
+									Alert alert2 = new Alert(AlertType.WARNING);
+									alert2.setTitle("Warning Dialog");
+									alert2.setHeaderText("Warning messager");
+									alert2.setContentText("Two names cannot be the same");
+									alert2.showAndWait();
+								}else {
+									List<String> updated = mgr.mutualFriends(name1.getText(), name2.getText());
+//							    	 List<String> updated = new ArrayList<String>();       
+//								       Set<String> updatedSet = mgr.getAllUsers();
+//								       for (String item : updatedSet) {
+//								         updated.add(item);
+//								       }
+									Alert alert = new Alert(AlertType.INFORMATION);
+								      alert.setTitle("Mutual Friends");
+								      alert.setHeaderText("Mutual Friends");
+								      String output = String.join(" ", updated);
+								      alert.setContentText(output);
+								      alert.showAndWait();
+									result.setText(" [Prompt] : The mutual friends of" + name1.getText()+ " and " +name2.getText()+" are shown on left.");
+									order.setText(Integer.toString(mgr.order()));
+									size.setText((Integer.toString(mgr.size())));
+									connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+								}
+							}catch(IllegalCharacterException e1) {
+								Alert alert1 = new Alert(AlertType.WARNING);
+								alert1.setTitle("Warning Dialog");
+								alert1.setHeaderText("Warning messager");
+								alert1.setContentText("Illegal Charater Entered!");
+								alert1.showAndWait();
+							}
+				
 					});
 //
 						//result.setText(" [Prompt] : Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
@@ -999,71 +1037,109 @@ public class Main extends Application {
 
 				try {
 
-					 //Create the custom dialog.
-			        Dialog<Pair<String, String>> dialog = new Dialog<>();
-			        dialog.setTitle("Shortest friendship path");
-			        dialog.setHeaderText("Please Enter Names");
-			        
-					ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
-					dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+				      //Create the custom dialog.
+				           Dialog<Pair<String, String>> dialog = new Dialog<>();
+				           dialog.setTitle("Shortest friendship path");
+				           dialog.setHeaderText("Please Enter Names");
+				           
+				     ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
+				     dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
-					// Create the name1 and name2 labels and fields.
-					GridPane grid = new GridPane();
-					grid.setHgap(10);
-					grid.setVgap(10);
-					grid.setPadding(new Insets(20, 150, 10, 10));
+				     // Create the name1 and name2 labels and fields.
+				     GridPane grid = new GridPane();
+				     grid.setHgap(10);
+				     grid.setVgap(10);
+				     grid.setPadding(new Insets(20, 150, 10, 10));
 
-					TextField name1 = new TextField();
-					name1.setPromptText("Name1");
-					TextField name2 = new TextField();
-					name2.setPromptText("Name2");
+				     TextField name1 = new TextField();
+				     name1.setPromptText("Name1");
+				     TextField name2 = new TextField();
+				     name2.setPromptText("Name2");
 
-					grid.add(new Label("Name1:"), 0, 0);
-					grid.add(name1, 1, 0);
-					grid.add(new Label("Name2:"), 0, 1);
-					grid.add(name2, 1, 1);
+				     grid.add(new Label("From:"), 0, 0);
+				     grid.add(name1, 1, 0);
+				     grid.add(new Label("To:"), 0, 1);
+				     grid.add(name2, 1, 1);
 
-					// Enable/Disable login button depending on whether a name1 was entered.
-					Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-					loginButton.setDisable(true);
+				     // Enable/Disable login button depending on whether a name1 was entered.
+				     Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+				     loginButton.setDisable(true);
 
-					// Do some validation (using the Java 8 lambda syntax).
-					name1.textProperty().addListener((observable, oldValue, newValue) -> {
-					    loginButton.setDisable(newValue.trim().isEmpty());
-					});
+				     // Do some validation (using the Java 8 lambda syntax).
+				     name1.textProperty().addListener((observable, oldValue, newValue) -> {
+				         loginButton.setDisable(newValue.trim().isEmpty());
+				     });
 
-					dialog.getDialogPane().setContent(grid);
+				     dialog.getDialogPane().setContent(grid);
 
-					// Request focus on the name1 field by default.
-					//Platform.runLater(() -> name1.requestFocus());
+				     // Request focus on the name1 field by default.
+				     //Platform.runLater(() -> name1.requestFocus());
 
-					// Convert the result to a name1-name2-pair when the login button is clicked.
-					dialog.setResultConverter(dialogButton -> {
-					    if (dialogButton == loginButtonType) {
-					        return new Pair<>(name1.getText(), name2.getText());
-					    }
-					    return null;
-					});
+				     // Convert the result to a name1-name2-pair when the login button is clicked.
+				     dialog.setResultConverter(dialogButton -> {
+				         if (dialogButton == loginButtonType) {
+				             return new Pair<>(name1.getText(), name2.getText());
+				         }
+				         return null;
+				     });
 
-					Optional<Pair<String, String>> choice = dialog.showAndWait();
-
-					choice.ifPresent(name1name2 -> {
-			        	List<String> updated = mgr.shortestPath(name1.getText(), name2.getText());
-//				    	 List<String> updated = new ArrayList<String>();       
-//					       Set<String> updatedSet = mgr.getAllUsers();
-//					       for (String item : updatedSet) {
-//					         updated.add(item);
-//					       }
-					       obl.clear();
-					       obl.addAll(updated);
-//
-						result.setText(" [Prompt] : The shortest path between " + name1.getText()+ " and " +name2.getText()+" are shown on left.");
-					       order.setText(Integer.toString(mgr.order()));
-							size.setText((Integer.toString(mgr.size())));
-							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					});
-
-				}
+				     Optional<Pair<String, String>> choice = dialog.showAndWait();
+				     
+				     
+				     choice.ifPresent(name1name2 -> {
+				    	 try {
+								if(name1.getText() == null || name1.getText().equals("")) {
+									Alert alert1 = new Alert(AlertType.WARNING);
+									alert1.setTitle("Warning Dialog");
+									alert1.setHeaderText("Warning messager");
+									alert1.setContentText("Name 1 cannot be empty!");
+									alert1.showAndWait();
+								}else if(name2.getText() == null || name2.getText().equals("")) {
+									Alert alert2 = new Alert(AlertType.WARNING);
+									alert2.setTitle("Warning Dialog");
+									alert2.setHeaderText("Warning messager");
+									alert2.setContentText("Name 2 cannot be empty!");
+									alert2.showAndWait();
+								}else if(name1.getText().equals(name2.getText())) {
+									Alert alert2 = new Alert(AlertType.WARNING);
+									alert2.setTitle("Warning Dialog");
+									alert2.setHeaderText("Warning messager");
+									alert2.setContentText("Two names cannot be the same");
+									alert2.showAndWait();
+								}else {
+									List<String> updated = mgr.shortestPath(name1.getText(), name2.getText());
+								            System.out.println(updated);
+//								          List<String> updated = new ArrayList<String>();       
+//								            Set<String> updatedSet = mgr.getAllUsers();
+//								            for (String item : updatedSet) {
+//								              updated.add(item);
+//								            }
+								            Alert alert = new Alert(AlertType.INFORMATION);
+								      alert.setTitle("Shortest Path");
+								      alert.setHeaderText("Shortest Path");
+								      String output = String.join("->", updated);
+								      alert.setContentText(output);
+								      alert.showAndWait();
+								//
+								      result.setText(" [Prompt] : The shortest path between " + name1.getText()+ " and " +name2.getText()+" are shown on left.");
+								            order.setText(Integer.toString(mgr.order()));
+								       size.setText((Integer.toString(mgr.size())));
+								       connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+								       
+								}
+							}catch(IllegalCharacterException e1) {
+								Alert alert1 = new Alert(AlertType.WARNING);
+								alert1.setTitle("Warning Dialog");
+								alert1.setHeaderText("Warning messager");
+								alert1.setContentText("Illegal Charater Entered!");
+								alert1.showAndWait();
+							}
+				    	  
+				       
+				     });
+				     
+				     
+				    }
 
 				catch (Exception nfe) {
 
@@ -1125,7 +1201,6 @@ public class Main extends Application {
 							// update friends information
 							if (updated == null) {
 								obl.clear();
-								obl.add("Cannot Find: " + mgr.getCentralPerson());
 							} else {
 								obl.clear();
 								obl.addAll(updated);
@@ -1137,19 +1212,17 @@ public class Main extends Application {
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 							friendsofcent.setText(Integer.toString(updated.size()));
-						}
-
-						
+							centralUserNtwk.getChildren().clear();
+							centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
+						}			
 					}
-
-				}catch (IllegalArgumentException nfe1) {
+				}catch (IllegalCharacterException nfe1) {
 					Alert alert1 = new Alert(AlertType.WARNING);
 					alert1.setTitle("Warning Dialog");
 					alert1.setHeaderText("Warning messager");
 					alert1.setContentText("Illegal Charater Entered!");
 					alert1.showAndWait();
 				}
-
 				catch (Exception nfe) {
 
 					//nfe.printStackTrace();
@@ -1222,6 +1295,8 @@ public class Main extends Application {
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 							friendsofcent.setText(Integer.toString(updated.size()));
+							centralUserNtwk.getChildren().clear();
+							centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 						}
 
 						
@@ -1288,6 +1363,8 @@ public class Main extends Application {
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 							friendsofcent.setText(Integer.toString(updated.size()));
+							centralUserNtwk.getChildren().clear();
+							centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					}
 
 				}
@@ -1326,6 +1403,8 @@ public class Main extends Application {
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 						friendsofcent.setText(Integer.toString(0));
+						centralUserNtwk.getChildren().clear();
+						centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 
 				}
 

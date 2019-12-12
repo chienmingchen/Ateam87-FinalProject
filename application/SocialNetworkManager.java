@@ -59,7 +59,7 @@ public class SocialNetworkManager {
      * @throws IOException if the give file cannot be read
      * @throws ParseException if the given json cannot be parsed 
      */
-    public void constructNetwork(File file) throws FileNotFoundException, IOException, Exception {   
+    public void constructNetwork(File file) throws FileNotFoundException, IOException, IllegalCharacterException, Exception {   
     	
     	try
         {
@@ -81,10 +81,13 @@ public class SocialNetworkManager {
     			
     			switch(splittedCmd[0]) {
 	    			case "a" :
-						if(user2!=null)
-							this.setFriendship(user1.name, user2.name);
-						else
+						if(user2!=null) {
+							if(!user1.name.equals(user2.name)) {
+								this.setFriendship(user1.name, user2.name);	
+							}							
+						}else {
 							this.addPerson(user1.name);
+						}							
 	    			break;
 	    			
 	    			case "r" :
@@ -109,8 +112,8 @@ public class SocialNetworkManager {
         catch (FileNotFoundException e) {
         	 //e.printStackTrace();
         	throw new FileNotFoundException();
-        }catch(IllegalArgumentException e) {
-        	throw new IOException("Uncompilable commands.");
+        }catch(IllegalCharacterException e) {
+        	throw new IllegalCharacterException();
         }catch (IOException e) {
             //e.printStackTrace();
             throw new IOException();
@@ -129,7 +132,7 @@ public class SocialNetworkManager {
 		return this.centralPerson.name;
 	}
 	
-	public void addPerson(String person) throws IllegalArgumentException {
+	public void addPerson(String person) throws IllegalCharacterException {
 		//check if person is null
 	  	if (person == null)
 	  		return;
@@ -141,19 +144,17 @@ public class SocialNetworkManager {
 	  				&& person.charAt(i) != ' ' && person.charAt(i) != '\''  
 	  				&& person.charAt(i) != '_'
 	  		   ) {
-	  			throw new IllegalArgumentException();
+	  			throw new IllegalCharacterException();
 	  		}
 	  	}
 	  	network.addVertex(person);
                 this.logBuff.add("a "+person);
 	}
 	
-	public void setFriendship(String person1, String person2) {
-		try {
+	public void setFriendship(String person1, String person2) throws IllegalCharacterException {
+//		try {
 			//check if person is null
-		  	if (person1 == null || person2 == null) 
-		  		return;
-		  	if (person1.equals(person2))  
+		  	if (person1 == null && person2 == null) 
 		  		return;
 		  	if(!this.getAllUsers().contains(person1)) {
 		  		this.addPerson(person1);
@@ -164,9 +165,9 @@ public class SocialNetworkManager {
 		  	network.addEdge(person1, person2);
 		  	System.out.println("Add : " + person1 + " " + person2);
 	                this.logBuff.add("a " + person1 + " " + person2);
-		}catch(IllegalArgumentException e1) {
-			throw new IllegalArgumentException();
-		}
+//		}catch(IllegalCharacterException e1) {
+//			throw new IllegalCharacterException();
+//		}
 
 	}
 	
@@ -180,9 +181,7 @@ public class SocialNetworkManager {
 	
 	public void removeFriendship(String person1, String person2) {
 		//check if person is null
-	  	if (person1 == null || person2 == null) 
-	  		return;
-	  	if (person1.equals(person2)) 
+	  	if (person1 == null && person2 == null) 
 	  		return;
 	  	network.removeEdge(person1, person2);
 	  	this.logBuff.add("r " + person1 + " " + person2);
@@ -199,11 +198,24 @@ public class SocialNetworkManager {
 		return network.getAllVertices();
 	}
 	
-	public List<String> mutualFriends(String person1, String person2) {		
-		if (person1 == null || person2 == null) 
-	  		return null;
-	  	if (person1.equals(person2)) 
-	  		return null;
+	public List<String> mutualFriends(String person1, String person2) throws IllegalCharacterException {		
+		for(int i = 0; i < person1.length(); i++) {
+	  		if( !Character.isDigit(person1.charAt(i)) && !Character.isLetter(person1.charAt(i)) 
+	  				&& person1.charAt(i) != ' ' && person1.charAt(i) != '\''  
+	  				&& person1.charAt(i) != '_'
+	  		   ) {
+	  			throw new IllegalCharacterException();
+	  		}
+	  	}
+	  	
+	  	for(int i = 0; i < person2.length(); i++) {
+	  		if( !Character.isDigit(person2.charAt(i)) && !Character.isLetter(person2.charAt(i)) 
+	  				&& person2.charAt(i) != ' ' && person2.charAt(i) != '\''  
+	  				&& person2.charAt(i) != '_'
+	  		   ) {
+	  			throw new IllegalCharacterException();
+	  		}
+	  	}
 		List<String> set1 = network.getAdjacentVerticesOf(person1);
 		List<String> set2 = network.getAdjacentVerticesOf(person2);
 		set1.retainAll(set2);
@@ -211,11 +223,26 @@ public class SocialNetworkManager {
 		 
 	}
 	
-	public List<String> shortestPath(String person1, String person2) {		
+	public List<String> shortestPath(String person1, String person2) throws IllegalCharacterException {		
 	  	if (person1 == null || person2 == null) 
 	  		return null;
-	  	if (person1.equals(person2))  
-	  		return null;
+	  	for(int i = 0; i < person1.length(); i++) {
+	  		if( !Character.isDigit(person1.charAt(i)) && !Character.isLetter(person1.charAt(i)) 
+	  				&& person1.charAt(i) != ' ' && person1.charAt(i) != '\''  
+	  				&& person1.charAt(i) != '_'
+	  		   ) {
+	  			throw new IllegalCharacterException();
+	  		}
+	  	}
+	  	
+	  	for(int i = 0; i < person2.length(); i++) {
+	  		if( !Character.isDigit(person2.charAt(i)) && !Character.isLetter(person2.charAt(i)) 
+	  				&& person2.charAt(i) != ' ' && person2.charAt(i) != '\''  
+	  				&& person2.charAt(i) != '_'
+	  		   ) {
+	  			throw new IllegalCharacterException();
+	  		}
+	  	}
 		return network.getShortestPathOf(person1, person2);
 	}
 	
