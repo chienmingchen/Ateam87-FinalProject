@@ -994,24 +994,26 @@ public class Main extends Application {
 			}
 		});
 		
+		/**
+		 *  handle event for the "AddFriend" button
+		 */
 		AddFriend.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent e)
 
 			{
-				// create a text input dialog
-
+				// create a text input dialog and set information
 				TextInputDialog td = new TextInputDialog();
 				try {
 
-					// setHeaderText
-
 					td.setTitle("Add a friend");
-
 					td.setHeaderText("Please Enter Name");
-
 					td.setContentText("Name:");
+					
+					//set OK button disable
 					td.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+					
+					// if the input text is not empty or the input user's name is not existed, set the OK button valid.
 					td.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
 						td.getDialogPane().lookupButton(ButtonType.OK).setDisable
 						(newValue.trim().isEmpty()||mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
@@ -1019,8 +1021,10 @@ public class Main extends Application {
 
 					Optional<String> choice2 = td.showAndWait();
 
+					//if OK button is clicked
 					if (choice2.isPresent()) {
-
+						
+						//if the input is empty or the added friend is existed, pop a alert dialog
 						if(td.getEditor().getText() == null || td.getEditor().getText().equals("")) {
 						       Alert alert1 = new Alert(AlertType.WARNING);
 						       alert1.setTitle("Warning Dialog");
@@ -1035,9 +1039,12 @@ public class Main extends Application {
 						       alert2.showAndWait();
 						      }else {
 						       mgr.setFriendship(mgr.getCentralPerson(), td.getEditor().getText());
-						      }    
+						      }  
+						
+						 //if a central user is existed, update the information and viewers
 						 if (mgr.getCentralPerson() != null) {
 						       List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
+						       
 						       // update friends information
 						       if (updated == null) {
 						        obl.clear();
@@ -1045,37 +1052,23 @@ public class Main extends Application {
 						        obl.clear();
 						        obl.addAll(updated);
 						       }
+						       
+						       //reset the status of button 
 						       FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 						         ViewFriend, Menu);
+						       
+						       //update the viewers
 						       result.setText(td.getEditor().getText() + " becomes a new friend of " + mgr.getCentralPerson() +" .");
 						       order.setText(Integer.toString(mgr.order()));
 						       size.setText((Integer.toString(mgr.size())));
 						       connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 						       friendsofcent.setText(Integer.toString(updated.size()));
+						       
+						       //update the network viewer
 						       centralUserNtwk.getChildren().clear();
 						       centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 						      }
-
-
-						if (mgr.getCentralPerson() != null) {
-							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
-							// update friends information
-							if (updated == null) {
-								obl.clear();
-							} else {
-								obl.clear();
-								obl.addAll(updated);
-							}
-							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-									ViewFriend, Menu);
-							result.setText(td.getEditor().getText() + " becomes a new friend of " + mgr.getCentralPerson() +" .");
-							order.setText(Integer.toString(mgr.order()));
-							size.setText((Integer.toString(mgr.size())));
-							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-							friendsofcent.setText(Integer.toString(updated.size()));
-							centralUserNtwk.getChildren().clear();
-							centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
-						}			
+			
 					}
 				}catch (IllegalCharacterException nfe1) {
 					Alert alert1 = new Alert(AlertType.WARNING);
@@ -1098,15 +1091,19 @@ public class Main extends Application {
 
 		});
 		
+		
+		/**
+		 *  handle event for the "RemoveFriend" button
+		 */
 		RemoveFriend.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent e)
 
 			{
-				// create a text input dialog
+				// create a text input dialog and set information
 				TextInputDialog td = new TextInputDialog();
 				try {
-					// setHeaderText
+					
 					td.setTitle("Remove a friend");
 					td.setHeaderText("Please Enter Name");
 					td.setContentText("Name:");
@@ -1119,10 +1116,12 @@ public class Main extends Application {
 					Optional<String> choice = td.showAndWait();
 
 					if (choice.isPresent()) {
+						
 						mgr.removeFriendship(mgr.getCentralPerson(), td.getEditor().getText());
 
 						if (mgr.getCentralPerson() != null) {
 							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
+							
 							// update friends information
 							if (updated == null) {
 								obl.clear();
@@ -1130,6 +1129,8 @@ public class Main extends Application {
 								obl.clear();
 								obl.addAll(updated);
 							}
+							
+							//update the viewers
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 									ViewFriend, Menu);
 							result.setText(" [Prompt] : Friendship between " + td.getEditor().getText() + "and " + mgr.getCentralPerson() +"is deleted.");
@@ -1145,12 +1146,11 @@ public class Main extends Application {
 					}
 
 				}catch(IllegalArgumentException e1) {
+					// if IllegalArgumentException is caught, a prompted information will be dispalyed
 					result.setText(" [Prompt] : Friendship between " + td.getEditor().getText() + " and " + mgr.getCentralPerson() +"is deleted.");
 				}
 
 				catch (Exception nfe) {
-
-//					nfe.printStackTrace();
 
 					result.setText(" [Prompt] : invalid input");
 
