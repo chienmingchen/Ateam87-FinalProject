@@ -1481,13 +1481,18 @@ public class Main extends Application {
 	        primaryStage.show();
 
 
+			/**
+ 			*  handle event for the exit dialog
+ 			*/
 	        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 	            @Override
 	            public void handle(WindowEvent event) {
+	            	//display alert
 	                Alert closeConfirmation = new Alert(
 	                        Alert.AlertType.CONFIRMATION,
 	                        "Are you sure you want to exit?"
 	                );
+	                //set exit without saving button
 	                Button exitButton = (Button) closeConfirmation.getDialogPane().lookupButton(
 	                        ButtonType.OK
 	                );
@@ -1495,13 +1500,14 @@ public class Main extends Application {
 	                closeConfirmation.setHeaderText("Confirm Exit");
 	                closeConfirmation.initModality(Modality.APPLICATION_MODAL);
 	                
+	              //set exit with saving button
 	                Button exitSaveButton = (Button) closeConfirmation.getDialogPane().lookupButton(
 	                        ButtonType.CANCEL
 	                );
 	                exitSaveButton.setText("Save and Exit");
+	                
+	                //event for save and exit button
 	                exitSaveButton.setOnAction(new EventHandler<ActionEvent>() {
-	        			String S;
-
 	        			public void handle(ActionEvent e) {	        				
 	        		        
 	        	            FileChooser fileChooser = new FileChooser();
@@ -1517,28 +1523,22 @@ public class Main extends Application {
 	        	        		try {	
 	        	        	    	mgr.saveLog(file);
 	        	        	    } catch (IOException ex) {
-	        	        	    	System.out.println("write log IOException");
+	        	        	    	//intentionally blank
 	        	        	    }
 	        	            }
 	        			}
 	        		}
 	                
 	        );
-
-
+	                //check for user response
 	                Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
 	                if (ButtonType.OK.equals(closeResponse.get()) || ButtonType.CANCEL.equals(closeResponse.get())) {
 	                }
 	                else {
 	                    event.consume();
-	                }
-
-	                 
+	                }                 
 	            }
 	        });
-
-		
-
 	}
 	
 	
@@ -1646,11 +1646,9 @@ public class Main extends Application {
 				thisUser.circle.setFill(Color.AZURE);
 				String newCentralUser = thisUser.text.getText();
 				mgr.centralize(newCentralUser);
-//				System.out.println("The new central user is "+mgr.getCentralPerson());
 				centralUserNtwk.getChildren().clear();
 				try {
 					List<String> updated = FriendList.getFriends(mgr, newCentralUser);
-//					System.out.println("aa: " + updated);
 					// update friends information
 					if (updated == null) {
 						obl.clear();
@@ -1668,9 +1666,6 @@ public class Main extends Application {
 						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					
-					
-//					undoHistory.clear();
-//					redoHistory.clear();
 				}catch (Exception ex){
 					//intentionally blank
 				}
