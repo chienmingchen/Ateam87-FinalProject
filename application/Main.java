@@ -527,6 +527,9 @@ public class Main extends Application {
 			}
 		});
 
+		/**
+		 *  handle event for the "AddUser" button
+		 */
 		AddUser.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent e)
@@ -535,24 +538,21 @@ public class Main extends Application {
 
 				try {
 
-					// create a text input dialog
-
+					// create a text input dialog and set information
 					TextInputDialog td1 = new TextInputDialog();
-
-					// setHeaderText
-
 					td1.setTitle("Add a user");
-
 					td1.setHeaderText("Please Enter Name");
-
 					td1.setContentText("Name:");
+					//set the OK button disable
 					td1.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 					
+					// if the friend list of central user is not null 
 					if(mgr.getPersonalNetwork(mgr.getCentralPerson())!=null) {
-					td1.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+						// if the input text is not empty or the input user's name is not existed, set the OK button valid.
+						td1.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
 						td1.getDialogPane().lookupButton(ButtonType.OK).setDisable
 						(newValue.trim().isEmpty()||mgr.getPersonalNetwork(mgr.getCentralPerson()).contains(newValue));
-			        });
+						});
 					}
 					else {
 						td1.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
@@ -564,11 +564,11 @@ public class Main extends Application {
 
 					Optional<String> choice1 = td1.showAndWait();
 
+					// if the OK button is clicked
 					if (choice1.isPresent()) {
-
-
-
+						
 						if ((td1.getEditor().getText()) != null) {
+							// if the added user is existed, pop a alert dialog
 							if(mgr.getAllUsers().contains(td1.getEditor().getText())) {
 								Alert alert1 = new Alert(AlertType.WARNING);
 								alert1.setTitle("Warning Dialog");
@@ -587,6 +587,8 @@ public class Main extends Application {
 							for (String item : updatedSet) {
 									updated.add(item);
 							}
+							
+							// update the viewers
 							obl.clear();
 							obl.addAll(updated);
 							result.setText( td1.getEditor().getText() + " is added.");
@@ -595,27 +597,20 @@ public class Main extends Application {
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 							if (mgr.getCentralPerson() != null && !mgr.getCentralPerson().equals(" ")) {
 								friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
-//							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
-//									ViewFriend, Back, Menu, Recall);
 							}
 							
-							
-						}
-					
-
-						
+						}	
 						
 					} catch (IllegalCharacterException nfe1) {
+						//if a Illegal Charater Entered, pop an alert dialog
 						Alert alert1 = new Alert(AlertType.WARNING);
 						alert1.setTitle("Warning Dialog");
 						alert1.setHeaderText("Warning messager");
 						alert1.setContentText("Illegal Charater Entered!");
 						alert1.showAndWait();
 					}
+				
 				catch (Exception nfe) {
-
-//					nfe.printStackTrace();
-
 					result.setText(" [Prompt] : invalid input");
 
 				}
@@ -624,8 +619,9 @@ public class Main extends Application {
 
 		});
 
-
-
+		/**
+		 *  add all buttons to operation vbox
+		 */
 		operation.getChildren().add(title);
 		operation.getChildren().add(Import);
 		operation.getChildren().add(Export);
@@ -637,7 +633,7 @@ public class Main extends Application {
 		operation.getChildren().add(MutualFriends);
 		operation.getChildren().add(ShortestPath);
 
-		// create a event handler
+		
         	/**
 		 *  handle event for the "AddFriendship" button
 		 */
@@ -1438,44 +1434,29 @@ public class Main extends Application {
 			}
 		};
 		
-		// Set the action of the textfield
+		// handle the event for the input vbox
 		input.setOnAction(EventByEnter);
-		// Set the action of the Click button
+		// handle the event for the "check" button
 		rotateButton.setOnAction(EventByButton);
-		// Set the action of clicking by mouse
+		// handle the event for the choose a user in the observable list
 		lv.setOnMouseClicked(EventByMouse);
 
-		// fill vbox with different components
+		// add interface to the top vbox
 		vbox.getChildren().add(prompt);
 		vbox.getChildren().add(input);
 		vbox.getChildren().add(rotateButton);
 		vbox.getChildren().add(result);
 		
+		// add interface to the central vbox
 		VBox middle = new VBox();
-//		 GridPane numbers = new GridPane();
-//		 numbers.setHgap(10);
-//	      numbers.setVgap(10);
-//	      numbers.setPadding(new Insets(20, 150, 10, 10));
-//	      numbers.add(new Label("Number of users in the Network:"), 0, 0);
-//	      numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
-//	      numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
-//	      numbers.add(new Label("    "), 0, 3);
-//	      numbers.add(new Label("Number of friends of central user: "), 0, 4);
-//	   numbers.add(order, 1, 0);
-//	   numbers.add(size, 1, 1);
-//	   numbers.add(connectedComponents, 1, 2);
-//	   numbers.add(new Label("    "), 1, 3);
-//	   numbers.add(friendsofcent, 1, 4);
 		middle.getChildren().addAll(result, numbers, centralUserNtwk);
-		// Main layout is Border Pane example (top,left,center,right,bottom)
+		
+		// creat the whole border pane
 		BorderPane root = new BorderPane();
+		
+		//set the layout
 		root.setRight(operation);
-
-		// Set Layout
 		root.setTop(vbox);
-		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-		//mainScene.getstylesheets().add(getclass().getresource( application.css ).toexternalform());
-		//mainScene.getStylesheets().add("style.css");
 		root.setLeft(lv);
 		root.setCenter(middle);
 		root.setOnMouseClicked(EventByMouse2);
@@ -1489,6 +1470,8 @@ public class Main extends Application {
 		Group group = new Group();
 		group.getChildren().add(pane);
 
+		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+		
 		// Add the stuff and set the primary stage
 		primaryStage.setTitle(APP_TITLE);
 		primaryStage.setScene(mainScene);
