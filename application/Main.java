@@ -269,74 +269,78 @@ public class Main extends Application {
 	
 		FileChooser fileChooser = new FileChooser();
 		
-		/**
+			/**
 		 *  handle event for the "DeleteUser" button
 		 */
 		DeleteUser.setOnAction(new EventHandler<ActionEvent>(){
 
 			@Override
 			public void handle(ActionEvent event) {
+				try {
+					if(lv.getSelectionModel().getSelectedItems() != null) {
+						// get multi-users
+						List<String> selectedUser = lv.getSelectionModel().getSelectedItems();
+						String a = "";
+						
+						// delete them one by one 
+						for(int i = selectedUser.size()-1;i>=0;i--) {
+							String userToDelete = selectedUser.get(i);
+							a+=userToDelete+", "; // intall the deleted users to a string
+							List<String> friends = mgr.getPersonalNetwork(userToDelete);
+							mgr.removePerson(userToDelete);
+						}
+						
+						//update the users list 
+						List<String> updated = new ArrayList<String>();
+						Set<String> updatedSet = mgr.getAllUsers();
+						for (String item : updatedSet) {
+							updated.add(item);
+						}
+						obl.clear();
+						
+						// if the remained users is not empty, viewers update the status and numbers information 
+						if(updated.size()!=0) {
+							result.setText(" [Prompt] : " + a + "is deleted.");
+							order.setText(Integer.toString(mgr.order()));
+							size.setText((Integer.toString(mgr.size())));
+							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+							
+							// reset the buttons status
+							FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, 
+									ViewFriend, AddUser, DeleteUser,MutualFriends, ShortestPath);
+							
+							obl.addAll(updated);	
+							// the there is central user, update the number of his/her friends and friend viewer
+							if (!lv.getSelectionModel().getSelectedItems().equals( mgr.getCentralPerson())) {
+								friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+								centralUserNtwk.getChildren().clear();
+								centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 				
-				if(lv.getSelectionModel().getSelectedItems() != null) {
-					// get multi-users
-					List<String> selectedUser = lv.getSelectionModel().getSelectedItems();
-					String a = "";
-					
-					// delete them one by one 
-					for(int i = selectedUser.size()-1;i>=0;i--) {
-						String userToDelete = selectedUser.get(i);
-						a+=userToDelete+", "; // intall the deleted users to a string
-						List<String> friends = mgr.getPersonalNetwork(userToDelete);
-						mgr.removePerson(userToDelete);
-					}
-					
-					//update the users list 
-					List<String> updated = new ArrayList<String>();
-					Set<String> updatedSet = mgr.getAllUsers();
-					for (String item : updatedSet) {
-						updated.add(item);
-					}
-					obl.clear();
-					
-					// if the remained users is not empty, viewers update the status and numbers information 
-					if(updated.size()!=0) {
-						result.setText(" [Prompt] : " + a + "is deleted.");
-						order.setText(Integer.toString(mgr.order()));
-						size.setText((Integer.toString(mgr.size())));
-						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						
-						// reset the buttons status
-						FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, 
-								ViewFriend, AddUser, DeleteUser,MutualFriends, ShortestPath);
-						
-						// the there is central user, update the number of his/her friends and friend viewer
-						if (lv.getSelectionModel().getSelectedItems().equals( mgr.getCentralPerson())) {
-							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
-							centralUserNtwk.getChildren().clear();
-							centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
-						}
-						
-						// if the central user was deleted, set the number of his/her friends to be 0
-						// and the friend viewer will be cleared.
+							}
+							
+							// if the central user was deleted, set the number of his/her friends to be 0
+							// and the friend viewer will be cleared.
+							else {
+								friendsofcent.setText("0");
+								centralUserNtwk.getChildren().clear();	
+								
+							}										
+						}					
 						else {
-							friendsofcent.setText("0");
-							centralUserNtwk.getChildren().clear();	
+							result.setText(" [Prompt] : " + a + "is deleted. List is Empty");
+							order.setText(Integer.toString(mgr.order()));
+							size.setText((Integer.toString(mgr.size())));
+							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+							
+							centralUserNtwk.getChildren().clear();
+							FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
+									DeleteUser,MutualFriends, ShortestPath);
 						}
-						obl.addAll(updated);					
+						DeleteUser.setDisable(true);
 					}
-					
-					else {
-						result.setText(" [Prompt] : " + a + "is deleted. List is Empty");
-						order.setText(Integer.toString(mgr.order()));
-						size.setText((Integer.toString(mgr.size())));
-						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						
-						centralUserNtwk.getChildren().clear();
-						FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
-								DeleteUser,MutualFriends, ShortestPath);
-					}
-					DeleteUser.setDisable(true);
+				}catch(Exception e) {
 				}
+
 			}
 		});
 
