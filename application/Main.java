@@ -167,6 +167,8 @@ public class Main extends Application {
 
 		// create a label for showing rotation degree
 		result = new Label("Friend List : ");
+		result.setFont(new Font("Arial", 16));
+		result.setTextFill(Color.web("#0076a3"));
 		
 		order = new Label();
 		size = new Label();
