@@ -1274,12 +1274,11 @@ public class Main extends Application {
 			}
 		});
 
-		// check action rotate event
+		/**
+		 *  handle event for the "Check" button
+		 */
 		EventHandler<ActionEvent> EventByButton = new EventHandler<ActionEvent>() {
-			String S;
-
 			public void handle(ActionEvent e) {
-
 				try {
 					List<String> updated = FriendList.getFriends(mgr, input);
 					// update friends information
@@ -1288,6 +1287,7 @@ public class Main extends Application {
 						// set listview
 						result.setText(" [Prompt] : Cannot Find: " + input.getText());
 					} else {
+						//update listview
 						obl.clear();
 						obl.addAll(updated);
 						mgr.centralize(input.getText());
@@ -1301,25 +1301,22 @@ public class Main extends Application {
 					
 				} catch (Exception nfe) {
 					//nfe.printStackTrace();
-					result.setText(" [Prompt] : invalid input");
+//					result.setText(" [Prompt] : invalid input");
 				}
 			}
 		};
 
-		//textfield action event
+		/**
+		 *  handle event for the search text field by clicking Enter
+		 */
 		EventHandler<ActionEvent> EventByEnter = new EventHandler<ActionEvent>() {
-			String S;
-
 			public void handle(ActionEvent e) {
 				try {
-					// for(int i=0; i<mgr.getPersonalNetwork(input.getText()).size(); i++)
-					// S += mgr.getPersonalNetwork(input.getText());
 					List<String> updated = FriendList.getFriends(mgr, input);
-//					System.out.println("update" + updated);
 					// update friends information
 					if (updated == null) {
 						obl.clear();
-						// set listview
+						//set listview
 						result.setText(" [Prompt] : Cannot Find: " + input.getText());
 					} else {
 						obl.clear();
@@ -1332,12 +1329,10 @@ public class Main extends Application {
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 						if(mgr.getCentralPerson() != null  && !mgr.getCentralPerson().equals(" "))
 							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
-					}
-
-					
+					}			
 				} catch (Exception nfe) {
 					//nfe.printStackTrace();
-					result.setText(" [Prompt] : invalid input");
+//					result.setText(" [Prompt] : invalid input");
 				}
 			}
 		};
