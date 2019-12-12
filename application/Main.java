@@ -461,7 +461,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					
+					friendsofcent.setText("0");
 					//update button accessibility
 					ViewFriend.setDisable(true);
 					AddUser.setDisable(false);
