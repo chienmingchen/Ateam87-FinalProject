@@ -311,6 +311,7 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					obl.addAll(updated);					
 					}
 					else {
@@ -318,7 +319,7 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						friendsofcent.setText(Integer.toString(updated.size()));
+						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 						Import.setDisable(false);
 						Export.setDisable(false);
 						AddUser.setDisable(false);						
@@ -497,7 +498,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					friendsofcent.setText(Integer.toString(updated.size()));
+					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					//update button accessibility
 					RemoveAllUsers.setDisable(false);
 //					ViewFriend.setDisable(false);
@@ -603,6 +604,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					//update button accessibility
 					ViewFriend.setDisable(true);
 					AddUser.setDisable(false);
@@ -754,7 +756,7 @@ public class Main extends Application {
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-							friendsofcent.setText(Integer.toString(updated.size()));
+							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 //							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
 //									ViewFriend, Back, Menu, Recall);
 						}
@@ -898,7 +900,7 @@ public class Main extends Application {
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-							friendsofcent.setText(Integer.toString(updated.size()));
+							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 							}
 						}catch(IllegalCharacterException e1) {
 							Alert alert1 = new Alert(AlertType.WARNING);
@@ -1022,7 +1024,7 @@ public class Main extends Application {
 									order.setText(Integer.toString(mgr.order()));
 									size.setText((Integer.toString(mgr.size())));
 									connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-									friendsofcent.setText(Integer.toString(updated.size()));
+									friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 								}
 							}catch(IllegalCharacterException e1) {
 								Alert alert1 = new Alert(AlertType.WARNING);
@@ -1147,7 +1149,7 @@ public class Main extends Application {
 								            order.setText(Integer.toString(mgr.order()));
 								       size.setText((Integer.toString(mgr.size())));
 								       connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-								       friendsofcent.setText(Integer.toString(updated.size()));
+								       friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 								       
 								}
 							}catch(IllegalCharacterException e1) {
@@ -1217,7 +1219,41 @@ public class Main extends Application {
 //	        		}
 
 
-						mgr.setFriendship(mgr.getCentralPerson(), td.getEditor().getText());
+						if(td.getEditor().getText() == null || td.getEditor().getText().equals("")) {
+						       Alert alert1 = new Alert(AlertType.WARNING);
+						       alert1.setTitle("Warning Dialog");
+						       alert1.setHeaderText("Warning messager");
+						       alert1.setContentText("Name cannot be empty!");
+						       alert1.showAndWait();
+						      }else if(td.getEditor().getText().equals(mgr.getCentralPerson())) {
+						       Alert alert2 = new Alert(AlertType.WARNING);
+						       alert2.setTitle("Warning Dialog");
+						       alert2.setHeaderText("Warning messager");
+						       alert2.setContentText("Name cannot be the same as central user");
+						       alert2.showAndWait();
+						      }else {
+						       mgr.setFriendship(mgr.getCentralPerson(), td.getEditor().getText());
+						      }    
+						 if (mgr.getCentralPerson() != null) {
+						       List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
+						       // update friends information
+						       if (updated == null) {
+						        obl.clear();
+						       } else {
+						        obl.clear();
+						        obl.addAll(updated);
+						       }
+						       FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
+						         ViewFriend, Menu);
+						       result.setText(td.getEditor().getText() + " becomes a new friend of " + mgr.getCentralPerson() +" .");
+						       order.setText(Integer.toString(mgr.order()));
+						       size.setText((Integer.toString(mgr.size())));
+						       connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						       friendsofcent.setText(Integer.toString(updated.size()));
+						       centralUserNtwk.getChildren().clear();
+						       centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
+						      }
+
 
 						if (mgr.getCentralPerson() != null) {
 							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
@@ -1466,7 +1502,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					
+					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					
 //					order.setText(Integer.toString(mgr.order()));
 //					size.setText((Integer.toString(mgr.size())));
@@ -1511,7 +1547,7 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						
+						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					}
 					
 				} catch (Exception nfe) {
@@ -1545,6 +1581,7 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					}
 
 					
@@ -1600,6 +1637,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 				
 					System.out.println("clicked on " + lv.getSelectionModel().getSelectedItem());
 					
@@ -1894,7 +1932,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					friendsofcent.setText(Integer.toString(updated.size()));
+					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					
 					
