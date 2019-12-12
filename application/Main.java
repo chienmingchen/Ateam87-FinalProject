@@ -1930,7 +1930,7 @@ public class Main extends Application {
 					}
 					FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 							ViewFriend, Menu);
-					result.setText(" [Prompt] : Friends of " + selectedUser + " are shown in follow viewer.");
+					result.setText(" [Prompt] : Friends of " + newCentralUser + " are shown in follow viewer.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
