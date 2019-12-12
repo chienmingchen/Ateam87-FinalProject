@@ -313,7 +313,17 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+						FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
+								DeleteUser,MutualFriends, ShortestPath);
+						if (lv.getSelectionModel().getSelectedItems().equals( mgr.getCentralPerson())) {
+							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+							centralUserNtwk.getChildren().clear();
+						}
+						else {
+							friendsofcent.setText("0");
+							centralUserNtwk.getChildren().clear();
+							
+						}
 					obl.addAll(updated);					
 					}
 					else {
@@ -321,13 +331,10 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
-						Import.setDisable(false);
-						Export.setDisable(false);
-						AddUser.setDisable(false);						
-						RemoveAllUsers.setDisable(true);
-					    ViewFriend.setDisable(true);
-					    AddFriendship.setDisable(false);
+						
+						centralUserNtwk.getChildren().clear();
+						FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
+								DeleteUser,MutualFriends, ShortestPath);
 					}
 					DeleteUser.setDisable(true);
 
@@ -501,6 +508,7 @@ public class Main extends Application {
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+					
 					//update button accessibility
 					RemoveAllUsers.setDisable(false);
 //					ViewFriend.setDisable(false);
@@ -606,7 +614,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+					
 					//update button accessibility
 					ViewFriend.setDisable(true);
 					AddUser.setDisable(false);
@@ -758,10 +766,15 @@ public class Main extends Application {
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+							if (mgr.getCentralPerson() != null) {
+								friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 //							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
 //									ViewFriend, Back, Menu, Recall);
+							}
+							
+							
 						}
+					
 
 						
 						
@@ -902,7 +915,10 @@ public class Main extends Application {
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+							if(mgr.getCentralPerson() != null)
+								friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+								centralUserNtwk.getChildren().clear();
+								centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 							}
 						}catch(IllegalCharacterException e1) {
 							Alert alert1 = new Alert(AlertType.WARNING);
@@ -1026,7 +1042,8 @@ public class Main extends Application {
 									order.setText(Integer.toString(mgr.order()));
 									size.setText((Integer.toString(mgr.size())));
 									connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-									friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+									if(mgr.getCentralPerson() != null)
+										friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 								}
 							}catch(IllegalCharacterException e1) {
 								Alert alert1 = new Alert(AlertType.WARNING);
@@ -1151,7 +1168,8 @@ public class Main extends Application {
 								            order.setText(Integer.toString(mgr.order()));
 								       size.setText((Integer.toString(mgr.size())));
 								       connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-								       friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+								       if(mgr.getCentralPerson() != null)
+								    	   friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 								       
 								}
 							}catch(IllegalCharacterException e1) {
@@ -1504,8 +1522,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
-					
+
 //					order.setText(Integer.toString(mgr.order()));
 //					size.setText((Integer.toString(mgr.size())));
 //					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1522,7 +1539,7 @@ public class Main extends Application {
 					RemoveAllUsers.setDisable(false);
 					AddUser.setDisable(false);
 				} catch (Exception nfe) {
-					//nfe.printStackTrace();
+					nfe.printStackTrace();
 //                		 result.setText(" [Prompt] : invalid input");
 				}
 			}
@@ -1549,7 +1566,8 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+						if(mgr.getCentralPerson() != null)
+							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					}
 					
 				} catch (Exception nfe) {
@@ -1583,7 +1601,8 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+						if(mgr.getCentralPerson() != null)
+							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					}
 
 					
@@ -1639,7 +1658,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+					
 				
 					System.out.println("clicked on " + lv.getSelectionModel().getSelectedItem());
 					
@@ -1680,9 +1699,12 @@ public class Main extends Application {
 						RemoveAllUsers.setDisable(false);
 						AddUser.setDisable(false);
 //						//button in friend page
-//						RemoveFriend.setDisable(false);
-//						RemoveAllFriend.setDisable(true);
-//						AddFriend.setDisable(true);
+						RemoveFriend.setDisable(false);
+						RemoveAllFriend.setDisable(false);
+						AddFriend.setDisable(false);
+						RemoveSelectedFriend.setDisable(true);
+						Menu.setDisable(false);
+						
 //					
 				}
 				
@@ -1930,11 +1952,12 @@ public class Main extends Application {
 					}
 					FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 							ViewFriend, Menu);
-					result.setText(" [Prompt] : Friends of " + newCentralUser + " are shown in follow viewer.");
+					result.setText(" [Prompt] : Friends of " + selectedUser + " are shown in follow viewer.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
+					if(mgr.getCentralPerson() != null)
+						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					
 					
