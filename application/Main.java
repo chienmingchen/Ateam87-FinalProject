@@ -76,26 +76,32 @@ public class Main extends Application {
 	// store any command-line arguments that were entered.
 	// NOTE: this.getParameters().getRaw() will get these also
 	private List<String> args;
- 
-	// GUI needs to interact with SocialNetworkManager
-	private static SocialNetworkManager mgr = new SocialNetworkManager();
 
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 600;
 	private static final String APP_TITLE = "SocialNetworkManager";
+	
+	// GUI needs to interact with SocialNetworkManager
+	private static SocialNetworkManager mgr = new SocialNetworkManager();
 	// item that user select
 	private static String selectedUser;
 
-	//TODO if appropriate to declare label out of the start method
-	private ObservableList<String> obl;
+	//present the user and friends list
+	private ObservableList<String> obl; 
+	
+	
+	//present the number of users for the whole social network
 	private Label order;
+	//present the number of friendships for the whole social network
 	private Label size;
+	//present the number of connected components for the whole social network
 	private Label connectedComponents;
+	//present the number of friends for a specific user
 	private Label friendsofcent;
+	//present the status/help message
 	private Label result;
 	
-	//Buttons
-	//for user page
+	//buttons for user page
 	Button Import;
 	Button Export;
 	Button AddFriendship;
@@ -105,7 +111,8 @@ public class Main extends Application {
 	Button DeleteUser;
 	Button MutualFriends;
 	Button ShortestPath;
-	//for friends page
+	
+	//buttons for friends page
 	Button AddFriend;
 	Button RemoveAllFriend;
 	Button RemoveSelectedFriend;
@@ -113,60 +120,60 @@ public class Main extends Application {
 	Button ViewFriendship;
 	Button Menu;
 	
-	//vbox for operation
+	//vbox for operation in user page 
 	VBox operation;
-	Label title; //title for operation
+	Label title; 
 	
+	//construct the social network manager
 	public static SocialNetworkManager getSocialNetworkManager() {
 		return mgr;
 	}
-
-//	private Stage mainStage;
 	
 	@Override
-	public void start(Stage primaryStage) throws Exception {
-		 
+	public void start(Stage primaryStage) throws Exception {		 
 		// save args example
 		args = this.getParameters().getRaw();
 		
-		class history{
-			boolean delete;
-			boolean vertexOperation;
-			String name1;
-			String name2;
-			List<String> friends;
-			public history(boolean delete, boolean vertexOperation, String name1,String name2, List<String> friends){
-				this.delete = delete;
-				this.vertexOperation = vertexOperation;
-				this.name1=name1;
-				this.name2=name2;
-				this.friends = friends;
-			}
-		}
-
-
-		// Create a vertical box in center panel for getting friend list
-		// Vbox contains
+		/**
+		 * create a vertical box in top panel for searching the friends of a specified user;
+		 * a label, textfield, button are included. 
+		 */
 		VBox vbox = new VBox();
-
-		// create a label for prompting message
 		Label prompt = new Label("Enter the person you want to see his/her network");
-
-		// create a textfield for inputing name
 		TextField input = new TextField();
-
-		// Create rotate button for the right panel
 		Button rotateButton = new Button("Check");
+		
 
-		// create a label for showing rotation degree
-		result = new Label("Friend List : ");
+		/**
+		 * create a label to displays the status/help messages;
+		 * the label will be  packed as the first part of a central vertical box.
+		 */
+		result = new Label();
 		result.setFont(new Font("Arial", 16));
 		result.setTextFill(Color.web("#0076a3"));
 		
-		order = new Label();
-		size = new Label();
-		connectedComponents = new Label();
-		friendsofcent = new Label();
+		/**
+		 * create a grid pane to displays number of users, friendships, connected components 
+		 * for the whole graph. The gridpane will be packed in in the second part of a central vertical box.
+		 */
+		GridPane numbers = new GridPane();
+		numbers.setHgap(10);
+	    numbers.setVgap(10);
+	    numbers.setPadding(new Insets(20, 150, 10, 10));
+	    numbers.add(new Label("Number of users in the Network:"), 0, 0);
+	    numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
+	    numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
+	    numbers.add(new Label("    "), 0, 3);
+	    numbers.add(new Label("Number of friends of central user: "), 0, 4);
+	    order = new Label();
+	    size = new Label();
+	    connectedComponents = new Label();
+	friendsofcent = new Label();
+	    numbers.add(order, 1, 0); //number of users
+	    numbers.add(size, 1, 1); //number of friendships
+	    numbers.add(connectedComponents, 1, 2); //number of connected components 
+	    numbers.add(new Label("    "), 1, 3);
+	    numbers.add(friendsofcent, 1, 4); // number of friends for central user
 
 		// create a list for viewing friends
 		obl = FXCollections.observableList(new ArrayList<String>());
