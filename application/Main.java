@@ -125,8 +125,6 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-//		this.mainStage = primaryStage;		
-//		 primaryStage.setOnCloseRequest(confirmCloseEventHandler);
 		 
 		// save args example
 		args = this.getParameters().getRaw();
@@ -145,12 +143,7 @@ public class Main extends Application {
 				this.friends = friends;
 			}
 		}
-//		Stack<List<String>> users = new Stack<List<String>>();
-//		Stack<List<String>> reUsers = new Stack<List<String>>();
-//		Stack<List<history>> undoHistory = new Stack<List<history>>();
-//		Stack<List<history>> redoHistory = new Stack<List<history>>();
-		// Init the social network
-		// mgr.constructNetwork("File Path");
+
 
 		// Create a vertical box in center panel for getting friend list
 		// Vbox contains
@@ -344,143 +337,7 @@ public class Main extends Application {
 
 
 		});
-//		Undo.setOnAction(new EventHandler<ActionEvent>(){
-//			@Override
-//			public void handle(ActionEvent e) {
-//				List<String> historyList = new ArrayList<String>();
-//				Set<String> historySet = mgr.getAllUsers();
-//				for (String item : historySet) {
-//					historyList.add(item);
-//				}
-//				reUsers.add(historyList);
-//				List<history> lastAction = new ArrayList<history>();
-//				lastAction = undoHistory.pop();
-//				for(int i = 0; i < lastAction.size();i++) {
-//					history eachAction = lastAction.get(i);
-//					
-//					if(eachAction.delete==true) {
-//						//delete vertex
-//						if(eachAction.vertexOperation==true) {
-//							mgr.addPerson(eachAction.name1);
-//							if(eachAction.friends!=null) {
-//							for(String friend:eachAction.friends) {
-//								mgr.setFriendship(eachAction.name1,friend);
-//							}}
-//						}
-//						//delete edge
-//						else {
-//							mgr.setFriendship(eachAction.name1, eachAction.name2);
-//						}
-//					}
-//					else {
-//						//delete vertex
-//						if(eachAction.vertexOperation==true) {
-//							mgr.removePerson(eachAction.name1);
-//						}
-//						//delete edge
-//						else {
-//							mgr.removeFriendship(eachAction.name1, eachAction.name2);
-//						}
-//					}
-//				}
-//				List<String> updated = users.pop();
-//				obl.clear();
-//                
-//				if(updated.size()!=0) {
-//					result.setText(" [Prompt] : Undo Action");
-//				obl.addAll(updated);					
-//				}
-//				else {
-//					result.setText(" [Prompt] : Undo Action, empty");
-//					Import.setDisable(false);
-//					Export.setDisable(false);
-//					AddUser.setDisable(false);						
-//					RemoveAllUsers.setDisable(true);
-//				    ViewFriend.setDisable(true);
-//				    
-//				}
-//				DeleteUser.setDisable(true);
-//
-//				redoHistory.add(lastAction);
-//				Redo.setDisable(false);
-//				if(undoHistory.empty()==true) {
-//					Undo.setDisable(true);
-//				}
-//			 	//clear the GridPane first whenever new network is imported
-//				centralUserNtwk.getChildren().clear();
-//				//then plot the network of the central user
-//				
-//				centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
-//			}
-//		});
-//		Redo.setOnAction(new EventHandler<ActionEvent>(){
-//			@Override
-//			public void handle(ActionEvent e) {
-//				List<String> historyList = new ArrayList<String>();
-//				Set<String> historySet = mgr.getAllUsers();
-//				for (String item : historySet) {
-//					historyList.add(item);
-//				}
-//				users.add(historyList);
-//				List<history> lastAction = new ArrayList<history>();
-//				lastAction = redoHistory.pop();
-//				for(int i = 0; i < lastAction.size();i++) {
-//					history eachAction = lastAction.get(i);
-//					
-//					if(eachAction.delete==true) {
-//						//delete vertex
-//						if(eachAction.vertexOperation==true) {
-//							mgr.removePerson(eachAction.name1);
-//						}
-//						//delete edge
-//						else {
-//							mgr.removeFriendship(eachAction.name1, eachAction.name2);
-//						}
-//					}
-//					else {
-//						//delete vertex
-//						if(eachAction.vertexOperation==true) {
-//							mgr.addPerson(eachAction.name1);
-//							if(eachAction.friends!=null) {
-//							for(String friend:eachAction.friends) {
-//								mgr.setFriendship(eachAction.name1,friend);
-//							}
-//							}
-//						}
-//						//delete edge
-//						else {
-//							mgr.setFriendship(eachAction.name1, eachAction.name2);
-//						}
-//					}
-//				}
-//				List<String> updated = reUsers.pop();
-//				obl.clear();
-//                
-//				if(updated.size()!=0) {
-//					result.setText(" [Prompt] : Undo Action");
-//				obl.addAll(updated);					
-//				}
-//				else {
-//					result.setText(" [Prompt] : Undo Action, empty");
-//					Import.setDisable(false);
-//					Export.setDisable(false);
-//					AddUser.setDisable(false);						
-//					RemoveAllUsers.setDisable(true);
-//				    ViewFriend.setDisable(true);
-//				}
-//				DeleteUser.setDisable(true);
-//
-//				undoHistory.add(lastAction);
-//				Undo.setDisable(false);
-//				if(redoHistory.empty()==true) {
-//					Redo.setDisable(true);
-//				}
-//			 	//clear the GridPane first whenever new network is imported
-//				centralUserNtwk.getChildren().clear();
-//				//then plot the network of the central user
-//				centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
-//			}
-//		});
+
 		Import.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -577,12 +434,7 @@ public class Main extends Application {
 
 			public void handle(ActionEvent e) {
 				try {
-//					List<String> historyList = new ArrayList<String>();
-//					Set<String> historySet = mgr.getAllUsers();
-//					for (String item : historySet) {
-//						historyList.add(item);
-//					}
-//					users.add(historyList);
+
                     Set<String> a = mgr.getAllUsers();
                     String temp [] = new String[a.size()];
                     int i=0;
@@ -593,23 +445,11 @@ public class Main extends Application {
                     //List<history> thisHistory = new ArrayList<history>();
                     for(int j=0; j<temp.length;j++) {
                     	List<String> friends = mgr.getPersonalNetwork(temp[j]);
-    					//System.out.println(userToDelete);
-    					
-    				//	history newHistory = new history(true,true,temp[j],null,friends);
-    				//	thisHistory.add(newHistory);
+
                     	mgr.removePerson(temp[j]);
                     }
-                   // undoHistory.add(thisHistory);
-					//Undo.setDisable(false);
-                    //test functionality
-//                    List<String> updated = new ArrayList<String>();
-//					Set<String> updatedSet = mgr.getAllUsers();
-//					for (String item : updatedSet) {
-//						updated.add(item);
-//					}
-//					System.out.println(updatedSet);
+
 					obl.clear();
-//					obl.add("All users removed, Empty Friend List");
 					result.setText(" [Prompt] : All users removed.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
@@ -645,10 +485,7 @@ public class Main extends Application {
 							obl.clear();
 							obl.addAll(updated);
 						}
-					//	undoHistory.clear();
-					//	redoHistory.clear();
-					//	Undo.setDisable(true);
-					//	Redo.setDisable(true);
+
 						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 								ViewFriend, Menu);
 						// set listview
@@ -720,15 +557,7 @@ public class Main extends Application {
 
 					if (choice1.isPresent()) {
 
-//	        			if (mgr.getperson().contains(td.getEditor().getText())){
 
-//	                		Alert error = new Alert(Alert.AlertType.ERROR, "ERROR: Duplicate person is not allowed");
-
-//	          			Button err = new Button();
-
-//	                		err.setOnAction((ActionEvent ee)->{error.showAndWait();});
-
-//	        		}
 
 						if ((td1.getEditor().getText()) != null) {
 							if(mgr.getAllUsers().contains(td1.getEditor().getText())) {
@@ -739,21 +568,10 @@ public class Main extends Application {
 								alert1.showAndWait();
 
 							}else {
-//								List<String> historyList = new ArrayList<String>();
-//								Set<String> historySet = mgr.getAllUsers();
-//								for (String item : historySet) {
-//									historyList.add(item);
-//								}
-							//	users.add(historyList);
-//								List<history> thisHistory = new ArrayList<history>();
-//								history newHistory = new history(false,true,td1.getEditor().getText(),null,null);
-//								thisHistory.add(newHistory);
-							//	undoHistory.add(thisHistory);
 								mgr.addPerson(td1.getEditor().getText());
 							}							
 						}
 
-                            //Undo.setDisable(false);
 							// update friends information
 							List<String> updated = new ArrayList<String>();							
 							Set<String> updatedSet = mgr.getAllUsers();
@@ -787,7 +605,7 @@ public class Main extends Application {
 					}
 				catch (Exception nfe) {
 
-					//nfe.printStackTrace();
+//					nfe.printStackTrace();
 
 					result.setText(" [Prompt] : invalid input");
 
@@ -812,8 +630,6 @@ public class Main extends Application {
 		operation.getChildren().add(DeleteUser);
 		operation.getChildren().add(MutualFriends);
 		operation.getChildren().add(ShortestPath);
-//        operation.getChildren().add(Undo);
-//        operation.getChildren().add(Redo);
 
 		// create a event handler
         
@@ -1054,8 +870,7 @@ public class Main extends Application {
 							}
 				
 					});
-//
-						//result.setText(" [Prompt] : Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
+
 					}
 
 				
@@ -1204,12 +1019,10 @@ public class Main extends Application {
 			public void handle(ActionEvent e)
 
 			{
+				// create a text input dialog
 
+				TextInputDialog td = new TextInputDialog();
 				try {
-
-					// create a text input dialog
-
-					TextInputDialog td = new TextInputDialog();
 
 					// setHeaderText
 
@@ -1227,17 +1040,6 @@ public class Main extends Application {
 					Optional<String> choice2 = td.showAndWait();
 
 					if (choice2.isPresent()) {
-
-//	        			if (mgr.getperson().contains(td.getEditor().getText())){
-
-//	                		Alert error = new Alert(Alert.AlertType.ERROR, "ERROR: Duplicate person is not allowed");
-
-//	          			Button err = new Button();
-
-//	                		err.setOnAction((ActionEvent ee)->{error.showAndWait();});
-
-//	        		}
-
 
 						if(td.getEditor().getText() == null || td.getEditor().getText().equals("")) {
 						       Alert alert1 = new Alert(AlertType.WARNING);
@@ -1301,6 +1103,8 @@ public class Main extends Application {
 					alert1.setHeaderText("Warning messager");
 					alert1.setContentText("Illegal Charater Entered!");
 					alert1.showAndWait();
+				}catch(IllegalArgumentException e1) {
+					result.setText(td.getEditor().getText() + " becomes a new friend of " + mgr.getCentralPerson() +" .");
 				}
 				catch (Exception nfe) {
 
@@ -1319,19 +1123,12 @@ public class Main extends Application {
 			public void handle(ActionEvent e)
 
 			{
-
+				// create a text input dialog
+				TextInputDialog td = new TextInputDialog();
 				try {
-
-					// create a text input dialog
-
-					TextInputDialog td = new TextInputDialog();
-
 					// setHeaderText
-
 					td.setTitle("Remove a friend");
-
 					td.setHeaderText("Please Enter Name");
-
 					td.setContentText("Name:");
 					td.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
 					td.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
@@ -1342,19 +1139,6 @@ public class Main extends Application {
 					Optional<String> choice = td.showAndWait();
 
 					if (choice.isPresent()) {
-
-//	        			if (mgr.getperson().contains(td.getEditor().getText())){
-
-//	                		Alert error = new Alert(Alert.AlertType.ERROR, "ERROR: Duplicate person is not allowed");
-
-//	          			Button err = new Button();
-
-//	                		err.setOnAction((ActionEvent ee)->{error.showAndWait();});
-
-//	        		}
-
-						
-
 						mgr.removeFriendship(mgr.getCentralPerson(), td.getEditor().getText());
 
 						if (mgr.getCentralPerson() != null) {
@@ -1362,7 +1146,6 @@ public class Main extends Application {
 							// update friends information
 							if (updated == null) {
 								obl.clear();
-								obl.add("Cannot Find: " + mgr.getCentralPerson());
 							} else {
 								obl.clear();
 								obl.addAll(updated);
@@ -1381,11 +1164,13 @@ public class Main extends Application {
 						
 					}
 
+				}catch(IllegalArgumentException e1) {
+					result.setText(" [Prompt] : Friendship between " + td.getEditor().getText() + " and " + mgr.getCentralPerson() +"is deleted.");
 				}
 
 				catch (Exception nfe) {
 
-					//nfe.printStackTrace();
+//					nfe.printStackTrace();
 
 					result.setText(" [Prompt] : invalid input");
 
@@ -1403,24 +1188,6 @@ public class Main extends Application {
 
 				try {
 
-					
-
-					
-
-					
-
-//	        			if (mgr.getperson().contains(td.getEditor().getText())){
-
-//	                		Alert error = new Alert(Alert.AlertType.ERROR, "ERROR: Duplicate person is not allowed");
-
-//	          			Button err = new Button();
-
-//	                		err.setOnAction((ActionEvent ee)->{error.showAndWait();});
-
-//	        		}
-
-					
-
 						mgr.removeFriendship(mgr.getCentralPerson(), lv.getSelectionModel().getSelectedItem());
 
 						if (mgr.getCentralPerson() != null) {
@@ -1437,7 +1204,7 @@ public class Main extends Application {
 									ViewFriend, Menu);
 						
 
-							result.setText(" [Prompt] : Friendship between " +  lv.getSelectionModel().getSelectedItem() + "and " + mgr.getCentralPerson() +"is deleted.");
+							result.setText(" [Prompt] : Friendship between " +  selectedUser + " and " + mgr.getCentralPerson() +" is deleted.");
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1446,11 +1213,12 @@ public class Main extends Application {
 							centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					}
 
+				}catch(IllegalArgumentException e1) {
+					result.setText(" [Prompt] : Friendship between " +  selectedUser + " and " + mgr.getCentralPerson() +" is deleted.");
 				}
-
 				catch (Exception nfe) {
 
-					//nfe.printStackTrace();
+					nfe.printStackTrace();
 
 					result.setText(" [Prompt] : invalid input");
 
@@ -1485,6 +1253,8 @@ public class Main extends Application {
 						centralUserNtwk.getChildren().clear();
 						centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 
+				}catch(IllegalArgumentException e1) {
+					result.setText(" [Prompt] : All friendships of " + mgr.getCentralPerson() + " are deleted.");
 				}
 
 				catch (Exception nfe) {
@@ -1511,10 +1281,6 @@ public class Main extends Application {
 					for (String item : updatedSet) {
 						updated.add(item);
 					}
-//					undoHistory.clear();
-//					redoHistory.clear();
-//					Undo.setDisable(true);
-//					Redo.setDisable(true);
 					// update users information
 					obl.clear();
 					obl.addAll(updated);
@@ -1687,6 +1453,7 @@ public class Main extends Application {
 			public void handle(MouseEvent event) {
 				
 				if(!obl.isEmpty()) {
+					
 					lv.getSelectionModel().clearSelection();
 					selectedUser = null;
 						//update button accessibility
@@ -1952,7 +1719,7 @@ public class Main extends Application {
 					}
 					FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 							ViewFriend, Menu);
-					result.setText(" [Prompt] : Friends of " + selectedUser + " are shown in follow viewer.");
+					result.setText(" [Prompt] : Friends of " + newCentralUser + " are shown in follow viewer.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
@@ -1981,7 +1748,6 @@ public class Main extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		launch(args);
 	}
 
