@@ -76,32 +76,26 @@ public class Main extends Application {
 	// store any command-line arguments that were entered.
 	// NOTE: this.getParameters().getRaw() will get these also
 	private List<String> args;
+ 
+	// GUI needs to interact with SocialNetworkManager
+	private static SocialNetworkManager mgr = new SocialNetworkManager();
 
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 600;
 	private static final String APP_TITLE = "SocialNetworkManager";
-	
-	// GUI needs to interact with SocialNetworkManager
-	private static SocialNetworkManager mgr = new SocialNetworkManager();
 	// item that user select
 	private static String selectedUser;
 
-	//present the user and friends list
-	private ObservableList<String> obl; 
-	
-	
-	//present the number of users for the whole social network
+	//TODO if appropriate to declare label out of the start method
+	private ObservableList<String> obl;
 	private Label order;
-	//present the number of friendships for the whole social network
 	private Label size;
-	//present the number of connected components for the whole social network
 	private Label connectedComponents;
-	//present the number of friends for a specific user
 	private Label friendsofcent;
-	//present the status/help message
 	private Label result;
 	
-	//buttons for user page
+	//Buttons
+	//for user page
 	Button Import;
 	Button Export;
 	Button AddFriendship;
@@ -111,8 +105,7 @@ public class Main extends Application {
 	Button DeleteUser;
 	Button MutualFriends;
 	Button ShortestPath;
-	
-	//buttons for friends page
+	//for friends page
 	Button AddFriend;
 	Button RemoveAllFriend;
 	Button RemoveSelectedFriend;
@@ -120,60 +113,60 @@ public class Main extends Application {
 	Button ViewFriendship;
 	Button Menu;
 	
-	//vbox for operation in user page 
+	//vbox for operation
 	VBox operation;
-	Label title; 
+	Label title; //title for operation
 	
-	//construct the social network manager
 	public static SocialNetworkManager getSocialNetworkManager() {
 		return mgr;
 	}
+
+//	private Stage mainStage;
 	
 	@Override
-	public void start(Stage primaryStage) throws Exception {		 
+	public void start(Stage primaryStage) throws Exception {
+		 
 		// save args example
 		args = this.getParameters().getRaw();
 		
-		/**
-		 * create a vertical box in top panel for searching the friends of a specified user;
-		 * a label, textfield, button are included. 
-		 */
-		VBox vbox = new VBox();
-		Label prompt = new Label("Enter the person you want to see his/her network");
-		TextField input = new TextField();
-		Button rotateButton = new Button("Check");
-		
+		class history{
+			boolean delete;
+			boolean vertexOperation;
+			String name1;
+			String name2;
+			List<String> friends;
+			public history(boolean delete, boolean vertexOperation, String name1,String name2, List<String> friends){
+				this.delete = delete;
+				this.vertexOperation = vertexOperation;
+				this.name1=name1;
+				this.name2=name2;
+				this.friends = friends;
+			}
+		}
 
-		/**
-		 * create a label to displays the status/help messages;
-		 * the label will be  packed as the first part of a central vertical box.
-		 */
-		result = new Label();
+
+		// Create a vertical box in center panel for getting friend list
+		// Vbox contains
+		VBox vbox = new VBox();
+
+		// create a label for prompting message
+		Label prompt = new Label("Enter the person you want to see his/her network");
+
+		// create a textfield for inputing name
+		TextField input = new TextField();
+
+		// Create rotate button for the right panel
+		Button rotateButton = new Button("Check");
+
+		// create a label for showing rotation degree
+		result = new Label("Welcome to Social Network Visualizer");
 		result.setFont(new Font("Arial", 16));
 		result.setTextFill(Color.web("#0076a3"));
 		
-		/**
-		 * create a grid pane to displays number of users, friendships, connected components 
-		 * for the whole graph. The gridpane will be packed in in the second part of a central vertical box.
-		 */
-		GridPane numbers = new GridPane();
-		numbers.setHgap(10);
-	    numbers.setVgap(10);
-	    numbers.setPadding(new Insets(20, 150, 10, 10));
-	    numbers.add(new Label("Number of users in the Network:"), 0, 0);
-	    numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
-	    numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
-	    numbers.add(new Label("    "), 0, 3);
-	    numbers.add(new Label("Number of friends of central user: "), 0, 4);
-	    order = new Label();
-	    size = new Label();
-	    connectedComponents = new Label();
-	friendsofcent = new Label();
-	    numbers.add(order, 1, 0); //number of users
-	    numbers.add(size, 1, 1); //number of friendships
-	    numbers.add(connectedComponents, 1, 2); //number of connected components 
-	    numbers.add(new Label("    "), 1, 3);
-	    numbers.add(friendsofcent, 1, 4); // number of friends for central user
+		order = new Label();
+		size = new Label();
+		connectedComponents = new Label();
+		friendsofcent = new Label();
 
 		// create a list for viewing friends
 		obl = FXCollections.observableList(new ArrayList<String>());
@@ -318,6 +311,7 @@ public class Main extends Application {
 						if (lv.getSelectionModel().getSelectedItems().equals( mgr.getCentralPerson())) {
 							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 							centralUserNtwk.getChildren().clear();
+							centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 						}
 						else {
 							friendsofcent.setText("0");
@@ -361,7 +355,7 @@ public class Main extends Application {
 						updated.add(item);
 					}
 
-					System.out.println("Update" + updated);
+//					System.out.println("Update" + updated);
 					// update users information
 					obl.clear();
 					obl.addAll(updated);
@@ -519,7 +513,7 @@ public class Main extends Application {
 					}
 
 				} catch (Exception nfe) {
-					//nfe.printStackTrace();
+//					nfe.printStackTrace();
 //                		 result.setText(" [Prompt] : invalid input");
 				}
 			}
@@ -591,7 +585,7 @@ public class Main extends Application {
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-							if (mgr.getCentralPerson() != null) {
+							if (mgr.getCentralPerson() != null && !mgr.getCentralPerson().equals(" ")) {
 								friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 //							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
 //									ViewFriend, Back, Menu, Recall);
@@ -725,6 +719,12 @@ public class Main extends Application {
 								alert2.setHeaderText("Warning messager");
 								alert2.setContentText("Two names cannot be the same");
 								alert2.showAndWait();
+							}else if(mgr.getPersonalNetwork(name1.getText()) != null && mgr.getPersonalNetwork(name1.getText()).contains(name2.getText())) {
+								Alert alert2 = new Alert(AlertType.WARNING);
+								alert2.setTitle("Warning Dialog");
+								alert2.setHeaderText("Warning messager");
+								alert2.setContentText("Friendship already exists");
+								alert2.showAndWait();
 							}else {
 								mgr.setFriendship(name1.getText(), name2.getText());
 					    	 List<String> updated = new ArrayList<String>();       
@@ -738,7 +738,7 @@ public class Main extends Application {
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-							if(mgr.getCentralPerson() != null)
+							if(mgr.getCentralPerson() != null && !mgr.getCentralPerson().equals(" "))
 								friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 								centralUserNtwk.getChildren().clear();
 								centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
@@ -749,6 +749,8 @@ public class Main extends Application {
 							alert1.setHeaderText("Warning messager");
 							alert1.setContentText("Illegal Charater Entered!");
 							alert1.showAndWait();
+						}catch(IllegalArgumentException e1) {
+							result.setText(" [Prompt] : Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
 						}
 						
 						
@@ -758,7 +760,7 @@ public class Main extends Application {
 				}
 				catch (Exception nfe) {
 
-					//nfe.printStackTrace();
+					nfe.printStackTrace();
 
 					result.setText(" [Prompt] : invalid input");
 
@@ -848,6 +850,13 @@ public class Main extends Application {
 									alert2.setHeaderText("Warning messager");
 									alert2.setContentText("Two names cannot be the same");
 									alert2.showAndWait();
+								}else if(!mgr.getAllUsers().contains(name1.getText()) 
+										||!mgr.getAllUsers().contains(name2.getText()) ) {
+									Alert alert2 = new Alert(AlertType.WARNING);
+									alert2.setTitle("Warning Dialog");
+									alert2.setHeaderText("Warning messager");
+									alert2.setContentText("Users are not in the network");
+									alert2.showAndWait();
 								}else {
 									List<String> updated = mgr.mutualFriends(name1.getText(), name2.getText());
 //							    	 List<String> updated = new ArrayList<String>();       
@@ -865,7 +874,7 @@ public class Main extends Application {
 									order.setText(Integer.toString(mgr.order()));
 									size.setText((Integer.toString(mgr.size())));
 									connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-									if(mgr.getCentralPerson() != null)
+									if(mgr.getCentralPerson() != null && !mgr.getCentralPerson().equals(" "))
 										friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 								}
 							}catch(IllegalCharacterException e1) {
@@ -884,7 +893,7 @@ public class Main extends Application {
 
 				catch (Exception nfe) {
 
-					//nfe.printStackTrace();
+					nfe.printStackTrace();
 
 					result.setText(" [Prompt] : invalid input");
 
@@ -971,6 +980,13 @@ public class Main extends Application {
 									alert2.setHeaderText("Warning messager");
 									alert2.setContentText("Two names cannot be the same");
 									alert2.showAndWait();
+								}else if(!mgr.getAllUsers().contains(name1.getText()) 
+										||!mgr.getAllUsers().contains(name2.getText()) ) {
+									Alert alert2 = new Alert(AlertType.WARNING);
+									alert2.setTitle("Warning Dialog");
+									alert2.setHeaderText("Warning messager");
+									alert2.setContentText("Users are not in the network");
+									alert2.showAndWait();
 								}else {
 									List<String> updated = mgr.shortestPath(name1.getText(), name2.getText());
 								            System.out.println(updated);
@@ -990,7 +1006,7 @@ public class Main extends Application {
 								            order.setText(Integer.toString(mgr.order()));
 								       size.setText((Integer.toString(mgr.size())));
 								       connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-								       if(mgr.getCentralPerson() != null)
+								       if(mgr.getCentralPerson() != null  && !mgr.getCentralPerson().equals(" "))
 								    	   friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 								       
 								}
@@ -1339,7 +1355,7 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						if(mgr.getCentralPerson() != null)
+						if(mgr.getCentralPerson() != null && !mgr.getCentralPerson().equals(" "))
 							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					}
 					
@@ -1359,7 +1375,7 @@ public class Main extends Application {
 					// for(int i=0; i<mgr.getPersonalNetwork(input.getText()).size(); i++)
 					// S += mgr.getPersonalNetwork(input.getText());
 					List<String> updated = FriendList.getFriends(mgr, input);
-					System.out.println("update" + updated);
+//					System.out.println("update" + updated);
 					// update friends information
 					if (updated == null) {
 						obl.clear();
@@ -1374,7 +1390,7 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						if(mgr.getCentralPerson() != null)
+						if(mgr.getCentralPerson() != null  && !mgr.getCentralPerson().equals(" "))
 							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					}
 
@@ -1433,7 +1449,7 @@ public class Main extends Application {
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					
 				
-					System.out.println("clicked on " + lv.getSelectionModel().getSelectedItem());
+//					System.out.println("clicked on " + lv.getSelectionModel().getSelectedItem());
 					
 					//update button accessibility
 					//button in user page
@@ -1673,7 +1689,7 @@ public class Main extends Application {
 		//If the central user has no friends
 		if(friends==null) {
 			//If there is a central users
-			if(centralUser!=null && !centralUser.equals(" ")) //TODO
+			if(centralUser!=null && !centralUser.equals(" "))
 				centralUserNtwk.add(new UserNode(centralUser,50), cols/2, rows/2);
 			return centralUserNtwk;
 		}
@@ -1703,7 +1719,7 @@ public class Main extends Application {
 			//create a texted node representing this friend
 			friendNodes.add(new UserNode(friends.get(i),30));
 			//stores a reference to the newly created node
-			UserNode thisUser = friendNodes.get(i); //TODO
+			UserNode thisUser = friendNodes.get(i); 
 			//Give each friend node an eventhandler
 			//so when the mouse clicks on one friend
 			//that friend becomes the new central user
@@ -1712,11 +1728,11 @@ public class Main extends Application {
 				thisUser.circle.setFill(Color.AZURE);
 				String newCentralUser = thisUser.text.getText();
 				mgr.centralize(newCentralUser);
-				System.out.println("The new central user is "+mgr.getCentralPerson());
+//				System.out.println("The new central user is "+mgr.getCentralPerson());
 				centralUserNtwk.getChildren().clear();
 				try {
 					List<String> updated = FriendList.getFriends(mgr, newCentralUser);
-					System.out.println("aa: " + updated);
+//					System.out.println("aa: " + updated);
 					// update friends information
 					if (updated == null) {
 						obl.clear();
@@ -1730,7 +1746,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					if(mgr.getCentralPerson() != null)
+					if(mgr.getCentralPerson() != null && !mgr.getCentralPerson().equals(" "))
 						friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					
