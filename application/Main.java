@@ -219,21 +219,20 @@ public class Main extends Application {
 		Button RemoveSelectedFriend = new Button("Remove Selected Friends");
 		Button RemoveFriend = new Button("Remove Friend");
 		Button ViewFriendship = new Button("View Friendship(Friend Page)");
-		Button Back = new Button("Back");
+		
 		Button Menu = new Button("Menu");
-		Button Recall = new Button("Recall");
+		
 		AddFriend.setPrefSize(150, 30);
 		RemoveFriend.setPrefSize(150, 30);
 		RemoveSelectedFriend.setPrefSize(150, 30);
 		RemoveAllFriend.setPrefSize(150, 30);
 		ViewFriendship.setPrefSize(150, 30);
-		Back.setPrefSize(150, 30);
+		
 		Menu.setPrefSize(150, 30);
-		Recall.setPrefSize(150, 30);
+		
 		
 		//temporary button accessibility for a2, edited in 12/2
-		Back.setDisable(true);
-		Recall.setDisable(true);
+		
 		
 
 		// create a vbox for operations
@@ -300,6 +299,7 @@ public class Main extends Application {
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						friendsofcent.setText(Integer.toString(updated.size()));
 						Import.setDisable(false);
 						Export.setDisable(false);
 						AddUser.setDisable(false);						
@@ -478,7 +478,7 @@ public class Main extends Application {
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					
+					friendsofcent.setText(Integer.toString(updated.size()));
 					//update button accessibility
 					RemoveAllUsers.setDisable(false);
 //					ViewFriend.setDisable(false);
@@ -619,7 +619,7 @@ public class Main extends Application {
 					//	Undo.setDisable(true);
 					//	Redo.setDisable(true);
 						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-								ViewFriend, Back, Menu, Recall);
+								ViewFriend, Menu);
 						// set listview
 						result.setText(" [Prompt] : Friends of " + selectedUser + " are shown in follow viewer.");
 						order.setText(Integer.toString(mgr.order()));
@@ -731,15 +731,16 @@ public class Main extends Application {
 							}
 							obl.clear();
 							obl.addAll(updated);
-							
+							result.setText( td1.getEditor().getText() + " is added.");
+							order.setText(Integer.toString(mgr.order()));
+							size.setText((Integer.toString(mgr.size())));
+							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+							friendsofcent.setText(Integer.toString(updated.size()));
 //							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveAllFriend,
 //									ViewFriend, Back, Menu, Recall);
 						}
 
-						result.setText( td1.getEditor().getText() + " is added.");
-						order.setText(Integer.toString(mgr.order()));
-						size.setText((Integer.toString(mgr.size())));
-						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+						
 						
 					} catch (IllegalCharacterException nfe1) {
 						Alert alert1 = new Alert(AlertType.WARNING);
@@ -878,6 +879,7 @@ public class Main extends Application {
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
 							connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+							friendsofcent.setText(Integer.toString(updated.size()));
 							}
 						}catch(IllegalCharacterException e1) {
 							Alert alert1 = new Alert(AlertType.WARNING);
@@ -1001,6 +1003,7 @@ public class Main extends Application {
 									order.setText(Integer.toString(mgr.order()));
 									size.setText((Integer.toString(mgr.size())));
 									connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+									friendsofcent.setText(Integer.toString(updated.size()));
 								}
 							}catch(IllegalCharacterException e1) {
 								Alert alert1 = new Alert(AlertType.WARNING);
@@ -1125,6 +1128,7 @@ public class Main extends Application {
 								            order.setText(Integer.toString(mgr.order()));
 								       size.setText((Integer.toString(mgr.size())));
 								       connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+								       friendsofcent.setText(Integer.toString(updated.size()));
 								       
 								}
 							}catch(IllegalCharacterException e1) {
@@ -1206,7 +1210,7 @@ public class Main extends Application {
 								obl.addAll(updated);
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-									ViewFriend, Back, Menu, Recall);
+									ViewFriend, Menu);
 							result.setText(td.getEditor().getText() + " becomes a new friend of " + mgr.getCentralPerson() +" .");
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
@@ -1289,7 +1293,7 @@ public class Main extends Application {
 								obl.addAll(updated);
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-									ViewFriend, Back, Menu, Recall);
+									ViewFriend, Menu);
 							result.setText(" [Prompt] : Friendship between " + td.getEditor().getText() + "and " + mgr.getCentralPerson() +"is deleted.");
 							order.setText(Integer.toString(mgr.order()));
 							size.setText((Integer.toString(mgr.size())));
@@ -1355,7 +1359,7 @@ public class Main extends Application {
 								obl.addAll(updated);
 							}
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
-									ViewFriend, Back, Menu, Recall);
+									ViewFriend, Menu);
 						
 
 							result.setText(" [Prompt] : Friendship between " +  lv.getSelectionModel().getSelectedItem() + "and " + mgr.getCentralPerson() +"is deleted.");
@@ -1445,9 +1449,9 @@ public class Main extends Application {
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					
 					
-					order.setText(Integer.toString(mgr.order()));
-					size.setText((Integer.toString(mgr.size())));
-					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
+//					order.setText(Integer.toString(mgr.order()));
+//					size.setText((Integer.toString(mgr.size())));
+//					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					
 					FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
 							DeleteUser,MutualFriends, ShortestPath);
