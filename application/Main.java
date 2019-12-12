@@ -479,7 +479,10 @@ public class Main extends Application {
 
 
 
-		// action rotate event
+		/**
+		 *  handle event for the "ViewFriend" button,
+		 *  switch the operation buttons(user page) to friend buttons(friend page)
+		 */
 		ViewFriend.setOnAction(new EventHandler<ActionEvent>() {
 			String S;
 
@@ -488,6 +491,7 @@ public class Main extends Application {
 					if (mgr.getCentralPerson() != null) {
 						List<String> updated = FriendList.getFriends(mgr, selectedUser);
 						mgr.centralize(selectedUser); // set central user
+						
 						// update friends information
 						if (updated == null) {
 							obl.clear();
@@ -498,7 +502,7 @@ public class Main extends Application {
 
 						FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 								ViewFriend, Menu);
-						// set listview
+						// update the viewers 
 						result.setText(" [Prompt] : Friends of " + selectedUser + " are shown in follow viewer.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
@@ -507,23 +511,18 @@ public class Main extends Application {
 					
 						//update button accessibility
 						ViewFriend.setDisable(true);
-//						DeleteUser.setDisable(true);
-//						Import.setDisable(false);
-//						Export.setDisable(false);
-//						RemoveAllUsers.setDisable(false);
-//						AddUser.setDisable(false);
-						//button in friend page
 						RemoveFriend.setDisable(false);
 						RemoveSelectedFriend.setDisable(true);
 						RemoveAllFriend.setDisable(false);
 						AddFriend.setDisable(false);
+						
+						//update the network viewer
 						centralUserNtwk.getChildren().clear();
 						centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					}
 
 				} catch (Exception nfe) {
-//					nfe.printStackTrace();
-//                		 result.setText(" [Prompt] : invalid input");
+//					
 				}
 			}
 		});
