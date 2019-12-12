@@ -626,9 +626,6 @@ public class Main extends Application {
 
 
 
-		// set actions
-//        ViewFriend.setOnAction(EventByButton);
-
 		operation.getChildren().add(title);
 		operation.getChildren().add(Import);
 		operation.getChildren().add(Export);
@@ -641,23 +638,17 @@ public class Main extends Application {
 		operation.getChildren().add(ShortestPath);
 
 		// create a event handler
-        
-		
-
-		//AddFriendship.setOnAction(new EventHandler<ActionEvent>() {
+        	/**
+		 *  handle event for the "AddFriendship" button
+		 */
 		AddFriendship.setOnAction(new EventHandler<ActionEvent>() {
-
 			public void handle(ActionEvent e)
-
 			{
-
 				try {
-
 					 //Create the custom dialog.
 			        Dialog<Pair<String, String>> dialog = new Dialog<>();
 			        dialog.setTitle("Add new friendship(two users)");
-			        dialog.setHeaderText("Please Enter Names");
-			        
+			        dialog.setHeaderText("Please Enter Names");			        
 					ButtonType loginButtonType = new ButtonType("OK", ButtonData.OK_DONE);
 					dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
@@ -666,7 +657,8 @@ public class Main extends Application {
 					grid.setHgap(10);
 					grid.setVgap(10);
 					grid.setPadding(new Insets(20, 150, 10, 10));
-
+					
+					//create textfield
 					TextField name1 = new TextField();
 					name1.setPromptText("Name1");
 					TextField name2 = new TextField();
@@ -692,9 +684,6 @@ public class Main extends Application {
 
 					dialog.getDialogPane().setContent(grid);
 
-					// Request focus on the name1 field by default.
-					//Platform.runLater(() -> name1.requestFocus());
-
 					// Convert the result to a name1-name2-pair when the login button is clicked.
 					dialog.setResultConverter(dialogButton -> {
 					    if (dialogButton == loginButtonType) {
@@ -703,10 +692,10 @@ public class Main extends Application {
 					    return null;
 					});
 					
-					
-
+					//pop window
 					Optional<Pair<String, String>> choice = dialog.showAndWait();
-
+					
+					//determine whether input is valid
 					choice.ifPresent(name1name2 -> {
 						try {
 							if(name1.getText() == null || name1.getText().equals("")) {
@@ -734,6 +723,7 @@ public class Main extends Application {
 								alert2.setContentText("Friendship already exists");
 								alert2.showAndWait();
 							}else {
+								//set friendship and sync the network
 								mgr.setFriendship(name1.getText(), name2.getText());
 					    	 List<String> updated = new ArrayList<String>();       
 						       Set<String> updatedSet = mgr.getAllUsers();
@@ -759,24 +749,18 @@ public class Main extends Application {
 							alert1.showAndWait();
 						}catch(IllegalArgumentException e1) {
 							result.setText(" [Prompt] : Friendship between " + name1.getText()+ " and " +name2.getText()+" is added.");
-						}
-						
-						
+						}						
 					});
-//
-
 				}
 				catch (Exception nfe) {
-
-					nfe.printStackTrace();
-
-					result.setText(" [Prompt] : invalid input");
-
+//					nfe.printStackTrace();
+//					result.setText(" [Prompt] : invalid input");
 				}
-
 			}
-
 		});
+		
+
+
 
 		MutualFriends.setOnAction(new EventHandler<ActionEvent>() {
 
