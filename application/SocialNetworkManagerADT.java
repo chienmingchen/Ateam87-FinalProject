@@ -1,6 +1,8 @@
 package application;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +16,12 @@ public interface SocialNetworkManagerADT {
 	 * s deb
 	 * 
 	 * @param input file of insturctions
+	 * @throws Exception 
+	 * @throws IllegalCharacterException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
-	public void constructNetwork(File file);
+	public void constructNetwork(File file) throws FileNotFoundException, IOException, IllegalCharacterException, Exception;
 	
 	/**
 	 * Set the specific person as the 
@@ -46,8 +52,9 @@ public interface SocialNetworkManagerADT {
 	 * There won't be any changes of the network
 	 * 
 	 * @param username to add the person into newtowk
+	 * @throws IllegalCharacterException 
 	 */
-    public void addPerson(String person);
+    public void addPerson(String person) throws IllegalCharacterException;
 	
 	/**
 	 * Set friendship between user1 and user2
@@ -57,9 +64,10 @@ public interface SocialNetworkManagerADT {
 	 * Do nothing
 	 * 
 	 * @param username to add the person into network
+	 * @throws IllegalCharacterException 
 	 *
 	 **/
-    public void setFriendship(String person1, String person2);
+    public void setFriendship(String person1, String person2) throws IllegalCharacterException;
      
      
 	/**
@@ -123,8 +131,9 @@ public interface SocialNetworkManagerADT {
 	 * @param username1
 	 * @param username2
 	 * @return a set of all users in the network
+	 * @throws IllegalCharacterException 
 	 */
- 	public List<String> mutualFriends(String person1, String person2);
+ 	public List<String> mutualFriends(String person1, String person2) throws IllegalCharacterException;
  	
 	/**
 	 * Find the short path to from user1 and user2
@@ -136,15 +145,17 @@ public interface SocialNetworkManagerADT {
 	 * @param username1
 	 * @param username2
 	 * @return a list of persons in the path with order 
+	 * @throws IllegalCharacterException 
 	 */
- 	public List<String> shortestPath(String person1, String person2);
+ 	public List<String> shortestPath(String person1, String person2) throws IllegalCharacterException;
  	
 	/**
 	 * Save the history operations of the network
 	 * to the indicated file
 	 * 
 	 * @param file
+	 * @throws IOException 
 	 * 
 	 */
-    public void saveLog(File file);
+    public void saveLog(File file) throws IOException;
 }

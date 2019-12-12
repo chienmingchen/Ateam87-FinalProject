@@ -31,75 +31,64 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class FriendList {
-	
+
 	public static List<String> getFriends(SocialNetworkManager mgr, TextField input) {
 		List<String> list = mgr.getPersonalNetwork(input.getText());
 		return list;
 	}
-		
-	
+
 	public static List<String> getFriends(SocialNetworkManager mgr, String input) {
 		List<String> list = mgr.getPersonalNetwork(input);
 		return list;
 	}
 
-//	Button MutualFriends = new Button("Mutual Friends");
-//	Button ShortestPath = new Button("Shortest path between two");
 
-    public static VBox setAsUserOperation(VBox operation, Label title, Button importButton, 
-    		Button Export, Button AddFriendship, Button RemoveAllUsers, Button ViewFriend, Button AddUser, 
-    		Button DeleteUser, Button MutualFriends, Button ShortestPath) {
-    	operation.getChildren().clear();
-        operation.getChildren().add(title);
-        operation.getChildren().add(importButton);
-        operation.getChildren().add(Export);
-        operation.getChildren().add(AddFriendship);
-        operation.getChildren().add(RemoveAllUsers);
-        operation.getChildren().add(ViewFriend);
-        operation.getChildren().add(AddUser);
-        operation.getChildren().add(DeleteUser);
-        operation.getChildren().add(MutualFriends);
-        operation.getChildren().add(ShortestPath);
-//        operation.getChildren().add(Undo);
-//        operation.getChildren().add(Redo);
-        importButton.setDisable(false);
-        Export.setDisable(false);
-        AddFriendship.setDisable(false);
-//        Undo.setDisable(true);
-//        Redo.setDisable(true);
+	public static VBox setAsUserOperation(VBox operation, Label title, Button importButton, Button Export,
+			Button AddFriendship, Button RemoveAllUsers, Button ViewFriend, Button AddUser, Button DeleteUser,
+			Button MutualFriends, Button ShortestPath) {
+		operation.getChildren().clear();
+		operation.getChildren().add(title);
+		operation.getChildren().add(importButton);
+		operation.getChildren().add(Export);
+		operation.getChildren().add(AddFriendship);
+		operation.getChildren().add(RemoveAllUsers);
+		operation.getChildren().add(ViewFriend);
+		operation.getChildren().add(AddUser);
+		operation.getChildren().add(DeleteUser);
+		operation.getChildren().add(MutualFriends);
+		operation.getChildren().add(ShortestPath);
+
+		importButton.setDisable(false);
+		Export.setDisable(false);
+		AddFriendship.setDisable(false);
 		RemoveAllUsers.setDisable(false);
 		ViewFriend.setDisable(true);
 		AddUser.setDisable(false);
 		DeleteUser.setDisable(true);
 		MutualFriends.setDisable(false);
 		ShortestPath.setDisable(false);
-//		Undo.setDisable(true);
-//		Redo.setDisable(true);
-		
-    	return operation;
-    }
-	
 
-    public static VBox setAsFriendOperation(VBox operation, Label title, Button AddFriend, 
-    		Button RemoveFriend, Button RemoveSelectedFriend, Button RemoveAllFriend, Button ViewFriendship, 
-    		  Button Menu) {
-    	operation.getChildren().clear();
-        operation.getChildren().add(title);
-        operation.getChildren().add(AddFriend);
-        operation.getChildren().add(RemoveFriend);
-        operation.getChildren().add(RemoveSelectedFriend);
-        operation.getChildren().add(RemoveAllFriend);
-        operation.getChildren().add(ViewFriendship);
-        operation.getChildren().add(Menu);
-        
-//        operation.getChildren().add(Undo);
-//        operation.getChildren().add(Redo);
-        AddFriend.setDisable(false);
+		return operation;
+	}
+
+	public static VBox setAsFriendOperation(VBox operation, Label title, Button AddFriend, Button RemoveFriend,
+			Button RemoveSelectedFriend, Button RemoveAllFriend, Button ViewFriendship, Button Menu) {
+		operation.getChildren().clear();
+		operation.getChildren().add(title);
+		operation.getChildren().add(AddFriend);
+		operation.getChildren().add(RemoveFriend);
+		operation.getChildren().add(RemoveSelectedFriend);
+		operation.getChildren().add(RemoveAllFriend);
+		operation.getChildren().add(ViewFriendship);
+		operation.getChildren().add(Menu);
+
+
+		AddFriend.setDisable(false);
 		RemoveFriend.setDisable(false);
 		RemoveSelectedFriend.setDisable(true);
 		RemoveAllFriend.setDisable(false);
 		ViewFriendship.setDisable(true);
 		Menu.setDisable(false);
-    	return operation;
-    }
+		return operation;
 	}
+}

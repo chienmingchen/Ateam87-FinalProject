@@ -35,7 +35,7 @@ import java.util.Vector;
  * 
  */
 
-public class SocialNetworkManager {
+public class SocialNetworkManager implements  SocialNetworkManagerADT {
     
 	// We will base on our designed network methods to  
 	// manage the soical network 
@@ -152,7 +152,6 @@ public class SocialNetworkManager {
 	}
 	
 	public void setFriendship(String person1, String person2) throws IllegalCharacterException {
-//		try {
 			//check if person is null
 		  	if (person1 == null && person2 == null) 
 		  		return;
@@ -163,11 +162,9 @@ public class SocialNetworkManager {
 		  		this.addPerson(person2);
 		  	}
 		  	network.addEdge(person1, person2);
-		  	System.out.println("Add : " + person1 + " " + person2);
+//		  	System.out.println("Add : " + person1 + " " + person2);
 	                this.logBuff.add("a " + person1 + " " + person2);
-//		}catch(IllegalCharacterException e1) {
-//			throw new IllegalCharacterException();
-//		}
+
 
 	}
 	
