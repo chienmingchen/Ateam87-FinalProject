@@ -76,26 +76,32 @@ public class Main extends Application {
 	// store any command-line arguments that were entered.
 	// NOTE: this.getParameters().getRaw() will get these also
 	private List<String> args;
- 
-	// GUI needs to interact with SocialNetworkManager
-	private static SocialNetworkManager mgr = new SocialNetworkManager();
 
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 600;
 	private static final String APP_TITLE = "SocialNetworkManager";
+	
+	// GUI needs to interact with SocialNetworkManager
+	private static SocialNetworkManager mgr = new SocialNetworkManager();
 	// item that user select
 	private static String selectedUser;
 
-	//TODO if appropriate to declare label out of the start method
-	private ObservableList<String> obl;
+	//present the user and friends list
+	private ObservableList<String> obl; 
+	
+	
+	//present the number of users for the whole social network
 	private Label order;
+	//present the number of friendships for the whole social network
 	private Label size;
+	//present the number of connected components for the whole social network
 	private Label connectedComponents;
+	//present the number of friends for a specific user
 	private Label friendsofcent;
+	//present the status/help message
 	private Label result;
 	
-	//Buttons
-	//for user page
+	//buttons for user page
 	Button Import;
 	Button Export;
 	Button AddFriendship;
@@ -105,7 +111,8 @@ public class Main extends Application {
 	Button DeleteUser;
 	Button MutualFriends;
 	Button ShortestPath;
-	//for friends page
+	
+	//buttons for friends page
 	Button AddFriend;
 	Button RemoveAllFriend;
 	Button RemoveSelectedFriend;
@@ -113,83 +120,102 @@ public class Main extends Application {
 	Button ViewFriendship;
 	Button Menu;
 	
-	//vbox for operation
+	//vbox collects operation button in user page 
+	//the box is placed on the right pane
 	VBox operation;
-	Label title; //title for operation
+	Label title; 
 	
+	//construct the social network manager
 	public static SocialNetworkManager getSocialNetworkManager() {
 		return mgr;
 	}
-
-//	private Stage mainStage;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		 
 		// save args example
 		args = this.getParameters().getRaw();
 		
-		class history{
-			boolean delete;
-			boolean vertexOperation;
-			String name1;
-			String name2;
-			List<String> friends;
-			public history(boolean delete, boolean vertexOperation, String name1,String name2, List<String> friends){
-				this.delete = delete;
-				this.vertexOperation = vertexOperation;
-				this.name1=name1;
-				this.name2=name2;
-				this.friends = friends;
-			}
-		}
-
-
-		// Create a vertical box in center panel for getting friend list
-		// Vbox contains
+		/**
+		 * create a vertical box in top panel for searching the friends of a specified user;
+		 * a label, textfield, button are included. 
+		 */
 		VBox vbox = new VBox();
-
-		// create a label for prompting message
 		Label prompt = new Label("Enter the person you want to see his/her network");
-
-		// create a textfield for inputing name
 		TextField input = new TextField();
-
-		// Create rotate button for the right panel
 		Button rotateButton = new Button("Check");
-
-		// create a label for showing rotation degree
-		result = new Label("Welcome to Social Network Visualizer");
-		result.setFont(new Font("Arial", 16));
-		result.setTextFill(Color.web("#0076a3"));
 		
-		order = new Label();
-		size = new Label();
-		connectedComponents = new Label();
-		friendsofcent = new Label();
-
-		// create a list for viewing friends
+		/**
+		 *  create a observable list for viewing users or friends.
+		 *  The observable list will be placed on the left of the border pane.
+		 */
 		obl = FXCollections.observableList(new ArrayList<String>());
-//		obl.add("Empty Friend List");
 		ListView<String> lv = new ListView<String>(obl);
 		lv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		// create a scroll bar for friend list
 		ScrollPane pane = new ScrollPane();
+		
 
-		// The GridPane for showing central user network
-		GridPane centralUserNtwk = new GridPane();
+		/**
+		 * create a label to displays the status/help messages;
+		 * the label will be  packed as the first part of a central vertical box.
+		 */
+		result = new Label();
+		result.setFont(new Font("Arial", 16));
+		result.setTextFill(Color.web("#0076a3"));
+
+		/**
+		 * create a grid pane to displays number of users, friendships, connected components 
+		 * for the whole graph. The gridpane will be packed in in the second part of a central vertical box.
+		 */
+		GridPane numbers = new GridPane();
+		numbers.setHgap(10);
+	    numbers.setVgap(10);
+	    numbers.setPadding(new Insets(20, 150, 10, 10));
+	    numbers.add(new Label("Number of users in the Network:"), 0, 0);
+	    numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
+	    numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
+	    numbers.add(new Label("    "), 0, 3);
+	    numbers.add(new Label("Number of friends of central user: "), 0, 4);
+	    order = new Label();
+	    size = new Label();
+	    connectedComponents = new Label();
+	    friendsofcent = new Label();
+	    numbers.add(order, 1, 0); //number of users
+	    numbers.add(size, 1, 1); //number of friendships
+	    numbers.add(connectedComponents, 1, 2); //number of connected components 
+	    numbers.add(new Label("    "), 1, 3);
+	    numbers.add(friendsofcent, 1, 4); // number of friends for central user
+		
+	    /**
+		 * create a grid pane to create friendship viewer to display
+		 * central user and his/her friends. 
+		 * The gridpane will be packed in in the thirs part of a central vertical box.
+		 */
+	    GridPane centralUserNtwk = new GridPane();
 		centralUserNtwk.setPrefHeight(0.5*WINDOW_WIDTH);
-	   	centralUserNtwk.setPrefWidth(0.75*WINDOW_HEIGHT);
-	   	//Specify the gridpane's size and number of rows and columns
-	   	int cols = 11;
-	   	int rows = 11;
-	   	double gpWidth = 0.5*WINDOW_WIDTH;
-	   	double gpHeight = 0.6*WINDOW_HEIGHT;
+		centralUserNtwk.setPrefWidth(0.75*WINDOW_HEIGHT);
+		//Specify the gridpane's size and number of rows and columns
+		int cols = 11;
+		int rows = 11;
+		double gpWidth = 0.5*WINDOW_WIDTH;
+		double gpHeight = 0.6*WINDOW_HEIGHT;
 		for(int i=0;i<cols;i++) {
 			//hard code
 			centralUserNtwk.getColumnConstraints().add(new ColumnConstraints(gpWidth/cols));
 			centralUserNtwk.getRowConstraints().add(new RowConstraints(gpHeight/rows));
 		}
+		
+		/**
+		 * create an operation vbox including the title and operation buttons 
+		 * in user page or friends buttons in friend page.
+		 * The pages between will be switched by clicking the "ViewFriend" button.
+		 * The vbox will be placed on the right border pane.
+		 */
+		// create a vbox for operations
+		operation = new VBox();
+		operation.setSpacing(4);
+		operation.setAlignment(Pos.CENTER);
+		operation.setPadding(new Insets(15));
 		
 		// title for opereation vbox
 		title = new Label();
@@ -207,9 +233,8 @@ public class Main extends Application {
 		DeleteUser = new Button("Delete Users");
 		MutualFriends = new Button("Mutual Friends");
 		ShortestPath = new Button("Shortest path between two");
-//		Button Undo = new Button("Undo");
-//		Button Redo = new Button("Redo");
-		
+
+		// set size for buttons
 		Import.setPrefSize(150, 30);
 		Export.setPrefSize(150, 30);
 		AddFriendship.setPrefSize(150, 30);
@@ -219,16 +244,14 @@ public class Main extends Application {
 		DeleteUser.setPrefSize(150, 30);
 		MutualFriends.setPrefSize(150, 30);
 		ShortestPath.setPrefSize(150, 30);
-//		Undo.setPrefSize(150, 30);
-//		Redo.setPrefSize(150, 30);
-//        Undo.setDisable(true);
-//        Redo.setDisable(true);
+		
+		//initialize the state of the operation buttons
 		RemoveAllUsers.setDisable(true);
 		ViewFriend.setDisable(true);
 		AddUser.setDisable(false);
 		DeleteUser.setDisable(true);
 		
-		// Buttons for friend operations
+		// buttons for friend page
 		AddFriend = new Button("Add Friend");
 		RemoveAllFriend = new Button("Remove All Friends");
 		RemoveSelectedFriend = new Button("Remove Selected Friends");
@@ -241,85 +264,67 @@ public class Main extends Application {
 		RemoveSelectedFriend.setPrefSize(150, 30);
 		RemoveAllFriend.setPrefSize(150, 30);
 		ViewFriendship.setPrefSize(150, 30);
-		
 		Menu.setPrefSize(150, 30);
 		
-		
-		//temporary button accessibility for a2, edited in 12/2
-		
-		
-
-		// create a vbox for operations
-		operation = new VBox();
-		operation.setSpacing(4);
-		operation.setAlignment(Pos.CENTER);
-		operation.setPadding(new Insets(15));
-
-		// operation.setAlignment();
-//        Button Import = new Button("Import");
-//        Import.setPrefSize(150, 30);
+	
 		FileChooser fileChooser = new FileChooser();
 		
-	   
-		
-		
+		/**
+		 *  handle event for the "DeleteUser" button
+		 */
 		DeleteUser.setOnAction(new EventHandler<ActionEvent>(){
 
 			@Override
 			public void handle(ActionEvent event) {
-				// for test purpose
+				
 				if(lv.getSelectionModel().getSelectedItems() != null) {
-					List<String> historyList = new ArrayList<String>();
-					Set<String> historySet = mgr.getAllUsers();
-					for (String item : historySet) {
-						historyList.add(item);
-					}
-					//users.add(historyList);
+					// get multi-users
 					List<String> selectedUser = lv.getSelectionModel().getSelectedItems();
 					String a = "";
 					
-					List<history> thisHistory = new ArrayList<history>();
+					// delete them one by one 
 					for(int i = selectedUser.size()-1;i>=0;i--) {
-					String userToDelete = selectedUser.get(i);
-					a+=userToDelete+", ";
-					List<String> friends = mgr.getPersonalNetwork(userToDelete);
-					//System.out.println(userToDelete);
-					
-					history newHistory = new history(true,true,userToDelete,null,friends);
-					
-					thisHistory.add(newHistory);
-					mgr.removePerson(userToDelete);
-					
+						String userToDelete = selectedUser.get(i);
+						a+=userToDelete+", "; // intall the deleted users to a string
+						List<String> friends = mgr.getPersonalNetwork(userToDelete);
+						mgr.removePerson(userToDelete);
 					}
-					//undoHistory.add(thisHistory);
 					
-					//Undo.setDisable(false);
+					//update the users list 
 					List<String> updated = new ArrayList<String>();
 					Set<String> updatedSet = mgr.getAllUsers();
 					for (String item : updatedSet) {
 						updated.add(item);
 					}
 					obl.clear();
-
+					
+					// if the remained users is not empty, viewers update the status and numbers information 
 					if(updated.size()!=0) {
 						result.setText(" [Prompt] : " + a + "is deleted.");
 						order.setText(Integer.toString(mgr.order()));
 						size.setText((Integer.toString(mgr.size())));
 						connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-						FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
-								DeleteUser,MutualFriends, ShortestPath);
+						
+						// reset the buttons status
+						FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, 
+								ViewFriend, AddUser, DeleteUser,MutualFriends, ShortestPath);
+						
+						// the there is central user, update the number of his/her friends and friend viewer
 						if (lv.getSelectionModel().getSelectedItems().equals( mgr.getCentralPerson())) {
 							friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 							centralUserNtwk.getChildren().clear();
 							centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 						}
+						
+						// if the central user was deleted, set the number of his/her friends to be 0
+						// and the friend viewer will be cleared.
 						else {
 							friendsofcent.setText("0");
-							centralUserNtwk.getChildren().clear();
-							
+							centralUserNtwk.getChildren().clear();	
 						}
-					obl.addAll(updated);					
+						obl.addAll(updated);					
 					}
+					
 					else {
 						result.setText(" [Prompt] : " + a + "is deleted. List is Empty");
 						order.setText(Integer.toString(mgr.order()));
@@ -331,64 +336,62 @@ public class Main extends Application {
 								DeleteUser,MutualFriends, ShortestPath);
 					}
 					DeleteUser.setDisable(true);
-
-
-			}}
-
-
-
+				}
+			}
 		});
 
+		/**
+		 *  handle event for the "Import" button
+		 */
 		Import.setOnAction(new EventHandler<ActionEvent>() {
+			
 			@Override
 			public void handle(ActionEvent e) {
+				// get the selected imported file
 				File selectedFile = fileChooser.showOpenDialog(primaryStage);
 				try {
+					// if the wrong file is imported, throw exception
 					if(!selectedFile.getName().contains(".txt")) {
 						throw new IOException();
 					}
 					
+					// construct the social network and update the users in the observable list 
 					mgr.constructNetwork(selectedFile);
 					List<String> updated = new ArrayList<String>();
 					Set<String> updatedSet = mgr.getAllUsers();
 					for (String item : updatedSet) {
 						updated.add(item);
 					}
-
-//					System.out.println("Update" + updated);
-					// update users information
 					obl.clear();
 					obl.addAll(updated);
 
-					// set listview
+					// update the viewers
 					result.setText(" [Prompt] : File import successfully.");
 					order.setText(Integer.toString(mgr.order()));
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 					friendsofcent.setText(Integer.toString(FriendList.getFriends(mgr, mgr.getCentralPerson()).size()));
 					
-					//update button accessibility
+					// update the buttons status
 					RemoveAllUsers.setDisable(false);
-//					ViewFriend.setDisable(false);
 					AddUser.setDisable(false);
-//					DeleteUser.setDisable(false);
-				 	//clear the GridPane first whenever new network is imported
+				
+					//update the network viewer
 					centralUserNtwk.getChildren().clear();
-					//then plot the network of the central user
 					centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
 					
 				} 
 				catch (FileNotFoundException exception) {
+					// if FileNotFoundException exception is thrown, po an alert dialog. 
 					Alert alert1 = new Alert(AlertType.WARNING);
 					alert1.setTitle("Warning Dialog");
 					alert1.setHeaderText("Warning messager");
 					alert1.setContentText("Input file can not be found!");
 					alert1.showAndWait();
 					result.setText(" [Prompt] : File fail to import.");
-					// e.printStackTrace();
 
 				}catch (IOException exception) {
-					// e.printStackTrace();
+					// if IOException exception is thrown, po an alert dialog. 
 					Alert alert2 = new Alert(AlertType.WARNING);
 					alert2.setTitle("Warning Dialog");
 					alert2.setHeaderText("Warning messager");
@@ -397,15 +400,17 @@ public class Main extends Application {
 					result.setText(" [Prompt] : File fail to import.");
 				} 
 				catch (Exception exception) {
-					// e.printStackTrace();
+					
 				}
 			}
 		});
     
 		
+		/**
+		 *  handle event for the "Export" button
+		 */
 		Export.setOnAction(new EventHandler<ActionEvent>() {
 			String S;
-
 			public void handle(ActionEvent e) {
 		        
 	            FileChooser fileChooser = new FileChooser();
@@ -422,7 +427,6 @@ public class Main extends Application {
 	            		mgr.saveLog(file);
 	            	}
 	            	catch (IOException io) {
-						//io.printStackTrace();
 	            		result.setText(" [Prompt] : Export IO Exception");
 	            	}
 	            }
@@ -430,7 +434,9 @@ public class Main extends Application {
 		});
 		
 
-
+		/**
+		 *  handle event for the "RemoveAllUsers" button
+		 */
 		RemoveAllUsers.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent e) {
@@ -469,6 +475,9 @@ public class Main extends Application {
 				}
 			}
 		});
+		
+
+
 
 		// action rotate event
 		ViewFriend.setOnAction(new EventHandler<ActionEvent>() {
@@ -1517,20 +1526,20 @@ public class Main extends Application {
 		vbox.getChildren().add(result);
 		
 		VBox middle = new VBox();
-		 GridPane numbers = new GridPane();
-		 numbers.setHgap(10);
-	      numbers.setVgap(10);
-	      numbers.setPadding(new Insets(20, 150, 10, 10));
-	      numbers.add(new Label("Number of users in the Network:"), 0, 0);
-	      numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
-	      numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
-	      numbers.add(new Label("    "), 0, 3);
-	      numbers.add(new Label("Number of friends of central user: "), 0, 4);
-	   numbers.add(order, 1, 0);
-	   numbers.add(size, 1, 1);
-	   numbers.add(connectedComponents, 1, 2);
-	   numbers.add(new Label("    "), 1, 3);
-	   numbers.add(friendsofcent, 1, 4);
+//		 GridPane numbers = new GridPane();
+//		 numbers.setHgap(10);
+//	      numbers.setVgap(10);
+//	      numbers.setPadding(new Insets(20, 150, 10, 10));
+//	      numbers.add(new Label("Number of users in the Network:"), 0, 0);
+//	      numbers.add(new Label("Number of friendships in the Network:"), 0, 1);
+//	      numbers.add(new Label("Number of connected components in the Network: "), 0, 2);
+//	      numbers.add(new Label("    "), 0, 3);
+//	      numbers.add(new Label("Number of friends of central user: "), 0, 4);
+//	   numbers.add(order, 1, 0);
+//	   numbers.add(size, 1, 1);
+//	   numbers.add(connectedComponents, 1, 2);
+//	   numbers.add(new Label("    "), 1, 3);
+//	   numbers.add(friendsofcent, 1, 4);
 		middle.getChildren().addAll(result, numbers, centralUserNtwk);
 		// Main layout is Border Pane example (top,left,center,right,bottom)
 		BorderPane root = new BorderPane();
