@@ -196,7 +196,7 @@ public class Network implements GraphADT {
         int size = 0;
         for (String key: vertexADJLists.keySet()) 
           size += vertexADJLists.get(key).size();
-        return size;
+        return size/2;
     }
 
 	/**
@@ -207,7 +207,6 @@ public class Network implements GraphADT {
     }
 	
     public List<String> getShortestPathOf(String source, String end) {
-
     	//System.out.println("get short path");
     	
 	    List<String> route = new ArrayList<>();
