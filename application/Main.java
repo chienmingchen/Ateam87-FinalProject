@@ -1160,26 +1160,24 @@ public class Main extends Application {
 
 		});
 
+		/**
+		 *  handle event for the "RemoveSelectedFriend" button
+		 */
 		RemoveSelectedFriend.setOnAction(new EventHandler<ActionEvent>() {
-
 			public void handle(ActionEvent e)
-
 			{
-
 				try {
-
 						mgr.removeFriendship(mgr.getCentralPerson(), lv.getSelectionModel().getSelectedItem());
-
 						if (mgr.getCentralPerson() != null) {
 							List<String> updated = FriendList.getFriends(mgr, mgr.getCentralPerson());
 							// update friends information
 							if (updated == null) {
 								obl.clear();
-								obl.add("Cannot Find: " + mgr.getCentralPerson());
 							} else {
 								obl.clear();
 								obl.addAll(updated);
 							}
+							//keep at friend page
 							FriendList.setAsFriendOperation(operation, title, AddFriend, RemoveFriend, RemoveSelectedFriend, RemoveAllFriend,
 									ViewFriend, Menu);
 						
@@ -1197,33 +1195,26 @@ public class Main extends Application {
 					result.setText(" [Prompt] : Friendship between " +  selectedUser + " and " + mgr.getCentralPerson() +" is deleted.");
 				}
 				catch (Exception nfe) {
-
-					nfe.printStackTrace();
-
-					result.setText(" [Prompt] : invalid input");
-
+//					nfe.printStackTrace();
+//					result.setText(" [Prompt] : invalid input");
 				}
-
 			}
-
 		});
 
+		/**
+		 *  handle event for the "RemoveAllFriend" button
+		 */
 		RemoveAllFriend.setOnAction(new EventHandler<ActionEvent>() {
-
 			public void handle(ActionEvent e)
-
 			{
-
 				try {
-
+					//delete all friends
 					 String delete = mgr.getCentralPerson();
 	                    List<String> deleteList = mgr.getPersonalNetwork(delete);
-	                    //System.out.print(deleteList);
 	                    for (int i = deleteList.size()-1; i >=0;  i--) {
 	                    	mgr.removeFriendship(delete, deleteList.get(i));
 	                    }
-	                    List<String> deleteList1 = mgr.getPersonalNetwork(delete);
-	                    //System.out.print(deleteList1);
+	                    //update listview
 	                    obl.clear();
 	                    result.setText(" [Prompt] : All friendships of " + mgr.getCentralPerson() + " are deleted.");
 						order.setText(Integer.toString(mgr.order()));
@@ -1232,28 +1223,23 @@ public class Main extends Application {
 						friendsofcent.setText(Integer.toString(0));
 						centralUserNtwk.getChildren().clear();
 						centralUserNtwk.getChildren().add(plotCentralUserNtwk(centralUserNtwk,mgr));
-
 				}catch(IllegalArgumentException e1) {
 					result.setText(" [Prompt] : All friendships of " + mgr.getCentralPerson() + " are deleted.");
 				}
 
 				catch (Exception nfe) {
-
 					//nfe.printStackTrace();
-
-					result.setText(" [Prompt] : invalid input");
+//					result.setText(" [Prompt] : invalid input");
 
 				}
-
 			}
-
 		});
 
 
-		// action rotate event
+		/**
+		 *  handle event for the "Menu" button
+		 */
 		Menu.setOnAction(new EventHandler<ActionEvent>() {
-			String S;
-
 			public void handle(ActionEvent e) {
 				try {
 					List<String> updated = new ArrayList<String>();
@@ -1269,10 +1255,7 @@ public class Main extends Application {
 					size.setText((Integer.toString(mgr.size())));
 					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
 
-//					order.setText(Integer.toString(mgr.order()));
-//					size.setText((Integer.toString(mgr.size())));
-//					connectedComponents.setText(Integer.toString(mgr.connectedComponents()));
-					
+					//change to user page
 					FriendList.setAsUserOperation(operation, title, Import, Export, AddFriendship, RemoveAllUsers, ViewFriend, AddUser,
 							DeleteUser,MutualFriends, ShortestPath);
 
@@ -1285,7 +1268,7 @@ public class Main extends Application {
 					RemoveAllUsers.setDisable(false);
 					AddUser.setDisable(false);
 				} catch (Exception nfe) {
-					nfe.printStackTrace();
+//					nfe.printStackTrace();
 //                		 result.setText(" [Prompt] : invalid input");
 				}
 			}
