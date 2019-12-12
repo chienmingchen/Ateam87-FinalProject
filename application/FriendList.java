@@ -82,7 +82,7 @@ public class FriendList {
 
     public static VBox setAsFriendOperation(VBox operation, Label title, Button AddFriend, 
     		Button RemoveFriend, Button RemoveSelectedFriend, Button RemoveAllFriend, Button ViewFriendship, 
-    		 Button Back, Button Menu, Button Recall) {
+    		  Button Menu) {
     	operation.getChildren().clear();
         operation.getChildren().add(title);
         operation.getChildren().add(AddFriend);
@@ -90,9 +90,8 @@ public class FriendList {
         operation.getChildren().add(RemoveSelectedFriend);
         operation.getChildren().add(RemoveAllFriend);
         operation.getChildren().add(ViewFriendship);
-        operation.getChildren().add(Back);
         operation.getChildren().add(Menu);
-        operation.getChildren().add(Recall);
+        
 //        operation.getChildren().add(Undo);
 //        operation.getChildren().add(Redo);
         AddFriend.setDisable(false);
